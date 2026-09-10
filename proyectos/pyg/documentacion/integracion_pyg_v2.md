@@ -6,7 +6,7 @@ implementación preliminar hasta conciliar un corte de producción.
 
 | Área | Decisión |
 | --- | --- |
-| Fuente de cálculo | Carteras y mercado de snapshots, nunca griegas del Excel mensual. |
+| Fuente de cálculo | Opciones y derivados FX se revaloran desde carteras y mercado. Swap calcula el total desde VP/pagos por operación y recibe factores diarios del Informe Libro de Swaps; su atribución todavía depende de esa fuente externa. |
 | Unidades | Cada contribución está en COP. La posición delta USD es una magnitud diferente. |
 | Atribución | Revaloración secuencial; no suma Gamma de nuevo al efecto completo del spot. |
 | Nuevos/otros | Diferencia de cartera actual frente a cartera anterior revalorada; requiere eventos para separar trading, bajas y ajustes. |

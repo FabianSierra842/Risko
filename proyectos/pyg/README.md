@@ -1,5 +1,7 @@
 # PyG Risko
 
+Para estudiar el cálculo: [guía técnica con fórmulas y ejemplos por producto](documentacion/GUIA_TECNICA_Y_EJEMPLOS_PYG.md), también en [PDF](documentacion/GUIA_TECNICA_Y_EJEMPLOS_PYG.pdf) y [HTML](documentacion/GUIA_TECNICA_Y_EJEMPLOS_PYG.html). Los [scripts de ejemplo](documentacion/ejemplos/) permiten repetir los valores sin datos operativos.
+
 Flujo independiente de Position Monitor: carga snapshots, calcula atribuciones
 diarias, guarda resultados en SQLite, consolida por libro/producto/griega y
 genera un único HTML compatible con el Portal Risko existente.

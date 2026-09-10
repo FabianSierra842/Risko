@@ -1,0 +1,98 @@
+{
+  "FORWARD": {
+    "escenarios": {
+      "BASE": 557291.9706590814,
+      "THETA": 496549.96568386984,
+      "DELTA_PYG": 2477514.320038453,
+      "RHO_COP": 3349723.705950444,
+      "RHO_USD": 2884340.4972852767,
+      "BASE_SPREAD": 2890026.000726006,
+      "NUEVOS_OTROS": 2890026.000726006
+    },
+    "contribuciones": {
+      "THETA": -60742.004975211516,
+      "DELTA_PYG": 1980964.3543545834,
+      "RHO_COP": 872209.3859119909,
+      "RHO_USD": -465383.20866516745,
+      "BASE_SPREAD": 5685.503440729342,
+      "NUEVOS_OTROS": 0.0
+    },
+    "PYG_BANKING": 2332734.0300669246
+  },
+  "NOVADOS": {
+    "escenarios": {
+      "BASE": 570544.0772897874,
+      "THETA": 508224.9328017497,
+      "DELTA_PYG": 2535766.057465753,
+      "RHO_COP": 3436056.870208495,
+      "RHO_USD": 2958679.237965862,
+      "BASE_SPREAD": 2958679.237965862,
+      "NUEVOS_OTROS": 2958679.237965862
+    },
+    "contribuciones": {
+      "THETA": -62319.14448803768,
+      "DELTA_PYG": 2027541.1246640035,
+      "RHO_COP": 900290.8127427418,
+      "RHO_USD": -477377.63224263303,
+      "BASE_SPREAD": 0.0,
+      "NUEVOS_OTROS": 0.0
+    },
+    "PYG_BANKING": 2388135.160676074
+  },
+  "CAJA": {
+    "contribuciones": {
+      "DELTA_INTERDAY": 2000000,
+      "TRADING": 50000.0,
+      "DELTA_INTRADAY": 225000.0
+    },
+    "fondeo": {
+      "COP": -156168.53364538483,
+      "USD": 57787.5,
+      "TOTAL": -98381.03364538483
+    },
+    "PYG_BANKING": 2176618.966354615
+  },
+  "MODELO_FUTURO_IRS_NO_IMPLEMENTADO": {
+    "VP_ANTERIOR": 364999.99999999977,
+    "VP_ACTUAL": 244250.00000000023,
+    "PYG": -120749.99999999953,
+    "VP_SOLO_PROYECCION": 244000.0,
+    "RHO_PROYECCION_PRIMERO": -120999.99999999977,
+    "RHO_DESCUENTO_DESPUES": 250.00000000023283,
+    "VP_SOLO_DESCUENTO": 365375.0,
+    "RHO_DESCUENTO_PRIMERO": 375.00000000023283,
+    "RHO_PROYECCION_DESPUES": -121124.99999999977
+  },
+  "SWAPS": {
+    "componentes": {
+      "THETA": 300000.0,
+      "DELTA_PYG": 800000.0,
+      "DELTA_OTRAS": 20000.0,
+      "RHO_COP": 400000.0,
+      "RHO_USD": 100000.0,
+      "RHO_DTF": 150000.0,
+      "RHO_IPC": 0.0,
+      "RHO_OTRAS": 30000.0,
+      "TRADING": 100000.0,
+      "EPSILON": 100000.0,
+      "PYG_BANKING": 2000000.0,
+      "CVA_DVA": -180000.0,
+      "PYG_IFRS": 1820000.0
+    },
+    "evidencia": {
+      "detalle_operaciones": [
+        {
+          "trade_id": "S1",
+          "VP_ANTERIOR": 100000000.0,
+          "VP_ACTUAL": 99000000.0,
+          "PAGO_COP": 3000000.0,
+          "PYG_BANKING": 2000000.0,
+          "PYG_IFRS": 1800000.0,
+          "CVA_DVA": -200000.0
+        }
+      ],
+      "RECUPONING": 20000.0,
+      "CVA_MERCADO": -200000.0
+    }
+  }
+}

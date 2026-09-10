@@ -1,0 +1,1988 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PyG Risko · Guía técnica y ejemplos</title><style>
+:root{color-scheme:light;--ink:#172d42;--muted:#51677a;--accent:#006b75;--line:#d5e0e7}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#edf2f5;color:var(--ink);font:16px/1.62 "Segoe UI",Arial,sans-serif}
+.topbar{padding:18px 4vw;background:#123046;color:white;display:flex;justify-content:space-between;gap:16px;align-items:center}
+.topbar small{color:#b9dae1}.topbar a{color:white}.topbar button{background:#e5f2f3;border:0;padding:10px 16px;border-radius:5px;color:#123046;cursor:pointer;font:inherit}
+main{max-width:1100px;padding:48px 60px 70px;margin:32px auto;background:white;box-shadow:0 5px 30px #193d5310}
+h1{font-size:2.25em;line-height:1.14;letter-spacing:-.025em;margin:0 0 26px;color:#123046;border-bottom:5px solid var(--accent);padding-bottom:24px}
+h2{font-size:1.65em;line-height:1.25;margin:48px 0 20px;color:#005f6c;border-top:1px solid var(--line);padding-top:28px}
+h3{font-size:1.28em;line-height:1.35;margin:32px 0 16px}h4{font-size:1.07em;margin:24px 0 10px;color:#006b75}
+p,ul,ol{margin:13px 0}a{color:#006878;text-decoration-thickness:1px;text-underline-offset:2px;overflow-wrap:anywhere}
+strong{font-weight:650}table{width:100%;border-collapse:collapse;margin:20px 0;font-size:.9em;line-height:1.48}
+thead{background:#123d50;color:white}th,td{padding:10px 12px;text-align:left;vertical-align:top;border:1px solid var(--line)}
+tr:nth-child(even) td{background:#f3f7f9}table code{font-size:.9em;overflow-wrap:anywhere}td{overflow-wrap:anywhere}
+code{font-family:Consolas,"Courier New",monospace;font-size:.88em;background:#edf4f6;padding:2px 4px;border-radius:3px}
+pre{background:#f0f6f8;border-left:4px solid #308f99;padding:16px 18px;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.5;font-size:.92em}
+pre code{padding:0;background:transparent}li{margin:7px 0}blockquote{border-left:4px solid #c99638;margin:20px 0;padding:10px 18px;background:#fff9e9}
+footer{color:var(--muted);text-align:center;font-size:13px;padding:20px}.badge{font-size:12px;letter-spacing:.08em;border:1px solid #6c99ab;padding:5px 8px;border-radius:4px}
+@media(max-width:760px){main{padding:28px 20px;margin:0}h1{font-size:1.8em}table{font-size:.78em}th,td{padding:7px}pre{font-size:.75em}.badge{display:none}}
+@page{size:A4;margin:15mm 14mm 18mm;@bottom-left{content:"RISKO · PyG 2.1 · Guía técnica";font:8pt "Segoe UI",sans-serif;color:#51677a}@bottom-right{content:counter(page) " / " counter(pages);font:8pt "Segoe UI",sans-serif;color:#51677a}}
+@media print{body{background:white;font-size:9.2pt;line-height:1.42;-webkit-print-color-adjust:exact;print-color-adjust:exact}.topbar,footer{display:none}main{max-width:none;padding:0;margin:0;box-shadow:none}h1{font-size:25pt;margin:0 0 18px;padding-bottom:17px}h2{font-size:18pt;break-before:page;margin:0 0 18px;padding-top:0;border:0}h3{font-size:12.5pt;margin:20px 0 12px}h4{font-size:10.7pt;margin:16px 0 8px}h1,h2,h3,h4{break-after:avoid}p,li{orphans:3;widows:3}table{font-size:8.25pt;margin:12px 0;line-height:1.32}th,td{padding:6px 7px}thead{display:table-header-group}tr{break-inside:avoid}pre{font-size:8.2pt;padding:10px 12px;break-inside:avoid}code{font-size:.88em}a{text-decoration:none}li{margin:5px 0}p{margin:9px 0}}
+</style></head><body><div class="topbar"><div><b>RISKO / PyG</b><br><small>Fórmulas, productos y ejemplos para estudiar</small></div><span class="badge">MOTOR 2.1 · PRELIMINAR</span><button type="button" onclick="window.print()">Imprimir / guardar PDF</button></div><main><h1 id="pyg-risko-guía-técnica-y-cuaderno-de-estudio">PyG Risko: guía técnica y cuaderno de estudio</h1>
+<p><strong>Edición:</strong> 10 de septiembre de 2026. <strong>Motor documentado:</strong> <code>pyg-2.1</code>.
+<strong>Código de referencia:</strong> <a href="https://github.com/FabianSierra842/Risko/commit/af4f625c380494628b9f6163e849c46a75669fce">commit af4f625</a>.</p>
+<p>Esta guía explica cómo se construye el PyG que existe hoy en Risko, qué significa cada componente, cómo se calcula cada producto y cómo comprobar sus resultados. Los ejemplos de cálculo son <strong>sintéticos y educativos</strong>. Las diferencias del libro real se presentan por separado, con su corte y alcance.</p>
+<p>El flujo está implementado y sigue en estado <strong>PRELIMINAR</strong>. Una prueba sintética correcta o una conciliación <code>OK</code> del programa no constituye una aprobación metodológica o contable. En particular, el producto Swap todavía depende de VP, pagos y factores externos; no cuenta con un valorador nativo completo por flujos.</p>
+<p>La documentación se entrega como archivo independiente del ZIP anterior. No cambia los motores ni el portal. Las versiones Markdown, HTML y PDF contienen la misma guía; los scripts adjuntos permiten repetir los ejemplos con el código documentado.</p>
+<h2 id="índice">Índice</h2>
+<ul>
+<li><a href="#1-cómo-estudiar-esta-guía">1. Cómo estudiar esta guía</a></li>
+<li><a href="#2-qué-está-implementado">2. Qué está implementado</a></li>
+<li><a href="#3-identidad-del-resultado-y-explicación-por-factores">3. Identidad del resultado y explicación por factores</a></li>
+<li><a href="#4-insumos-y-convenciones-que-hay-que-comprobar">4. Insumos y convenciones que hay que comprobar</a></li>
+<li><a href="#5-book-opciones-productos-y-ejemplos">5. Book OPCIONES: productos y ejemplos</a></li>
+<li><a href="#6-book-swaps-productos-y-ejemplos">6. Book SWAPS: productos y ejemplos</a></li>
+<li><a href="#7-consolidación-de-productos-a-book-y-de-días-a-mtd">7. Consolidación: de productos a book y de días a MTD</a></li>
+<li><a href="#8-conciliación-diagnóstico-y-publicación">8. Conciliación, diagnóstico y publicación</a></li>
+<li><a href="#9-estado-real-de-la-implementación-y-trabajo-pendiente">9. Estado real de la implementación y trabajo pendiente</a></li>
+<li><a href="#10-mapa-técnico-para-leer-el-proyecto">10. Mapa técnico para leer el proyecto</a></li>
+<li><a href="#11-ejercicios-para-comprobar-la-comprensión">11. Ejercicios para comprobar la comprensión</a></li>
+<li><a href="#12-fuentes-y-alcance-de-las-referencias">12. Fuentes y alcance de las referencias</a></li>
+</ul>
+<h2 id="1-cómo-estudiar-esta-guía">1. Cómo estudiar esta guía</h2>
+<p>La lectura recomendada sigue este orden:</p>
+<ol>
+<li>Entender la diferencia entre posición, valoración y PyG, y entre Banking e IFRS.</li>
+<li>Seguir el recorrido de un cierre desde los insumos hasta el HTML publicado.</li>
+<li>Resolver primero Caja y Forward: permiten ver signos, monedas y efectos sin la complejidad de la volatilidad.</li>
+<li>Estudiar Opciones, Novados y Swaps, conservando las convenciones propias de cada book.</li>
+<li>Revisar consolidación, controles y limitaciones; después ejecutar los ejemplos y contestar los ejercicios finales.</li>
+</ol>
+<h3 id="11-tres-preguntas-distintas">1.1 Tres preguntas distintas</h3>
+<table>
+<thead>
+<tr>
+<th>Pregunta</th>
+<th>Magnitud</th>
+<th>Ejemplo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>¿Cuánto vale el contrato hoy?</td>
+<td>Valor presente, VP o MTM, en COP</td>
+<td>Un derivado vale 1.200.000 COP.</td>
+</tr>
+<tr>
+<td>¿A qué riesgo está expuesto?</td>
+<td>Posición o sensibilidad, con unidad propia</td>
+<td>Delta de 50.000 USD.</td>
+</tr>
+<tr>
+<td>¿Cuánto ganó o perdió durante el intervalo?</td>
+<td>PyG, en COP</td>
+<td>El valor cambió 200.000 COP y se recibieron 30.000 COP: PyG 230.000 COP.</td>
+</tr>
+</tbody>
+</table>
+<p>La posición que Risko ya consolida no basta para reconstruir todo el PyG. También hacen falta el mercado de ambos cortes, las operaciones de ambos cortes y los eventos: primas, vencimientos, pagos, altas, bajas y ajustes. El resultado de PyG tiene que explicar una <strong>variación monetaria</strong>, no simplemente mostrar las sensibilidades actuales.</p>
+<h3 id="12-vocabulario-y-signos">1.2 Vocabulario y signos</h3>
+<table>
+<thead>
+<tr>
+<th>Símbolo o término</th>
+<th>Significado en esta guía</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>t0</code>, <code>t1</code></td>
+<td>Fecha anterior y fecha actual del intervalo.</td>
+</tr>
+<tr>
+<td><code>S</code>, TRM, spot</td>
+<td>Precio de un USD expresado en COP/USD. Algunas fuentes distinguen TRM y spot de compra/venta.</td>
+</tr>
+<tr>
+<td><code>N</code></td>
+<td>Nominal positivo en USD de opciones y derivados FX. El nominal de un swap depende de sus patas.</td>
+</tr>
+<tr>
+<td><code>K</code></td>
+<td>Strike o tasa pactada en COP/USD para derivados FX.</td>
+</tr>
+<tr>
+<td><code>q</code></td>
+<td>Signo: +1 para compra/BUY, −1 para venta/SELL. CALL/PUT es otra característica, no el signo de la posición.</td>
+</tr>
+<tr>
+<td><code>r_c</code>, <code>r_u</code></td>
+<td>Tasas COP y USD. OPCIONES recibe tasas continuas; SWAPS recibe tasas efectivas.</td>
+</tr>
+<tr>
+<td><code>τ</code></td>
+<td>Tiempo en años. En los ejemplos FX se usa días reales/365.</td>
+</tr>
+<tr>
+<td><code>σ</code></td>
+<td>Volatilidad anual en decimal: 12% se ingresa como <code>0.12</code>.</td>
+</tr>
+<tr>
+<td><code>Φ(x)</code></td>
+<td>Probabilidad acumulada de la distribución normal estándar, utilizada en opciones.</td>
+</tr>
+<tr>
+<td>CXC</td>
+<td>Cuenta pendiente de cumplimiento, firmada: un valor negativo representa una obligación.</td>
+</tr>
+<tr>
+<td>Banking</td>
+<td>Vista del resultado económico de mercado definida por el motor y sus eventos.</td>
+</tr>
+<tr>
+<td>IFRS</td>
+<td>Vista ajustada según los niveles y ajustes IFRS recibidos de la fuente; no es una certificación de cumplimiento contable.</td>
+</tr>
+<tr>
+<td>CVA/DVA</td>
+<td>Nombre de la columna de ajuste que conecta ambas vistas. El programa recibe o deriva ajustes; no implementa un modelo completo de exposición, probabilidad de incumplimiento y recuperación.</td>
+</tr>
+<tr>
+<td>MTD</td>
+<td>Acumulado desde el cierre del mes anterior hasta el corte solicitado.</td>
+</tr>
+<tr>
+<td>Snapshot</td>
+<td>Copia de cartera, mercado y controles identificada por fecha.</td>
+</tr>
+<tr>
+<td>Revaloración</td>
+<td>Volver a calcular el valor cambiando uno o varios insumos.</td>
+</tr>
+</tbody>
+</table>
+<p>Un ingreso o ganancia se registra positivo; un egreso o pérdida, negativo. Una prima ya firmada no debe multiplicarse otra vez por el signo BUY/SELL. Los importes de atribución del dashboard se expresan siempre en COP.</p>
+<p>En el texto se usa la notación española <code>1.234,56</code>; los scripts Python y JSON usan <code>1234.56</code>. Los cálculos se hacen sin redondear cada paso y las tablas muestran normalmente dos decimales. Puede haber diferencias de un centavo al sumar cifras ya redondeadas.</p>
+<h2 id="2-qué-está-implementado">2. Qué está implementado</h2>
+<p>Un <strong>book</strong> identifica un universo de negocio. Un <strong>producto</strong> identifica el instrumento o actividad dentro del book. El book SWAPS contiene cuatro productos, uno de los cuales también se llama SWAPS.</p>
+<table>
+<thead>
+<tr>
+<th>Book</th>
+<th>Producto</th>
+<th>Cómo se obtiene Banking</th>
+<th>Cómo se explica</th>
+<th>Estado de la fuente</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>OPCIONES</td>
+<td>OPCIONES</td>
+<td>Valorador de opciones europeas vanilla, CXC, liquidaciones y primas</td>
+<td>Tiempo, spot, tasas conjuntas, volatilidad, nuevos/otros</td>
+<td>Snapshots XLSX diarios; pendiente de conciliación productiva del motor corregido.</td>
+</tr>
+<tr>
+<td>OPCIONES</td>
+<td>FORWARD</td>
+<td>Valor FX descontado con curvas continuas, cuentas y liquidaciones</td>
+<td>Tiempo, spot, tasas conjuntas, nuevos/otros</td>
+<td>Mismo snapshot; convenciones de <code>tff</code> propias de esta fuente.</td>
+</tr>
+<tr>
+<td>OPCIONES</td>
+<td>CAJA</td>
+<td>Saldo USD, movimientos y tasas de negociación</td>
+<td>Delta interday, trading, delta intraday y complementos explícitos</td>
+<td>Fondeo y ajustes se reciben como importes; no se estiman si faltan.</td>
+</tr>
+<tr>
+<td>SWAPS</td>
+<td>FORWARD</td>
+<td>Valor FX nativo con curvas efectivas, curva implícita y spread</td>
+<td>Tiempo, spot, COP, USD, base/spread, nuevos/otros</td>
+<td>JSON normalizado; hoy se importa del libro mensual.</td>
+</tr>
+<tr>
+<td>SWAPS</td>
+<td>NOVADOS</td>
+<td>Valor de cámara sin descuento, conforme al modelo implementado</td>
+<td>Tiempo, spot, COP, USD, nuevos/otros; base/spread queda en cero en este modelo</td>
+<td>Falta contraste con cartera activa y liquidaciones reales de cámara.</td>
+</tr>
+<tr>
+<td>SWAPS</td>
+<td>SWAPS</td>
+<td>Cambio de VP externo por operación más pago</td>
+<td>Factores diarios externos y residual calculado</td>
+<td>No hay valoración ni sensibilidades nativas completas por flujos Swap.</td>
+</tr>
+<tr>
+<td>SWAPS</td>
+<td>CAJA</td>
+<td>Saldo, movimientos, TRM y fondeo FTP calculado</td>
+<td>Delta interday, trading, delta intraday y costo de fondos</td>
+<td>Contrato diario con verificación de saldo final.</td>
+</tr>
+<tr>
+<td>FX_ESTRAT</td>
+<td>Sus productos configurados</td>
+<td>No habilitado</td>
+<td>No disponible para cierre</td>
+<td>Falta mapeo y conciliación de sus fuentes propias.</td>
+</tr>
+</tbody>
+</table>
+<p><code>TODOS</code> significa los books habilitados, actualmente OPCIONES y SWAPS: <strong>siete combinaciones book/producto</strong>. No significa que FX_ESTRAT esté calculado. Tampoco incorpora Títulos o Arbitraje al alcance de estos motores.</p>
+<h3 id="21-flujo-de-trabajo">2.1 Flujo de trabajo</h3>
+<pre><code class="language-text">OPCIONES: snapshots diarios XLSX ← Vector o archivos locales
+SWAPS: libro mensual XLSM → importador → snapshots diarios JSON
+                                  │
+                                  ▼
+                selección: corte + book + DIARIO/MTD
+                                  │
+                                  ▼
+           copias estables de insumos y huellas SHA-256
+                                  │
+                                  ▼
+              cálculo de cada producto y cada intervalo
+                                  │
+                                  ▼
+          validaciones aritméticas, de fechas y de alcance
+                                  │
+                                  ▼
+                 persistencia transaccional en SQLite
+                                  │
+                                  ▼
+          consolidación → JSON de resultado → HTML local
+                                  │
+                     conciliación requerida = OK
+                                  │
+                                  ▼
+            carpeta Dashboards/PyG de la biblioteca
+                                  │
+                                  ▼
+                   Portal Risko existente
+</code></pre>
+<p>El portal consulta la carpeta publicada; no calcula PyG ni necesita conocer las fórmulas. La interfaz PyG organiza la carga, el cálculo, la consolidación, la revisión y la publicación. El dashboard presenta las filas ya calculadas y permite filtrarlas.</p>
+<h3 id="22-función-de-las-herramientas">2.2 Función de las herramientas</h3>
+<table>
+<thead>
+<tr>
+<th>Herramienta o módulo</th>
+<th>Responsabilidad</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>interfaz_pyg.py</code></td>
+<td>Seleccionar fecha/book/período; importar libro; ejecutar cierre o producto; ver resultados, exportar y publicar. Arranca sin cifras inventadas.</td>
+</tr>
+<tr>
+<td><code>servicios/pyg.py</code></td>
+<td>Coordinar etapas y conservar copias estables; genera y publica desde el corte solicitado.</td>
+</tr>
+<tr>
+<td>Vector</td>
+<td>Copiar snapshots OPCIONES de la fuente configurada. Es una herramienta externa y no es el motor de cálculo.</td>
+</tr>
+<tr>
+<td><code>fx_snapshot.py</code></td>
+<td>Leer el XLSM SWAPS sin ejecutar macros y producir JSON diarios, incluyendo el ancla disponible.</td>
+</tr>
+<tr>
+<td>Motores por producto</td>
+<td>Valorar o integrar fuentes y producir componentes, escenarios y controles.</td>
+</tr>
+<tr>
+<td><code>consolidacion.py</code></td>
+<td>Normalizar contribuciones, controlar identidades, persistir y sumar diarios/MTD sin duplicar totales.</td>
+</tr>
+<tr>
+<td><code>panel_pyg.py</code></td>
+<td>Construir un HTML autocontenido: filtros, contribuciones, matriz, gráficos y CSV.</td>
+</tr>
+<tr>
+<td><code>Opciones_FF_V3.py</code></td>
+<td>Referencia metodológica estudiada. No se importa ni se ejecuta para producir el nuevo PyG.</td>
+</tr>
+<tr>
+<td>Position Monitor</td>
+<td>Flujo de posición existente. Sus cálculos y el portal se conservaron sin cambios.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="3-identidad-del-resultado-y-explicación-por-factores">3. Identidad del resultado y explicación por factores</h2>
+<h3 id="31-el-pyg-no-es-solamente-la-diferencia-de-vp">3.1 El PyG no es solamente la diferencia de VP</h3>
+<p>Para una cartera con los eventos correctamente reconocidos:</p>
+<pre><code class="language-text">PyG Banking del intervalo = VP final − VP inicial + flujos netos del intervalo
+</code></pre>
+<p>Por ejemplo, si antes de pagar un cupón el derivado vale 1.000.000 COP, después vale 800.000 COP y se recibieron 300.000 COP:</p>
+<pre><code class="language-text">PyG = 800.000 − 1.000.000 + 300.000 = 100.000 COP
+</code></pre>
+<p>Ignorar el pago mostraría una pérdida de 200.000 COP. Sumar el pago dos veces mostraría una ganancia falsa de 400.000 COP. Para contratos nuevos también hay que considerar el desembolso o prima inicial; para bajas, el evento de cierre.</p>
+<p>En Opciones y Forward, el motor construye un nivel compuesto:</p>
+<pre><code class="language-text">W(t) = mercado vivo(t) + CXC pendiente(t)
+     + liquidaciones reconocidas desde el inicio del mes(t)
+     + primas firmadas reconocidas desde el inicio del mes(t) [solo Opciones]
+
+PyG del intervalo = W(t1) − W(t0)
+</code></pre>
+<p>Ambos niveles se calculan con el <strong>mismo inicio de período</strong>. Así, una liquidación del mes presente en los dos cortes se cancela al restarlos. En el primer día del mes, la base usa el mercado/CXC del cierre anterior y no arrastra las primas o liquidaciones ya reconocidas en el mes previo. Esto exige conservar las operaciones y eventos necesarios en los snapshots: una fila desaparecida no equivale automáticamente a una liquidación correctamente explicada.</p>
+<h3 id="32-banking-ajuste-e-ifrs">3.2 Banking, ajuste e IFRS</h3>
+<p>Si <code>B(t)</code> es el nivel de mercado Banking e <code>I(t)</code> su nivel IFRS comparable:</p>
+<pre><code class="language-text">A(t) = I(t) − B(t)
+Ajuste PyG CVA/DVA = A(t1) − A(t0)
+PyG IFRS = PyG Banking + Ajuste PyG CVA/DVA
+</code></pre>
+<p>Ejemplo: <code>B0 = 1.000.000</code>, <code>I0 = 970.000</code>, <code>B1 = 1.200.000</code>, <code>I1 = 1.155.000</code>, sin pagos.</p>
+<pre><code class="language-text">Banking = 1.200.000 − 1.000.000 = 200.000
+A0 = 970.000 − 1.000.000 = −30.000
+A1 = 1.155.000 − 1.200.000 = −45.000
+CVA/DVA = −45.000 − (−30.000) = −15.000
+IFRS = 200.000 − 15.000 = 185.000 COP
+</code></pre>
+<p><code>I1 − I0 = 185.000</code> ya es el resultado IFRS de este ejemplo. Sumárselo otra vez a Banking duplicaría el mercado. El programa no calcula probabilidades de incumplimiento ni una separación detallada entre CVA y DVA. En Swap, el campo común CVA/DVA incluye además la variación de recuponing; esta particularidad se explica en su capítulo.</p>
+<h3 id="33-qué-significa-por-griegas-en-risko">3.3 Qué significa “por griegas” en Risko</h3>
+<p>Las sensibilidades diferenciales describen cómo cambia el valor ante un movimiento pequeño. Una expansión aproximada suele expresarse así:</p>
+<pre><code class="language-text">ΔV ≈ Theta × Δtiempo + Delta × ΔS + ½ × Gamma × (ΔS)²
+     + Rho × Δtasa + Vega × Δvolatilidad + otros efectos
+</code></pre>
+<p>En los valoradores nativos de este PyG, los importes se obtienen principalmente con <strong>revaloraciones completas y secuenciales</strong>, no multiplicando las sensibilidades guardadas en posición. Para Opciones:</p>
+<table>
+<thead>
+<tr>
+<th>Nivel</th>
+<th>Cartera</th>
+<th>Fecha</th>
+<th>Spot</th>
+<th>Tasas</th>
+<th>Volatilidad</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>W0</code> BASE</td>
+<td>Anterior</td>
+<td>Anterior</td>
+<td>Anterior</td>
+<td>Anteriores</td>
+<td>Anterior</td>
+</tr>
+<tr>
+<td><code>Wt</code> THETA</td>
+<td>Anterior</td>
+<td>Actual</td>
+<td>Anterior</td>
+<td>Anteriores</td>
+<td>Anterior</td>
+</tr>
+<tr>
+<td><code>Ws</code> DELTA</td>
+<td>Anterior</td>
+<td>Actual</td>
+<td>Actual</td>
+<td>Anteriores</td>
+<td>Anterior</td>
+</tr>
+<tr>
+<td><code>Wr</code> RHO</td>
+<td>Anterior</td>
+<td>Actual</td>
+<td>Actual</td>
+<td>Actuales</td>
+<td>Anterior</td>
+</tr>
+<tr>
+<td><code>Wv</code> VEGA</td>
+<td>Anterior</td>
+<td>Actual</td>
+<td>Actual</td>
+<td>Actuales</td>
+<td>Actual</td>
+</tr>
+<tr>
+<td><code>W1</code> ACTUAL</td>
+<td>Actual</td>
+<td>Actual</td>
+<td>Actual</td>
+<td>Actuales</td>
+<td>Actual</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-text">THETA        = Wt − W0
+DELTA_PYG    = Ws − Wt
+RHO          = Wr − Ws
+VEGA         = Wv − Wr
+NUEVOS_OTROS = W1 − Wv
+Suma         = W1 − W0 = PyG Banking
+</code></pre>
+<p><strong>Nivel y contribución son distintos.</strong> <code>escenarios.THETA</code> guarda un nivel revalorado; <code>componentes.THETA</code> guarda la diferencia respecto a BASE. No se deben sumar los niveles de escenarios como si fueran contribuciones.</p>
+<p>El orden distribuye efectos cruzados. En el orden tiempo → spot → tasas → volatilidad, la contribución de volatilidad se mide después de actualizar el spot y las tasas. Cambiar el orden puede cambiar cada componente, aunque el total final sea igual. El smile por delta también puede cambiar la volatilidad efectiva al mover el spot o las tasas, aun conservando la superficie de entrada anterior.</p>
+<p><code>DELTA_PYG</code> incluye la respuesta no lineal de la revaloración al spot. Por eso no se suma otra Gamma al resultado completo. Ejemplo puramente didáctico: para una función de valor cuadrática con Delta 50.000 USD, Gamma 1.000 USD²/COP y movimiento de 10 COP/USD:</p>
+<pre><code class="language-text">Efecto lineal = 50.000 × 10 = 500.000 COP
+Efecto cuadrático = ½ × 1.000 × 10² = 50.000 COP
+Revaloración completa por spot = 550.000 COP
+</code></pre>
+<p>Si el motor ya asignó 550.000 a DELTA_PYG, añadir 50.000 como Gamma produciría 600.000 y rompería la identidad. Gamma tampoco aparece como una contribución independiente calculada por el motor actual.</p>
+<h3 id="34-lectura-de-los-componentes">3.4 Lectura de los componentes</h3>
+<table>
+<thead>
+<tr>
+<th>Componente</th>
+<th>Lectura correcta</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>THETA</td>
+<td>Cambio al avanzar la fecha con los demás insumos de escenario fijados; alrededor de vencimientos también intervienen los fixings/eventos reconocidos por el motor.</td>
+</tr>
+<tr>
+<td>DELTA_PYG</td>
+<td>Efecto monetario completo del escenario de spot de derivados; en Swap es un factor importado.</td>
+</tr>
+<tr>
+<td>DELTA_INTERDAY</td>
+<td>Saldo USD anterior de Caja multiplicado por cambio de TRM.</td>
+</tr>
+<tr>
+<td>DELTA_INTRADAY</td>
+<td>Efecto de revalorar el neto negociado en Caja hasta la TRM de cierre.</td>
+</tr>
+<tr>
+<td>RHO</td>
+<td>Cambio conjunto de curvas COP/USD en el book OPCIONES.</td>
+</tr>
+<tr>
+<td>RHO_COP, RHO_USD</td>
+<td>Cambios separados en SWAPS FX; en producto Swap proceden del reporte.</td>
+</tr>
+<tr>
+<td>RHO_DTF, RHO_IPC, RHO_OTRAS</td>
+<td>Factores del reporte Swap; no son sensibilidades nativas de todos los productos.</td>
+</tr>
+<tr>
+<td>BASE_SPREAD</td>
+<td>Efecto de actualizar base implícita y spread del Forward SWAPS, después de COP/USD.</td>
+</tr>
+<tr>
+<td>VEGA</td>
+<td>Efecto de sustituir la superficie de volatilidad en Opciones.</td>
+</tr>
+<tr>
+<td>TRADING</td>
+<td>Margen de compras/ventas casadas en Caja; en Swap es un factor externo.</td>
+</tr>
+<tr>
+<td>NUEVOS_OTROS</td>
+<td>Cambio entre cartera actual y anterior revalorada. Puede mezclar altas, bajas, primas y ajustes; no es trading puro.</td>
+</tr>
+<tr>
+<td>COSTO_FONDOS, AJUSTES</td>
+<td>Importes firmados. Fondeo se calcula en Caja SWAPS y se recibe explícito en Caja OPCIONES.</td>
+</tr>
+<tr>
+<td>EPSILON</td>
+<td>Parte del Banking Swap que no explica la suma de factores externos. No prueba que esos factores sean correctos.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="35-por-qué-cada-riesgo-produce-una-ganancia-o-una-pérdida">3.5 Por qué cada riesgo produce una ganancia o una pérdida</h3>
+<p><strong>Descontar significa expresar hoy un dinero que se recibe o paga después.</strong> Si se reciben 1.000 COP dentro de un año y la tasa efectiva anual es 10%, su valor presente es <code>1.000/1,10 = 909,09 COP</code>. Si la tasa sube a 11%, baja a <code>1.000/1,11 = 900,90</code>. El ingreso futuro no cambió; cambió su valor de hoy. Para una obligación, la misma disminución del valor presente del pago mejora el valor neto del contrato. Esta diferencia entre una pata que se recibe y otra que se paga explica muchos signos de Rho.</p>
+<p><strong>Delta:</strong> una compra de USD se beneficia de una subida del USD/COP, manteniendo lo demás fijo. Una venta tiene el efecto contrario. En una opción, también importa CALL/PUT:</p>
+<table>
+<thead>
+<tr>
+<th>Posición vanilla</th>
+<th>Derecho u obligación económica</th>
+<th>Efecto esperado de subir spot, con los demás parámetros de la fórmula fijos</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BUY CALL</td>
+<td>Derecho a comprar USD a K</td>
+<td>El valor sube.</td>
+</tr>
+<tr>
+<td>SELL CALL</td>
+<td>Obligación frente al comprador de la CALL</td>
+<td>El valor firmado baja.</td>
+</tr>
+<tr>
+<td>BUY PUT</td>
+<td>Derecho a vender USD a K</td>
+<td>El valor baja.</td>
+</tr>
+<tr>
+<td>SELL PUT</td>
+<td>Obligación frente al comprador de la PUT</td>
+<td>El valor firmado sube.</td>
+</tr>
+</tbody>
+</table>
+<p>Estos signos orientan la revisión de una operación aislada. Un book puede combinar muchas posiciones opuestas y, con smile por delta, el escenario también incorpora la interacción ya descrita. Por ello no se deduce el signo de todo el book leyendo una sola etiqueta de producto.</p>
+<p><strong>Theta:</strong> al pasar un día disminuye el tiempo disponible para que una opción termine favorablemente, pero también cambian los descuentos y pueden ocurrir fixings o pagos. En una opción comprada suele observarse desgaste del valor temporal; no hay una regla universal que obligue a que todo THETA sea negativo. En un Forward, el paso del tiempo modifica el descuento de sus dos patas aun cuando el spot no cambie. En el ejemplo Forward OPCIONES, el nivel baja de 1.351.997,55 a 1.308.599,78 COP al pasar de 31 a 30 días: esa resta, −43.397,77, es el Theta del escenario.</p>
+<p><strong>Rho COP y USD:</strong> para una compra Forward sin base ni spread, el contrato recibe económicamente USD y paga COP. Al subir la tasa COP se reduce el valor presente de la obligación COP, lo que mejora su valor; al subir la tasa USD se reduce el valor presente de los USD recibidos, lo que lo empeora. En el ejemplo SWAPS, RHO_COP es +872.209,39 y RHO_USD es −465.383,21. En OPCIONES se cambian ambas curvas en un único paso: RHO puede ser negativo aunque una de las dos subidas por separado favorezca a la posición.</p>
+<p><strong>Vega:</strong> una opción vanilla comprada puede beneficiarse de mayor dispersión futura porque conserva el derecho de ejercer favorablemente y dejar vencer sin ejercicio cuando el payoff sea cero. Aumentar la volatilidad eleva su valor bajo la fórmula vanilla, manteniendo los demás parámetros fijos; vender esa misma opción invierte el signo. Pasar de 20% a 21% de volatilidad equivale a <strong>un punto porcentual</strong>, es decir, <code>0.01</code> en decimal; no equivale a un movimiento de <code>1.00</code>. En la CALL del ejemplo, sustituir únicamente la superficie 20% por 21% lleva el valor de 23.040,67 a 23.666,78 COP: Vega PyG +626,11.</p>
+<p><strong>Base y spread:</strong> la relación entre curvas COP/USD no necesariamente reproduce toda la curva implícita observada. La base guarda esa diferencia de la fuente y el spread ajusta la valoración según la dirección. En el Forward SWAPS se preserva la base anterior al medir cada Rho, y solo después se incorpora la base/spread actual. No se trata de un segundo movimiento de spot ni de un costo que deba volver a sumarse en Caja.</p>
+<p><strong>Crédito y ajustes IFRS:</strong> el nivel de mercado puede mejorar mientras empeora el ajuste de crédito, de modo que la ganancia IFRS sea menor que Banking. El nombre CVA se asocia conceptualmente al riesgo de incumplimiento de la contraparte, y DVA al efecto del riesgo propio sobre obligaciones; una lectura de apoyo es <a href="https://arxiv.org/abs/1111.1331">Counterparty Risk FAQ, de Damiano Brigo</a>. <strong>Risko no estima aquí esos riesgos por separado</strong>. En esta versión el monto se obtiene del puente de niveles descrito, o de ajustes recibidos. Para saber qué contiene realmente hay que revisar la semántica de la fuente, especialmente recuponing en Swap.</p>
+<h3 id="36-cómo-distinguir-flujo-de-liquidación-y-pyg-con-una-misma-operación">3.6 Cómo distinguir flujo de liquidación y PyG con una misma operación</h3>
+<p>Supóngase que al inicio de un intervalo el derivado o su cuenta vale 9.000 COP. Al corte siguiente, la cuenta pendiente vale 10.064,52. Todavía no se ha pagado nada:</p>
+<pre><code class="language-text">PyG del primer intervalo = 10.064,52 − 9.000 = 1.064,52 COP
+</code></pre>
+<p>Después se liquida por 10.064,52 sin cambiar su valor entre el corte anterior y el pago:</p>
+<pre><code class="language-text">VP/CXC final = 0
+VP/CXC inicial = 10.064,52
+Flujo recibido = +10.064,52
+PyG del intervalo de pago = 0 − 10.064,52 + 10.064,52 = 0 COP
+</code></pre>
+<p>En la representación mensual <code>W</code>, antes del pago hay CXC 10.064,52 y flujo cero; después hay CXC cero y flujo acumulado 10.064,52. <code>W</code> no cambia por el mero traslado. El efectivo recibido es <strong>10.064,52</strong>, mientras que el PyG de los dos intervalos es <strong>1.064,52</strong>, porque ya había un valor de 9.000 al inicio.</p>
+<p>Si el cobro fue en USD, los USD pasan al inventario de Caja. Para atribuir un movimiento posterior de TRM se utiliza ese inventario y su momento de entrada; no se reabre el flujo ya liquidado del derivado a la TRM nueva. El modelo de integración de movimientos debe garantizar esta separación.</p>
+<h2 id="4-insumos-y-convenciones-que-hay-que-comprobar">4. Insumos y convenciones que hay que comprobar</h2>
+<h3 id="41-book-opciones">4.1 Book OPCIONES</h3>
+<p>Archivo por fecha: <code>Dataset Libro de Opciones AAAAMMDD.xlsx</code>. Un cierre diario necesita dos archivos; MTD requiere el ancla y la cadena de días del calendario configurado.</p>
+<table>
+<thead>
+<tr>
+<th>Hoja</th>
+<th>Contenido usado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Resumen</code></td>
+<td>TRM, saldo <code>Cajausd</code>, niveles IFRS <code>Opccva</code> y <code>Forcva</code>.</td>
+</tr>
+<tr>
+<td><code>Opciones</code></td>
+<td>Identificación, BUY/SELL, CALL/PUT, nominal, strike, fechas, modalidad y moneda de cumplimiento, prima firmada y su moneda/tasa.</td>
+</tr>
+<tr>
+<td><code>Forwards</code></td>
+<td>Nominal, tasa forward pactada, compra/venta, emisión, vencimiento, cumplimiento, DF/NDF y moneda.</td>
+</tr>
+<tr>
+<td><code>Caja</code></td>
+<td>Fila diaria con compras/ventas USD y tasas; fondeo y ajustes si existen.</td>
+</tr>
+<tr>
+<td><code>Tasas_COP</code>, <code>Tasas_USD</code></td>
+<td>Curvas continuas en decimal con rangos de plazo.</td>
+</tr>
+<tr>
+<td><code>Superficie_Volatilidad</code></td>
+<td>Smile por plazo: 10D PUT, 25D PUT, ATM, 25D CALL y 10D CALL, en decimal.</td>
+</tr>
+<tr>
+<td><code>tfd</code></td>
+<td>Fixings exactos de Opciones; conversiones históricas de primas y cumplimientos.</td>
+</tr>
+<tr>
+<td><code>tff</code></td>
+<td>Fixings Forward según la convención de fila del día calendario siguiente de esta fuente.</td>
+</tr>
+<tr>
+<td><code>PYG</code></td>
+<td>Controles opcionales de resultados. No alimentan el Banking calculado.</td>
+</tr>
+</tbody>
+</table>
+<p>El cargador común requiere mercado de Opciones incluso al ejecutar Forward o Caja del mismo book. Por eso un snapshot parcial con solo una hoja de producto puede resultar insuficiente. El <a href="https://github.com/FabianSierra842/Risko/blob/main/proyectos/pyg/documentacion/contrato_insumos_pyg.md">contrato detallado de insumos</a> enumera nombres exactos de columnas y controles.</p>
+<h3 id="42-book-swaps">4.2 Book SWAPS</h3>
+<p>Archivo normalizado por fecha: <code>Dataset SWAPS AAAAMMDD.json</code>, <code>schema_version = 1</code>. El importador lee valores guardados del XLSM, sin ejecutar sus macros ni actualizar vínculos externos. La fecha de portada no garantiza que todas las hojas tengan cálculos actualizados.</p>
+<table>
+<thead>
+<tr>
+<th>Bloque JSON</th>
+<th>Información</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>fecha</code>, <code>book</code>, <code>schema_version</code></td>
+<td>Identificación inequívoca del snapshot.</td>
+</tr>
+<tr>
+<td><code>mercado</code></td>
+<td>TRM, spots de compra/venta, curvas COP/USD/implícita efectivas, spread y fixings.</td>
+</tr>
+<tr>
+<td><code>operaciones.FORWARD</code>, <code>operaciones.NOVADOS</code></td>
+<td>Operaciones, nominal, signo, strike y fechas.</td>
+</tr>
+<tr>
+<td><code>swaps</code></td>
+<td>Trade ID, VP Banking, VP IFRS y pago explícito por operación.</td>
+</tr>
+<tr>
+<td><code>factores_swap</code></td>
+<td>Nueve contribuciones monetarias diarias tomadas del reporte.</td>
+</tr>
+<tr>
+<td><code>caja</code></td>
+<td>Saldo, movimientos USD/COP, TRM y FTP con ajustes.</td>
+</tr>
+<tr>
+<td><code>credito_acumulado_cop</code></td>
+<td>Ajustes acumulados Forward y Novados que se diferencian entre cortes.</td>
+</tr>
+<tr>
+<td><code>recuponing_nivel_cop</code></td>
+<td>Nivel de ajuste cuya variación entra en el resultado IFRS Swap.</td>
+</tr>
+<tr>
+<td><code>controles</code>, <code>calidad</code></td>
+<td>Referencias de conciliación y advertencias de la extracción.</td>
+</tr>
+</tbody>
+</table>
+<p>El filtro de operaciones debe aplicarse a todo el maestro, sin límites fijos por fila. En el producto Swap del book SWAPS se excluyen los desks FX_ESTRAT, ARBITR_DER y FVH según el importador. El maestro mensual reconstruido retrospectivamente no reemplaza un registro histórico completo de eventos.</p>
+<h3 id="43-convenciones-que-no-se-pueden-intercambiar">4.3 Convenciones que no se pueden intercambiar</h3>
+<table>
+<thead>
+<tr>
+<th>Convención</th>
+<th>OPCIONES</th>
+<th>SWAPS FX</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tasas</td>
+<td>Continuas anuales</td>
+<td>Efectivas anuales</td>
+</tr>
+<tr>
+<td>Descuento</td>
+<td><code>exp(−r × τ)</code></td>
+<td><code>(1 + r)^−τ</code></td>
+</tr>
+<tr>
+<td>Plazo Forward vivo</td>
+<td>Hasta vencimiento</td>
+<td>Hasta cumplimiento, mientras siga antes del vencimiento</td>
+</tr>
+<tr>
+<td>Curva implícita/spread</td>
+<td>No se añade un factor separado</td>
+<td>Sí para Forward; no para Novados</td>
+</tr>
+<tr>
+<td>Fixing histórico</td>
+<td><code>tfd</code> exacto; <code>tff</code> con etiqueta del día siguiente</td>
+<td>Mapa JSON con la fecha exacta</td>
+</tr>
+<tr>
+<td>Fondeo Caja</td>
+<td>Importe recibido</td>
+<td>Cálculo FTP diario COP/365 y USD/360</td>
+</tr>
+</tbody>
+</table>
+<p>Por ejemplo, 10% efectivo anual equivale a tasa continua <code>ln(1,10) = 0,09531018</code>, aproximadamente 9,531018%. Ingresar <code>0.10</code> como tasa continua no representa la misma curva. Además, un punto básico es <code>0.0001</code> en decimal y un punto porcentual de volatilidad es <code>0.01</code>; confundirlos produce errores de escala.</p>
+<h2 id="5-book-opciones-productos-y-ejemplos">5. Book OPCIONES: productos y ejemplos</h2>
+<p>Este capítulo describe los motores de <code>opciones.py</code>, <code>forward.py</code>, <code>caja.py</code> y <code>atribucion.py</code> tal como están implementados. Sus tres productos son <strong>OPCIONES</strong>, <strong>FORWARD</strong> y <strong>CAJA</strong>. Todos los resultados monetarios finales están en COP. Los ejemplos son sintéticos, reproducibles y usan el intervalo <strong>31 de julio de 2026 → 1 de agosto de 2026</strong>; elegir el cambio de mes permite mostrar la función del cierre anterior como ancla del PyG mensual.</p>
+<p>Las cifras de tablas usan punto de miles y coma decimal. Las expresiones de Python usan punto decimal. Las tasas se entregan al motor en forma decimal: 8 % se escribe <code>0.08</code>; una volatilidad de 20 % se escribe <code>0.20</code>.</p>
+<h3 id="51-qué-significa-atribuir-el-pyg-a-griegas">5.1. Qué significa atribuir el PyG a griegas</h3>
+<p>En este book se revalora la cartera anterior varias veces, sustituyendo grupos de entradas en un orden fijo. Cada contribución es la diferencia entre dos escenarios consecutivos. Por ejemplo, <code>DELTA_PYG</code> mide la variación monetaria al cambiar el spot en el tercer escenario; no es la sensibilidad delta expresada en USD ni la fórmula aproximada delta × cambio de spot. El método captura en ese paso la no linealidad de la valoración. No se produce una fila independiente GAMMA.</p>
+<p>El orden implementado es <strong>tiempo → spot → tasas COP/USD → volatilidad → cartera actual</strong>. Forward omite el paso volatilidad. Alterar ese orden puede redistribuir el resultado entre componentes, aunque el total siga igual. Cuando el smile no es plano, el cambio de spot también modifica la volatilidad interpolada por delta, incluso conservando la misma superficie: esto forma parte del escenario Delta actual. Por ello no debe interpretarse cada nombre como una derivada parcial aislada de cualquier interacción.</p>
+<p>Para una fecha y una cartera, los motores suman:</p>
+<p><code>W = valor de mercado + cuenta por cumplir + flujos realizados del período + primas del período</code></p>
+<p>En Forward no hay primas. Los flujos y las primas se incluyen desde el primer día del mes del corte; usar el mismo inicio en ambos extremos permite obtener el cambio diario sin duplicarlos. La cartera debe conservar la información de los eventos que esos niveles necesitan.</p>
+<p><strong>Banking</strong> es la suma de contribuciones. El ajuste de crédito agregado del book se obtiene de dos niveles comparables:</p>
+<p><code>G(t) = nivel de mercado IFRS(t) − nivel de mercado Banking(t)</code></p>
+<p><code>CVA_DVA del día = G(t1) − G(t0)</code></p>
+<p><code>PyG IFRS = PyG Banking + CVA_DVA del día</code></p>
+<p><code>Resumen.Opccva</code> y <code>Resumen.Forcva</code> se interpretan como <strong>niveles IFRS de mercado</strong>, no como PyG ni como niveles de CVA aislados. El motor no calcula probabilidad de incumplimiento ni separa CVA y DVA. Si el productor de datos usa otro significado, hay que corregir el contrato antes de conciliar.</p>
+<h3 id="52-opciones-vanilla-de-divisas">5.2. Opciones vanilla de divisas</h3>
+<h4 id="521-insumos-y-signos">5.2.1. Insumos y signos</h4>
+<p>La hoja <code>Opciones</code> aporta identificador único, BUY/SELL, CALL/PUT, nominal USD, strike COP/USD, emisión, vencimiento, cumplimiento, modalidad DELIVERY/NON DELIVERY, moneda de cumplimiento y prima. <code>Resumen</code> aporta TRM y el nivel IFRS <code>Opccva</code>; <code>Tasas_COP</code>, <code>Tasas_USD</code> y <code>Superficie_Volatilidad</code> aportan el mercado. <code>tfd</code> aporta los fixings exactos por fecha. <code>PYG</code>, si existe, aporta controles de comparación.</p>
+<p>Se usa <code>q = +1</code> para BUY y <code>q = −1</code> para SELL. El nominal es no negativo. Una CALL paga por subida de USD/COP; una PUT, por bajada. Un comprador tiene valor positivo de la opción antes de descontar su prima; el vendedor tiene el signo contrario.</p>
+<h4 id="522-valoración-viva">5.2.2. Valoración viva</h4>
+<p>Sean <code>S</code> el spot COP/USD, <code>K</code> el strike COP/USD, <code>N</code> el nominal USD, <code>T = días al vencimiento / 365</code>, <code>r_COP</code> y <code>r_USD</code> tasas continuas anuales y <code>σ</code> volatilidad anual. Las tasas se interpolan linealmente por plazo a partir de las bandas y nodos del archivo.</p>
+<pre><code class="language-text">d1 = [ln(S/K) + (r_COP − r_USD + σ²/2) × T] / (σ × √T)
+d2 = d1 − σ × √T
+
+CALL por USD = S × exp(−r_USD × T) × Φ(d1)
+             − K × exp(−r_COP × T) × Φ(d2)
+
+PUT por USD = K × exp(−r_COP × T) × Φ(−d2)
+            − S × exp(−r_USD × T) × Φ(−d1)
+</code></pre>
+<p><code>Φ</code> es la distribución normal acumulada. Estas son las fórmulas de dos tasas para una opción europea de divisas. El código aplica adicionalmente la siguiente convención de desfase entre vencimiento y cumplimiento:</p>
+<pre><code class="language-text">Tc = días al cumplimiento / 365
+A  = exp(r_USD(Tc) × Tc) / exp(r_USD(T) × T)
+Valor Banking COP = q × N × precio por USD / A
+</code></pre>
+<p>Si cumplimiento y vencimiento coinciden, <code>A = 1</code>. Este factor reproduce la convención implementada; su adecuación a cada modalidad contractual necesita la conciliación funcional pendiente y no debe sustituirse por otra convención en una hoja auxiliar sin dejar constancia.</p>
+<p>La superficie contiene 10D PUT, 25D PUT, ATM, 25D CALL y 10D CALL. Primero se interpola cada columna por plazo. Después se usa un spline cúbico natural sobre deltas absolutas 0,10; 0,25; 0,50; 0,75; 0,90, invirtiendo las volatilidades para CALL. Se empieza con ATM y se itera porque delta depende de volatilidad. La delta usada aquí es <code>(Φ(d1) − 1)/A</code> para PUT y <code>Φ(d1)/A</code> para CALL. Las colas se fijan en 10D/90D; no se extrapola el spline. Se rechazan volatilidades no positivas y falta de convergencia tras 100 iteraciones. Esta definición exacta de delta debe reconciliarse con la fuente del smile; no debe confundirse con otra convención de delta spot o ajustada por prima.</p>
+<h4 id="523-del-valor-al-pyg-ejemplo-completo">5.2.3. Del valor al PyG: ejemplo completo</h4>
+<p>Cartera anterior: BUY CALL por <strong>100 USD</strong>, strike <strong>3.000 COP/USD</strong>, emisión 1 de julio, vencimiento y cumplimiento 1 de diciembre de 2026. La prima de julio no entra como un flujo nuevo de agosto. En la base faltan 123 días; en el corte, 122.</p>
+<p>Mercado anterior: spot 3.100, tasa COP 8 %, tasa USD 4 %, volatilidad plana 20 %. Mercado actual: spot 3.120, tasa COP 8,1 %, tasa USD 4,2 %, volatilidad plana 21 %. El 1 de agosto se añade una <strong>SELL PUT por 50 USD</strong>, strike 3.200, mismo vencimiento/cumplimiento, con <strong>prima recibida de +25.000 COP</strong>. La prima se suministra con su signo.</p>
+<p>En la CALL base, <code>T = 123/365</code>, <code>d1 = 0,4565764423</code>, <code>d2 = 0,3404753999</code>. El precio por USD es <strong>218,3582960232 COP/USD</strong>, por lo que su valor es <code>100 × 218,3582960232 = 21.835,8296023154 COP</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Escenario</th>
+<th>Entradas sustituidas respecto al anterior</th>
+<th style="text-align: right;">Nivel W, COP</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BASE</td>
+<td>Cartera, fecha y mercado anteriores</td>
+<td style="text-align: right;">21.835,829602</td>
+</tr>
+<tr>
+<td>THETA</td>
+<td>Fecha 1 de agosto; sigue spot 3.100, tasas 8 %/4 %, vol 20 %</td>
+<td style="text-align: right;">21.765,955909</td>
+</tr>
+<tr>
+<td>DELTA</td>
+<td>Spot pasa a 3.120</td>
+<td style="text-align: right;">23.119,912506</td>
+</tr>
+<tr>
+<td>RHO</td>
+<td>Tasas pasan a 8,1 % COP y 4,2 % USD</td>
+<td style="text-align: right;">23.040,666089</td>
+</tr>
+<tr>
+<td>VEGA</td>
+<td>Volatilidad pasa a 21 %</td>
+<td style="text-align: right;">23.666,780495</td>
+</tr>
+<tr>
+<td>ACTUAL</td>
+<td>Añade la PUT vendida y su prima</td>
+<td style="text-align: right;">40.186,017837</td>
+</tr>
+</tbody>
+</table>
+<p>La PUT vendida vale <strong>−8.480,762658 COP</strong>. Por tanto, el cambio de cartera es <code>−8.480,762658 + 25.000 = +16.519,237342 COP</code>. El ejemplo escoge una prima distinta del valor del modelo para hacer visible esa contribución.</p>
+<table>
+<thead>
+<tr>
+<th>Contribución</th>
+<th>Resta de escenarios</th>
+<th style="text-align: right;">PyG, COP</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>THETA</td>
+<td>21.765,955909 − 21.835,829602</td>
+<td style="text-align: right;">−69,873694</td>
+</tr>
+<tr>
+<td>DELTA_PYG</td>
+<td>23.119,912506 − 21.765,955909</td>
+<td style="text-align: right;">+1.353,956597</td>
+</tr>
+<tr>
+<td>RHO</td>
+<td>23.040,666089 − 23.119,912506</td>
+<td style="text-align: right;">−79,246416</td>
+</tr>
+<tr>
+<td>VEGA</td>
+<td>23.666,780495 − 23.040,666089</td>
+<td style="text-align: right;">+626,114406</td>
+</tr>
+<tr>
+<td>NUEVOS_OTROS</td>
+<td>40.186,017837 − 23.666,780495</td>
+<td style="text-align: right;">+16.519,237342</td>
+</tr>
+<tr>
+<td><strong>PYG_BANKING</strong></td>
+<td><strong>40.186,017837 − 21.835,829602</strong></td>
+<td style="text-align: right;"><strong>+18.350,188235</strong></td>
+</tr>
+</tbody>
+</table>
+<p>Si el ajuste de crédito pasa de <strong>−5 a −8 COP</strong>, <code>CVA_DVA = −8 − (−5) = −3 COP</code>, y <strong>PyG IFRS = 18.347,188235 COP</strong>. Para este ejemplo, <code>Opccva</code> anterior sería <code>21.835,829602 − 5 = 21.830,829602</code>; el actual sería <code>(23.666,780495 − 8.480,762658) − 8 = 15.178,017837</code>. La prima de 25.000 es un evento común a Banking e IFRS; no se resta al calcular el nivel de crédito.</p>
+<p><code>NUEVOS_OTROS</code> es un residual entre carteras a mercado actual. Además de operaciones nuevas, puede contener bajas, modificaciones o diferencias de eventos. Su nombre no certifica que todo el monto corresponda a negociación nueva.</p>
+<h4 id="524-vencimiento-cuenta-por-cumplir-y-cobropago">5.2.4. Vencimiento, cuenta por cumplir y cobro/pago</h4>
+<p>Una opción vencida deja de tener valor de mercado vivo. Si todavía no cumple, conserva una cuenta por cobrar o pagar. Para una CALL NON DELIVERY el payoff unitario es <code>max(fixing − K, 0)</code>; para PUT es <code>max(K − fixing, 0)</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Modalidad</th>
+<th>Cuenta pendiente antes del cumplimiento</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>NON DELIVERY, COP</td>
+<td><code>q × N × payoff</code></td>
+</tr>
+<tr>
+<td>NON DELIVERY, USD</td>
+<td><code>q × N × payoff / fixing × spot actual</code></td>
+</tr>
+<tr>
+<td>DELIVERY ejercida, CALL</td>
+<td><code>q × N × (spot actual − K)</code></td>
+</tr>
+<tr>
+<td>DELIVERY ejercida, PUT</td>
+<td><code>−q × N × (spot actual − K)</code></td>
+</tr>
+</tbody>
+</table>
+<p>En DELIVERY, la condición de ejercicio se decide con el fixing de vencimiento. Una cuenta originada por una opción ejercida puede cambiar de valor con el spot hasta cumplir; no se vuelve a aplicar <code>max</code> a su valor posterior.</p>
+<p>Ejemplo: BUY CALL NON DELIVERY USD, nominal 100, strike 3.000, fixing de vencimiento 3.100 el <strong>1 de agosto</strong>, cumplimiento <strong>3 de agosto</strong>. El payoff es <code>100 × (3.100 − 3.000) = 10.000 COP</code>, equivalente a <code>10.000 / 3.100 = 3,2258064516 USD</code>. El 2 de agosto, con spot 3.120, la cuenta vale <strong>10.064,516129 COP</strong>. Al liquidar el 3 de agosto con spot 3.120, pasa a flujo realizado por ese mismo valor y la cuenta pendiente pasa a cero. El 4 de agosto, aunque el spot suba a 3.300, el flujo de Opciones permanece <strong>10.064,516129 COP</strong>: la exposición de los USD ya recibidos corresponde a Caja.</p>
+<p>En Opciones, el día del vencimiento se utiliza el spot del escenario; después se exige el fixing de la <strong>fecha exacta de vencimiento</strong> en <code>tfd</code>. Para convertir un pago ya liquidado se exige el fixing de la fecha exacta de cumplimiento. No se utiliza la fila más próxima.</p>
+<h4 id="525-prima-y-limitaciones-específicas">5.2.5. Prima y limitaciones específicas</h4>
+<p><code>Valor Total Prima</code> ya debe venir firmado: prima pagada negativa; recibida positiva. El motor no cambia el signo según BUY/SELL. La moneda de prima puede ser distinta de la de cumplimiento; se admite <code>Moneda Prima</code> y los alias originales <code>Moneda de la Prima</code> / <code>Moneda de la  Prima</code>. Si no existe esa columna, se usa la moneda de cumplimiento como valor de respaldo, una convención que debe revisarse en los insumos.</p>
+<p>Una prima de <strong>−5 USD</strong> con <code>Tasa Prima = 3.100</code> se incorpora como <code>−5 × 3.100 = −15.500 COP</code>, incluso si el spot del corte es 3.120. Si no se entrega tasa explícita, se requiere el fixing exacto de la emisión en <code>tfd</code>.</p>
+<p>La prima se ubica en el período por la <strong>fecha de emisión</strong>; todavía no existe un calendario separado de pagos de primas. Las carteras diarias deben preservar operaciones y eventos necesarios para reconstruir flujos del mes; una operación que desaparece sin evento explícito puede contaminar <code>NUEVOS_OTROS</code>. Las convenciones de settlement, superficie, primas y controles requieren conciliación con snapshots reales de OPCIONES, que no estuvieron disponibles en la validación entregada. Los ejemplos y las pruebas sintéticas verifican las fórmulas implementadas, no sustituyen esa conciliación.</p>
+<h3 id="53-forward-del-book-opciones">5.3. Forward del book OPCIONES</h3>
+<h4 id="531-valoración-y-atribución">5.3.1. Valoración y atribución</h4>
+<p>No debe confundirse con el Forward del book SWAPS: este motor usa <strong>tasas continuas ACT/365</strong>. Sus datos están en <code>Forwards</code>, las curvas COP/USD, <code>tff</code> y <code>Resumen.Forcva</code>.</p>
+<pre><code class="language-text">q = +1 para COMPRA USD, −1 para VENTA USD
+T = días hasta vencimiento / 365
+V = q × N × [S × exp(−r_USD × T) − K × exp(−r_COP × T)]
+</code></pre>
+<p><code>N</code> está en USD y <code>K</code> y <code>S</code> en COP/USD. Con tasas cero, comprar 100 USD a 3.000 y valorar con spot 3.100 produce <code>100 × (3.100 − 3.000) = +10.000 COP</code>; vender el mismo contrato produce −10.000.</p>
+<p>La atribución es <code>THETA = W_tiempo − W_base</code>, <code>DELTA_PYG = W_spot − W_tiempo</code>, <code>RHO = W_tasas − W_spot</code>, <code>NUEVOS_OTROS = W_actual − W_tasas</code>. RHO agrupa ambas curvas; no se desglosa COP y USD en este motor.</p>
+<h4 id="532-ejemplo-con-tasas-spot-y-nueva-operación">5.3.2. Ejemplo con tasas, spot y nueva operación</h4>
+<p>Cartera anterior: COMPRA de <strong>100.000 USD</strong> a <strong>4.000</strong>, emitida el 1 de julio, vencimiento y cumplimiento el <strong>31 de agosto de 2026</strong>. El 31 de julio quedan 31 días; el 1 de agosto, 30. Mercado anterior: spot 4.000, tasas continuas 8 % COP y 4 % USD. Mercado actual: spot 4.050, tasas 8,1 % COP y 4,2 % USD. La cartera actual añade una VENTA de <strong>20.000 USD</strong> a <strong>4.060</strong>, emitida el 1 de agosto y con el mismo vencimiento/cumplimiento.</p>
+<pre><code class="language-text">V_base = 100.000 × [4.000 × exp(−0,04 × 31/365)
+                    − 4.000 × exp(−0,08 × 31/365)]
+       = 1.351.997,547476 COP
+
+V_nueva = −20.000 × [4.050 × exp(−0,042 × 30/365)
+                     − 4.060 × exp(−0,081 × 30/365)]
+        = −59.661,895863 COP
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Escenario</th>
+<th style="text-align: right;">Nivel W, COP</th>
+<th style="text-align: right;">Diferencia respecto al anterior, COP</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BASE: 31 de julio, mercado anterior</td>
+<td style="text-align: right;">1.351.997,547476</td>
+<td style="text-align: right;">—</td>
+</tr>
+<tr>
+<td>THETA: 1 de agosto, mercado anterior</td>
+<td style="text-align: right;">1.308.599,778039</td>
+<td style="text-align: right;">−43.397,769438</td>
+</tr>
+<tr>
+<td>DELTA: cambia spot a 4.050</td>
+<td style="text-align: right;">6.292.188,414241</td>
+<td style="text-align: right;">+4.983.588,636202</td>
+</tr>
+<tr>
+<td>RHO: cambian tasas a 8,1 % y 4,2 %</td>
+<td style="text-align: right;">6.258.496,947534</td>
+<td style="text-align: right;">−33.691,466707</td>
+</tr>
+<tr>
+<td>ACTUAL: añade la nueva venta</td>
+<td style="text-align: right;">6.198.835,051671</td>
+<td style="text-align: right;">−59.661,895863</td>
+</tr>
+<tr>
+<td><strong>PYG_BANKING</strong></td>
+<td style="text-align: right;"><strong>ACTUAL − BASE</strong></td>
+<td style="text-align: right;"><strong>+4.846.837,504194</strong></td>
+</tr>
+</tbody>
+</table>
+<p>Si el nivel de ajuste de crédito pasa de −2.000 a −2.500 COP, <code>CVA_DVA = −500</code> y <strong>PyG IFRS = 4.846.337,504194 COP</strong>. Los niveles fuente <code>Forcva</code> serían <code>V_mercado_base − 2.000</code> y <code>V_mercado_actual − 2.500</code>.</p>
+<h4 id="533-fixing-y-cumplimiento">5.3.3. Fixing y cumplimiento</h4>
+<p>El forward NDF tiene payoff firmado <code>q × N × (fixing − K)</code>, que puede ser positivo o negativo. Si liquida en COP, la cuenta permanece por ese valor. Si liquida en USD, la cuenta pendiente se convierte como <code>payoff / fixing × spot actual</code>. En DF, se conserva el valor económico <code>q × N × (spot actual − K)</code> hasta el cumplimiento. Al liquidar, la conversión se fija a la tasa de cumplimiento, manteniendo el flujo en el período y evitando volver a revalorarlo dentro de Forward.</p>
+<p><strong>Convención de <code>tff</code>:</strong> en la fecha de vencimiento se usa el spot del escenario; cuando la fecha ya pasó se busca en <code>tff</code> la fila del <strong>día calendario siguiente</strong> al vencimiento. El valor de esa fila representa el fixing del vencimiento conforme a FF_V3. Para un vencimiento el 31 de agosto se busca <strong>1 de septiembre</strong>, no se suma <code>1</code> al entero <code>20260831</code>. La misma regla se usa para recuperar la conversión del cumplimiento pasado. Es distinta de la convención de <code>tfd</code> de Opciones y debe respetarse al generar snapshots.</p>
+<p>El ejemplo de cuenta por cumplir USD de la sección Opciones produce los mismos <strong>3,2258064516 USD</strong> y <strong>10.064,516129 COP</strong> para una COMPRA NDF de 100 USD con strike 3.000 y fixing 3.100, pero las filas de <code>tff</code> son <strong>2 de agosto</strong> para vencimiento el día 1 y <strong>4 de agosto</strong> para cumplimiento el día 3.</p>
+<p>Este motor no tiene un valuador separado de basis/spread, ni integra flujos de nuevas operaciones fuera de la cartera suministrada. Conserva detalle por índice de fila; el contrato actual de <code>Forwards</code> no exige un identificador único de negociación. Para una conciliación operativa por transacción conviene completar esa trazabilidad en el productor de insumos.</p>
+<h3 id="54-caja-del-book-opciones">5.4. Caja del book OPCIONES</h3>
+<h4 id="541-qué-explica-cada-componente">5.4.1. Qué explica cada componente</h4>
+<p>Caja explica el resultado cambiario del saldo USD anterior y las compras/ventas del corte. El saldo anterior se toma de <code>Resumen.Cajausd</code>; la fila diaria de <code>Caja</code> suministra montos y tasas agregadas. Debe existir exactamente una fila explícita para el corte, incluso si no hubo operaciones. Cuando hay varias negociaciones, el productor de la fila debe usar tasas promedio ponderadas por monto para que representen los flujos agregados.</p>
+<p>Sean <code>B</code> compras USD, <code>V</code> ventas USD, <code>Kb</code> tasa de compra, <code>Kv</code> tasa de venta, <code>S0</code> TRM anterior, <code>S1</code> TRM actual y <code>Q0</code> saldo anterior USD:</p>
+<pre><code class="language-text">DELTA_INTERDAY = Q0 × (S1 − S0)
+TRADING        = min(B, V) × (Kv − Kb)
+DELTA_INTRADAY = (B − V) × (S1 − Kb), si B ≥ V
+               (B − V) × (S1 − Kv), si B &lt; V
+</code></pre>
+<p>El interday revalora el inventario que existía antes. Trading realiza el margen de la parte comprada y vendida en el día. Intraday marca a cierre la parte neta que queda comprada o vendida. La suma de trading e intraday coincide algebraicamente con <code>B × (S1 − Kb) + V × (Kv − S1)</code>; esta igualdad sirve como control independiente.</p>
+<p><code>Costo_Fondos_COP</code> y <code>Ajustes_PyG_COP</code>, cuando existen, se suman <strong>con el signo recibido</strong>. En este book el motor <strong>no calcula tasas de fondeo</strong>: necesita el costo ya expresado en COP. Si falta la columna, reporta <code>NO_INCLUIDO</code>; no inventa una tasa ni interpreta la ausencia como un costo validado de cero. El CVA/DVA de Caja es cero por diseño actual, por lo que Banking e IFRS coinciden.</p>
+<h4 id="542-ejemplo-calculado">5.4.2. Ejemplo calculado</h4>
+<p>Saldo anterior <strong>100.000 USD</strong>, TRM anterior <strong>4.000</strong>, TRM actual <strong>4.020</strong>. Se compran <strong>50.000 USD a 4.005</strong> y se venden <strong>30.000 USD a 4.010</strong>. La fuente entrega costo de fondos <strong>−40.000 COP</strong> y ajustes <strong>+5.000 COP</strong>.</p>
+<table>
+<thead>
+<tr>
+<th>Componente</th>
+<th>Operación</th>
+<th style="text-align: right;">Resultado COP</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DELTA_INTERDAY</td>
+<td>100.000 × (4.020 − 4.000)</td>
+<td style="text-align: right;">+2.000.000</td>
+</tr>
+<tr>
+<td>TRADING</td>
+<td>30.000 × (4.010 − 4.005)</td>
+<td style="text-align: right;">+150.000</td>
+</tr>
+<tr>
+<td>DELTA_INTRADAY</td>
+<td>(50.000 − 30.000) × (4.020 − 4.005)</td>
+<td style="text-align: right;">+300.000</td>
+</tr>
+<tr>
+<td>COSTO_FONDOS</td>
+<td>Dato firmado recibido</td>
+<td style="text-align: right;">−40.000</td>
+</tr>
+<tr>
+<td>AJUSTES</td>
+<td>Dato firmado recibido</td>
+<td style="text-align: right;">+5.000</td>
+</tr>
+<tr>
+<td><strong>PYG_BANKING</strong></td>
+<td><strong>Suma de las cinco filas</strong></td>
+<td style="text-align: right;"><strong>+2.415.000</strong></td>
+</tr>
+<tr>
+<td>CVA_DVA</td>
+<td>Convención actual</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td><strong>PYG_IFRS</strong></td>
+<td><strong>Banking + CVA_DVA</strong></td>
+<td style="text-align: right;"><strong>+2.415.000</strong></td>
+</tr>
+</tbody>
+</table>
+<p>Control directo de las operaciones: <code>50.000 × 15 + 30.000 × (−10) = 450.000 COP</code>, igual a <code>150.000 + 300.000</code>. Si no existen otros movimientos, el saldo esperado pasa a <code>100.000 + 50.000 − 30.000 = 120.000 USD</code>. <strong>La Caja OPCIONES actual no valida ese puente contra el saldo actual</strong>; debe controlarse en el productor del dataset o en conciliación. Tampoco agrega por sí sola flujos de cumplimiento o primas provenientes de los otros motores: el productor de Caja debe incorporarlos al saldo y a los movimientos correspondientes, sin duplicar el PyG realizado del derivado.</p>
+<p>Si predominan las ventas, por ejemplo saldo 10 USD, TRM 3.100→3.120, compras 50 USD a 3.105 y ventas 80 USD a 3.110, los componentes son <code>+200</code>, <code>+250</code> y <code>(50−80)×(3.120−3.110)=−300</code>, total <strong>150 COP</strong> antes de fondeo/ajustes. El signo negativo del neto vendido es esencial.</p>
+<h2 id="6-book-swaps-productos-y-ejemplos">6. Book SWAPS: productos y ejemplos</h2>
+<p>Este capítulo describe las fórmulas implementadas en <code>proyectos/pyg/procesos/fx_motores.py</code> y las fuentes extraídas por <code>fx_snapshot.py</code>. Los ejemplos son sintéticos, en COP; los nominales de Forward y Novados se expresan en USD y las tasas en tanto por uno. Se conserva precisión completa durante el cálculo y solo se redondea al presentar.</p>
+<p>El book SWAPS contiene productos <strong>FORWARD, NOVADOS, SWAPS y CAJA</strong>. Book y producto son dimensiones distintas: <code>book=SWAPS, producto=SWAPS</code> identifica los contratos Swap de ese book. No incluye FX_ESTRAT. En el importador, el maestro Swap excluye los desks ARBITR_DER, FX_ESTRAT y FVH; los Forward se seleccionan por clasificación SWAPS y los Novados por SWAPSNOVADO.</p>
+<p>El PyG es un flujo durante un intervalo. Un VP de 100 millones no representa 100 millones de ganancia: para medirla hay que comparar contra el VP anterior y reconocer pagos. Los factores del dashboard son contribuciones monetarias en COP, no sensibilidades como USD de delta o COP por punto básico.</p>
+<h4 id="tasas-y-fechas">Tasas y fechas</h4>
+<ul>
+<li>Forward y Novados de este book utilizan tasas efectivas anuales y ACT/365: <code>τ = días calendario hasta cumplimiento / 365</code>.</li>
+<li>Las curvas se interpolan linealmente en tasa entre plazos; fuera de los nodos se mantiene el extremo. No se permiten nodos duplicados/desordenados, plazos negativos o tasas menores o iguales a −100%.</li>
+<li>El plazo de valoración llega a <strong>cumplimiento</strong>; <strong>vencimiento</strong> determina cuándo termina el derivado y nace la cuenta por cobrar/pagar. Si difieren, ambas fechas son necesarias.</li>
+<li>Una compra de USD tiene signo <code>q=+1</code>; una venta, <code>q=−1</code>. Nominal y strike se almacenan positivos.</li>
+<li>El motor exige fixings exactos en vencimiento y, cuando corresponde, cumplimiento. No toma automáticamente la cotización disponible más cercana.</li>
+</ul>
+<h3 id="61-producto-forward-del-book-swaps">6.1. Producto FORWARD del book SWAPS</h3>
+<h4 id="valoración-antes-del-vencimiento">Valoración antes del vencimiento</h4>
+<p>Definiciones: <code>N</code> nominal USD; <code>K</code> strike COP/USD; <code>S</code> spot de compra o venta según dirección; <code>rCOP</code>, <code>rUSD</code>, <code>rI</code> tasas efectivas de las curvas COP, USD e implícita al plazo; <code>sp</code> spread de la fuente.</p>
+<pre><code class="language-text">b = ln(1 + rI) + ln(1 + rUSD) − ln(1 + rCOP)
+rA = exp[ln(1 + rCOP) − ln(1 + rUSD) + b] − 1 − q × sp/2
+VP = q × N × [S − K/(1 + rA)^τ] / (1 + rUSD)^τ
+</code></pre>
+<p><code>b</code> conserva la base de la curva implícita respecto a COP/USD. En el escenario de Rho COP se cambia únicamente COP; en Rho USD se cambia USD manteniendo la base anterior. La base y el spread actuales solo entran en su propio escenario. Cuando base y spread son cero, la fórmula se reduce a:</p>
+<pre><code class="language-text">VP = q × N × [S/(1+rUSD)^τ − K/(1+rCOP)^τ]
+</code></pre>
+<p>La fuente del maestro es <code>Forwards!A:N</code>. <code>Tasas</code> aporta curvas y spot fechado; <code>Forwards!W3</code> aporta el spread observado del libro. El importador conserva ese spread único al reconstruir días del mes: no dispone de un histórico diario independiente de spread.</p>
+<h4 id="atribución-y-ejemplo-numérico">Atribución y ejemplo numérico</h4>
+<p>Operación compradora de USD 100.000, strike 4.050, emitida el 01/08/2026, vencimiento y cumplimiento 30/11/2026. Corte anterior 01/09/2026 (90 días); actual 02/09/2026 (89 días). No hay nuevas operaciones ni pagos en el intervalo. Se usan curvas planas para que la interpolación no altere los números.</p>
+<table>
+<thead>
+<tr>
+<th>Entrada</th>
+<th style="text-align: right;">Anterior</th>
+<th style="text-align: right;">Actual</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Spot de compra = venta = TRM, COP/USD</td>
+<td style="text-align: right;">4.000</td>
+<td style="text-align: right;">4.020</td>
+</tr>
+<tr>
+<td>Tasa COP efectiva anual</td>
+<td style="text-align: right;">10%</td>
+<td style="text-align: right;">11%</td>
+</tr>
+<tr>
+<td>Tasa USD efectiva anual</td>
+<td style="text-align: right;">4%</td>
+<td style="text-align: right;">4,5%</td>
+</tr>
+<tr>
+<td>Base logarítmica <code>b</code></td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0,001</td>
+</tr>
+<tr>
+<td>Spread <code>sp</code>, tanto por uno</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0,002</td>
+</tr>
+<tr>
+<td>Curva implícita</td>
+<td style="text-align: right;"><code>1,10/1,04 − 1</code></td>
+<td style="text-align: right;"><code>exp[ln(1,11)−ln(1,045)+0,001]−1</code></td>
+</tr>
+</tbody>
+</table>
+<p>Cada fila revalora <strong>la misma cartera anterior</strong> cambiando un factor adicional. Una contribución es el VP de la fila menos el VP de la fila anterior.</p>
+<table>
+<thead>
+<tr>
+<th>Escenario</th>
+<th style="text-align: right;">Valor completo, COP</th>
+<th style="text-align: right;">Contribución, COP</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BASE: cartera y mercado del 01/09, 90 días</td>
+<td style="text-align: right;">557.291,97</td>
+<td style="text-align: right;">—</td>
+</tr>
+<tr>
+<td>THETA: fecha 02/09, mercado anterior, 89 días</td>
+<td style="text-align: right;">496.549,97</td>
+<td style="text-align: right;">−60.742,00</td>
+</tr>
+<tr>
+<td>DELTA_PYG: además spot actual 4.020</td>
+<td style="text-align: right;">2.477.514,32</td>
+<td style="text-align: right;">+1.980.964,35</td>
+</tr>
+<tr>
+<td>RHO_COP: además curva COP actual 11%</td>
+<td style="text-align: right;">3.349.723,71</td>
+<td style="text-align: right;">+872.209,39</td>
+</tr>
+<tr>
+<td>RHO_USD: además curva USD actual 4,5%</td>
+<td style="text-align: right;">2.884.340,50</td>
+<td style="text-align: right;">−465.383,21</td>
+</tr>
+<tr>
+<td>BASE_SPREAD: además base y spread actuales</td>
+<td style="text-align: right;">2.890.026,00</td>
+<td style="text-align: right;">+5.685,50</td>
+</tr>
+<tr>
+<td>NUEVOS_OTROS: cartera actual y mercado actual</td>
+<td style="text-align: right;">2.890.026,00</td>
+<td style="text-align: right;">0,00</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-text">VP anterior = 100.000 × [4.000/(1,04)^(90/365) − 4.050/(1,10)^(90/365)]
+            = 557.291,970659 COP
+PyG Banking = VP actual − VP anterior
+            = 2.890.026,000726 − 557.291,970659
+            = 2.332.734,030067 COP
+</code></pre>
+<p>La suma sin redondear de las seis contribuciones es exactamente el cambio total. <code>NUEVOS_OTROS</code> reúne altas y cambios de cartera o eventos no explicados en los pasos anteriores; no permite afirmar que todo ese importe sea margen comercial. El orden de atribución importa: las interacciones se asignan al factor que se incorpora después. No son derivadas multiplicadas por shocks.</p>
+<h4 id="crédito-y-liquidación">Crédito y liquidación</h4>
+<p>El ajuste acumulado <code>A</code> se obtiene de la diferencia entre los controles IFRS y Banking de <code>PORTAFOLIO</code>; el importador acumula esa diferencia diaria. <code>CVA_DVA = A_actual − A_anterior</code>. Ejemplo didáctico adicional: <code>A_anterior=−20.000</code>, <code>A_actual=−25.000</code>: crédito diario <code>−5.000</code> y PyG IFRS <code>2.327.734,03 COP</code>. Esta atribución de crédito sigue siendo una fuente externa; el motor no estima exposición futura ni probabilidad de incumplimiento.</p>
+<p>Al vencimiento, el payoff firmado es <code>q × N × (fixing_vencimiento − K)</code>. Para NDF pagadero en COP, ese importe queda como cuenta y después como flujo realizado. Para NDF pagadero en USD, el motor divide por el fixing de vencimiento y convierte la cuenta a COP con la TRM mientras permanece pendiente. Al pagar, congela la conversión con el fixing de cumplimiento.</p>
+<p>Ejemplo: compra USD 100, strike 3.000, fixing de vencimiento 3.100: payoff COP <code>100 × 100 = 10.000</code>; cuenta USD <code>10.000/3.100 = 3,225806</code>. Con TRM de cumplimiento 3.120, flujo COP <code>10.000 × 3.120/3.100 = 10.064,52</code>. Si después la TRM pasa a 3.300, el flujo liquidado registrado en Forward permanece en 10.064,52; su variación diaria posterior es cero. La exposición posterior en efectivo pertenece a Caja. Para delivery el motor utiliza el equivalente neto <code>q × N × (TRM − K)</code> mientras está pendiente, y la tasa de cumplimiento al liquidar.</p>
+<h3 id="62-producto-novados-del-book-swaps">6.2. Producto NOVADOS del book SWAPS</h3>
+<h4 id="método-de-cámara">Método de cámara</h4>
+<p>Se importa del mismo maestro FX con clasificación SWAPSNOVADO. Su precio y valor antes de vencimiento son:</p>
+<pre><code class="language-text">F_cámara = TRM × [(1+rCOP)/(1+rUSD)]^τ
+VP_cámara = q × N × (F_cámara − K)
+</code></pre>
+<p>El valor de cámara <strong>no lleva descuento final</strong>. Tampoco incorpora la base implícita ni el spread del Forward bilateral. No se debe aplicar a Novados el VP descontado del producto Forward. En los insumos normalizados actuales IFRS = Banking para Novados; el importador fija su ajuste acumulado de crédito en cero siguiendo el libro.</p>
+<h4 id="ejemplo-numérico">Ejemplo numérico</h4>
+<p>Con la misma operación y los mismos cambios de TRM y curvas del ejemplo anterior:</p>
+<pre><code class="language-text">F anterior = 4.000 × (1,10/1,04)^(90/365)
+VP anterior = 100.000 × (F anterior − 4.050) = 570.544,08 COP
+F actual = 4.020 × (1,11/1,045)^(89/365)
+VP actual = 100.000 × (F actual − 4.050) = 2.958.679,24 COP
+PyG Banking = 2.958.679,237966 − 570.544,077290 = 2.388.135,16 COP
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Escenario</th>
+<th style="text-align: right;">VP, COP</th>
+<th style="text-align: right;">Contribución, COP</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BASE</td>
+<td style="text-align: right;">570.544,08</td>
+<td style="text-align: right;">—</td>
+</tr>
+<tr>
+<td>THETA</td>
+<td style="text-align: right;">508.224,93</td>
+<td style="text-align: right;">−62.319,14</td>
+</tr>
+<tr>
+<td>DELTA_PYG</td>
+<td style="text-align: right;">2.535.766,06</td>
+<td style="text-align: right;">+2.027.541,12</td>
+</tr>
+<tr>
+<td>RHO_COP</td>
+<td style="text-align: right;">3.436.056,87</td>
+<td style="text-align: right;">+900.290,81</td>
+</tr>
+<tr>
+<td>RHO_USD</td>
+<td style="text-align: right;">2.958.679,24</td>
+<td style="text-align: right;">−477.377,63</td>
+</tr>
+<tr>
+<td>BASE_SPREAD</td>
+<td style="text-align: right;">2.958.679,24</td>
+<td style="text-align: right;">0,00</td>
+</tr>
+<tr>
+<td>NUEVOS_OTROS</td>
+<td style="text-align: right;">2.958.679,24</td>
+<td style="text-align: right;">0,00</td>
+</tr>
+</tbody>
+</table>
+<p>Los totales se calculan con precisión completa; sumar las contribuciones impresas puede diferir un centavo. El tratamiento actual mantiene el payoff al vencimiento y cumplimiento, sin una ingesta separada de llamados diarios de margen o flujos de variación de la cámara. Para una conciliación operativa completa se debe verificar que el contrato de fuente entregue la valoración y los eventos que corresponden a esta convención. En el libro real revisado no existen operaciones SWAPSNOVADO; el ejemplo y las pruebas con operaciones activas validan que el motor puede producir un importe distinto de cero.</p>
+<h4 id="por-qué-no-se-deben-mezclar-dos-formas-de-registrar-la-liquidación-diaria">Por qué no se deben mezclar dos formas de registrar la liquidación diaria</h4>
+<p>Como ejemplo conceptual de un contrato con ajustes diarios en efectivo, una compra de 100 USD cuyo precio de referencia pasa de 4.100 a 4.112 produce <code>100×12 = 1.200 COP</code> de variación. Hay dos representaciones posibles si la fuente y los eventos son coherentes:</p>
+<table>
+<thead>
+<tr>
+<th>Representación</th>
+<th>Cálculo del mismo resultado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Nivel acumulado contra una referencia fija K=4.000</td>
+<td>Nivel anterior 10.000; actual 11.200; diferencia 1.200 COP.</td>
+</tr>
+<tr>
+<td>Valor reiniciado a cero tras cada liquidación</td>
+<td>VP posterior al ajuste anterior 0; VP posterior al ajuste actual 0; efectivo recibido durante el intervalo 1.200: PyG <code>0−0+1.200</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>Sumar la diferencia de los niveles acumulados <strong>y</strong> el mismo efectivo de variación produciría 2.400 y duplicaría el resultado. El modelo Novados actual calcula la variación de su nivel contra el strike; todavía debe integrarse y conciliarse el tratamiento real de ajustes de cámara. Este ejemplo explica el principio de registro, no establece una regla contractual CRCC.</p>
+<h3 id="63-producto-swaps-del-book-swaps">6.3. Producto SWAPS del book SWAPS</h3>
+<h4 id="qué-calcula-hoy-y-qué-depende-de-otra-fuente">Qué calcula hoy y qué depende de otra fuente</h4>
+<p>La identidad económica es <code>PyG Banking = ΔVP Banking + pagos netos recibidos</code>. Una recepción de cupón tiene signo positivo; un pago realizado, negativo. Se aplica por Trade ID y luego se suma. El VP debería proceder de la valoración de los flujos remanentes de cada contrato, utilizando calendarios, proyecciones, descuentos y condiciones contractuales. <strong>La implementación actual recibe los VP ya calculados</strong>: no reconstruye esos flujos ni recalcula curvas de cada Swap.</p>
+<p>El importador toma VP Banking, VP IFRS y Payments de los bloques diarios de <code>SWAP</code>; recibe THETA, DELTA_PYG, DELTA_OTRAS, RHO_USD, RHO_COP, RHO_DTF, RHO_IPC, RHO_OTRAS y TRADING de <code>GRIEGAS SWAP!L:T</code>, procedentes del Informe Libro de Swaps. Son contribuciones monetarias externas, no sensibilidades a las que el motor aplique un shock. El control total se calcula por separado de su suma:</p>
+<pre><code class="language-text">PyG_B = Σ(VP_B,actual − VP_B,anterior + pago)
+Δcrédito = Σ[(VP_I,actual − VP_B,actual) − (VP_I,anterior − VP_B,anterior)]
+Δrecuponing = nivel_actual − nivel_anterior
+CVA_DVA mostrado = Δcrédito + Δrecuponing
+PyG_IFRS = PyG_B + CVA_DVA
+EPSILON = PyG_B − suma(factores monetarios externos)
+</code></pre>
+<p>El campo <code>CVA_DVA</code> agrupa hoy crédito y recuponing, por lo que no debe interpretarse todo su importe como crédito puro. La evidencia conserva <code>CVA_MERCADO</code> y <code>RECUPONING</code> por separado. El importador define el nivel de recuponing como <code>PYG Recuponing!C − B</code>; su significado y fuente primaria requieren confirmación.</p>
+<h4 id="cómo-sería-la-valoración-propia-por-flujos-pendiente-de-implementar">Cómo sería la valoración propia por flujos — pendiente de implementar</h4>
+<p>En un IRS de una moneda que recibe tasa fija y paga variable, sin intercambio de principal, la estructura básica es:</p>
+<pre><code class="language-text">Cupón fijo_j = nominal_j × tasa fija × fracción de año_j
+Cupón variable_j = nominal_j × tasa proyectada o fijada_j × fracción de año_j
+VP = Σ_j descuento(t,pago_j) × (cupón fijo_j − cupón variable_j)
+</code></pre>
+<p>Una tasa ya fijada debe venir del fixing histórico; una tasa futura proviene de la curva de proyección del índice. Para una tasa simple de un periodo, <code>F(t;T0,T1) = [P_proy(t,T0)/P_proy(t,T1) − 1]/α</code>. La curva de descuento puede ser distinta de la de proyección según contrato y colateral. La regla concreta de DTF, IPC, IBR, SOFR u otro índice no se reemplaza por una misma tasa genérica: requiere su convención contractual.</p>
+<p>Ejemplo conceptual, <strong>no implementado como motor Swap nativo</strong>: IRS COP que recibe 8% nominal simple y paga una tasa variable, nominal COP 100.000.000, con dos cupones pendientes y fracción de año 0,25 en cada uno. No hay pago durante el día observado. Se dan las tasas proyectadas y los descuentos como entradas didácticas:</p>
+<table>
+<thead>
+<tr>
+<th>Flujo</th>
+<th style="text-align: right;">Tasa variable anterior</th>
+<th style="text-align: right;">Descuento anterior</th>
+<th style="text-align: right;">Tasa variable actual</th>
+<th style="text-align: right;">Descuento actual</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cupón 1</td>
+<td style="text-align: right;">7,0%</td>
+<td style="text-align: right;">0,980</td>
+<td style="text-align: right;">7,2%</td>
+<td style="text-align: right;">0,981</td>
+</tr>
+<tr>
+<td>Cupón 2</td>
+<td style="text-align: right;">7,5%</td>
+<td style="text-align: right;">0,960</td>
+<td style="text-align: right;">7,8%</td>
+<td style="text-align: right;">0,961</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-text">Cupón fijo de cada fecha = 100.000.000 × 0,08 × 0,25 = 2.000.000
+Variables anteriores = 1.750.000 y 1.875.000
+VP anterior = (2.000.000−1.750.000)×0,980 + (2.000.000−1.875.000)×0,960
+            = 245.000 + 120.000 = 365.000 COP
+Variables actuales = 1.800.000 y 1.950.000
+VP actual = (2.000.000−1.800.000)×0,981 + (2.000.000−1.950.000)×0,961
+          = 196.200 + 48.050 = 244.250 COP
+PyG = 244.250 − 365.000 + 0 pagos = −120.750 COP
+</code></pre>
+<p>La subida de tasas proyectadas aumenta los pagos variables y reduce el valor de recibir fijo. Un motor completo volvería a valorar estos mismos flujos en escenarios sucesivos de fecha, divisas y curvas para obtener sus contribuciones propias. Para un Swap de monedas debe valorar cada pata en su moneda, incluir intercambios de principal cuando apliquen y convertir coherentemente a COP con las curvas, bases y divisas de su contrato. Este ejemplo de IRS no especifica esas otras estructuras ni sustituye sus convenciones. Hoy Risko recibe <code>365.000</code> y <code>244.250</code> como VP externos y calcula su diferencia; la construcción de esos VP es la ampliación pendiente.</p>
+<h4 id="cómo-se-obtendría-rho-desde-esos-flujos-paso-a-paso">Cómo se obtendría Rho desde esos flujos, paso a paso</h4>
+<p>Para aislar la contribución de curvas en el IRS didáctico, mantengamos fecha, nominales, cupones fijos y eventos constantes. Primero cambiaremos las proyecciones variables y después los factores de descuento:</p>
+<table>
+<thead>
+<tr>
+<th>Paso conceptual</th>
+<th>Cálculo</th>
+<th style="text-align: right;">Nivel COP</th>
+<th style="text-align: right;">Contribución COP</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Base</td>
+<td><code>250.000×0,980 + 125.000×0,960</code></td>
+<td style="text-align: right;">365.000</td>
+<td style="text-align: right;">—</td>
+</tr>
+<tr>
+<td>Solo proyección actual</td>
+<td><code>200.000×0,980 + 50.000×0,960</code></td>
+<td style="text-align: right;">244.000</td>
+<td style="text-align: right;">−121.000</td>
+</tr>
+<tr>
+<td>Además descuento actual</td>
+<td><code>200.000×0,981 + 50.000×0,961</code></td>
+<td style="text-align: right;">244.250</td>
+<td style="text-align: right;">+250</td>
+</tr>
+<tr>
+<td>Total de curvas</td>
+<td><code>244.250−365.000</code></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"><strong>−120.750</strong></td>
+</tr>
+</tbody>
+</table>
+<p>La proyección empeora la posición porque aumenta los pagos variables. El descuento de este ejemplo mejora ligeramente el valor de los flujos netos positivos porque sus factores suben. Esta tabla separa proyección y descuento para enseñar el mecanismo; <strong>no es un desglose nuevo disponible hoy en el tablero Swap</strong>.</p>
+<p>Si se invierte el orden, actualizar primero el descuento de los flujos anteriores da <code>250.000×0,981 + 125.000×0,961 = 365.375</code>, contribución +375. Después actualizar proyección lleva a 244.250, contribución −121.125. La suma vuelve a ser −120.750, pero cada parte cambia: muestra concretamente por qué debe fijarse el orden de atribución.</p>
+<p>Para un Swap de monedas, una atribución Delta nativa tendría que conservar los flujos y curvas del escenario y cambiar solo las cotizaciones utilizadas para convertir las patas a COP. Rho USD cambiaría la curva o conjunto de curvas USD definido por metodología; Rho DTF/IPC cambiaría los insumos del índice correspondiente según sus reglas de proyección. No basta con multiplicar todo el nominal por el cambio de una tasa: primero hay que identificar qué pagos cambian, sus fechas, moneda y descuento. Ese desarrollo sigue pendiente en el producto Swap; los nueve factores actuales llegan del reporte externo.</p>
+<h4 id="ejemplo-con-cupón-crédito-y-recuponing">Ejemplo con cupón, crédito y recuponing</h4>
+<table>
+<thead>
+<tr>
+<th>Entrada de una operación</th>
+<th style="text-align: right;">Anterior, COP</th>
+<th style="text-align: right;">Actual, COP</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>VP Banking</td>
+<td style="text-align: right;">100.000.000</td>
+<td style="text-align: right;">99.000.000</td>
+</tr>
+<tr>
+<td>VP IFRS</td>
+<td style="text-align: right;">99.500.000</td>
+<td style="text-align: right;">98.300.000</td>
+</tr>
+<tr>
+<td>Ajuste IFRS − Banking</td>
+<td style="text-align: right;">−500.000</td>
+<td style="text-align: right;">−700.000</td>
+</tr>
+<tr>
+<td>Nivel de recuponing</td>
+<td style="text-align: right;">50.000</td>
+<td style="text-align: right;">70.000</td>
+</tr>
+</tbody>
+</table>
+<p>Durante el día se recibe un cupón de <strong>3.000.000 COP</strong>:</p>
+<pre><code class="language-text">PyG Banking = 99.000.000 − 100.000.000 + 3.000.000 = +2.000.000
+PyG IFRS antes de recuponing = 98.300.000 − 99.500.000 + 3.000.000 = +1.800.000
+Δcrédito = −700.000 − (−500.000) = −200.000
+Δrecuponing = 70.000 − 50.000 = +20.000
+CVA_DVA mostrado = −200.000 + 20.000 = −180.000
+PyG IFRS final = 2.000.000 − 180.000 = +1.820.000 COP
+</code></pre>
+<p>Mirar solo el cambio de VP mostraría una pérdida de un millón, omitiendo el cupón. Si el VP descendiera exactamente por el cupón recibido, el PyG sería cero: es el traslado de valor del contrato a efectivo, no una ganancia nueva.</p>
+<p>Supónganse los siguientes factores enviados por el informe:</p>
+<table>
+<thead>
+<tr>
+<th>Factor</th>
+<th style="text-align: right;">COP</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>THETA</td>
+<td style="text-align: right;">300.000</td>
+</tr>
+<tr>
+<td>DELTA_PYG</td>
+<td style="text-align: right;">800.000</td>
+</tr>
+<tr>
+<td>DELTA_OTRAS</td>
+<td style="text-align: right;">20.000</td>
+</tr>
+<tr>
+<td>RHO_COP</td>
+<td style="text-align: right;">400.000</td>
+</tr>
+<tr>
+<td>RHO_USD</td>
+<td style="text-align: right;">100.000</td>
+</tr>
+<tr>
+<td>RHO_DTF</td>
+<td style="text-align: right;">150.000</td>
+</tr>
+<tr>
+<td>RHO_IPC</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>RHO_OTRAS</td>
+<td style="text-align: right;">30.000</td>
+</tr>
+<tr>
+<td>TRADING</td>
+<td style="text-align: right;">100.000</td>
+</tr>
+<tr>
+<td>Suma explicada por la fuente</td>
+<td style="text-align: right;">1.900.000</td>
+</tr>
+<tr>
+<td>EPSILON calculado</td>
+<td style="text-align: right;">100.000</td>
+</tr>
+<tr>
+<td>Banking total</td>
+<td style="text-align: right;">2.000.000</td>
+</tr>
+</tbody>
+</table>
+<p>El residual representa <code>100.000/2.000.000 = 5%</code>. Su límite configurable actual es 7%, junto con la tolerancia absoluta en COP: se marca DIFERENCIA si <code>abs(EPSILON) &gt; max(abs(Banking) × 7%, tolerancia_COP)</code>. Un residual inferior al umbral no prueba que la atribución sea económicamente correcta; también deben comparar los controles disponibles y revisar las advertencias de origen.</p>
+<p>Si un Trade ID anterior desaparece del corte actual, el motor exige un cierre explícito en lugar de inventar la liquidación. Con pagos diarios requiere intervalos de un día calendario. Existe soporte de pagos acumulados para obtener su cambio, pero la atribución por factores Swap sigue siendo diaria: para MTD se necesitan todos los intervalos. En la importación del libro, Payments vacío se trata como cero con advertencia, reproduciendo una convención del Excel todavía pendiente de validar con Payments Report.</p>
+<h3 id="64-producto-caja-del-book-swaps">6.4. Producto CAJA del book SWAPS</h3>
+<h4 id="inventario-trading-y-comprasventas-del-día">Inventario, trading y compras/ventas del día</h4>
+<p>Sean <code>Q0</code> saldo USD anterior; <code>B</code> compras USD; <code>V</code> ventas USD; <code>kb</code> precio medio de compra; <code>kv</code> precio medio de venta; <code>S0</code> y <code>S1</code> las TRM anterior y actual. Los precios medios se obtienen dividiendo el movimiento total COP por el movimiento total USD de cada lado.</p>
+<pre><code class="language-text">Q1 = Q0 + B − V
+DELTA_INTERDAY = Q0 × (S1 − S0)
+TRADING = min(B,V) × (kv − kb)
+DELTA_INTRADAY = (B−V) × [S1 − (kb si B≥V; kv si B&lt;V)]
+</code></pre>
+<p>El control de inventario exige <code>Q1 = Q0+B−V</code> con tolerancia absoluta de 0,01 USD. Un movimiento COP sin monto USD o una tasa de negociación faltante no se interpreta como cero. La separación trading/intradía usa precios medios agregados; no identifica un emparejamiento FIFO de cada operación.</p>
+<h4 id="fondeo-diario">Fondeo diario</h4>
+<p>Usa el saldo final USD <code>Q1</code> y TRM actual. FTP COP y ajuste COP se combinan multiplicativamente como tasas efectivas anuales; FTP USD y ajuste USD se suman y se prorratean por 360:</p>
+<pre><code class="language-text">rCOP_total = (1+FTP_COP) × (1+ajuste_COP) − 1
+Fondeo_COP = −Q1 × S1 × [(1+rCOP_total)^(1/365) − 1]
+Fondeo_USD = Q1 × S1 × (FTP_USD + ajuste_USD) / 360
+COSTO_FONDOS = Fondeo_COP + Fondeo_USD
+PyG Banking = DELTA_INTERDAY + TRADING + DELTA_INTRADAY + COSTO_FONDOS
+</code></pre>
+<p>Con saldo USD positivo, el término COP representa costo y el USD ingreso bajo esta convención; con saldo negativo se invierten. El código no capitaliza una tasa USD nominal como si fuera efectiva anual. El mismo PyG se muestra en IFRS porque esta Caja no incorpora ajuste de crédito.</p>
+<h4 id="ejemplo-numérico_1">Ejemplo numérico</h4>
+<p>Saldo anterior USD 100.000; TRM anterior 4.000 y actual 4.020. Compra USD 25.000 a 4.005 y venta USD 10.000 a 4.010. FTP COP 12% EA, ajuste COP 1% EA, FTP USD 4% y ajuste USD 0,5%.</p>
+<pre><code class="language-text">Compras COP = 25.000 × 4.005 = 100.125.000
+Ventas COP = 10.000 × 4.010 = 40.100.000
+Saldo final = 100.000 + 25.000 − 10.000 = 115.000 USD
+Delta interday = 100.000 × (4.020 − 4.000) = +2.000.000 COP
+Trading = 10.000 × (4.010 − 4.005) = +50.000 COP
+Delta intraday = 15.000 × (4.020 − 4.005) = +225.000 COP
+PyG antes de fondeo = +2.275.000 COP
+rCOP_total = 1,12 × 1,01 − 1 = 13,12% EA
+Fondeo COP = −115.000 × 4.020 × [(1,1312)^(1/365) − 1] = −156.168,53 COP
+Fondeo USD = 115.000 × 4.020 × (0,04+0,005)/360 = +57.787,50 COP
+Costo de fondos neto = −98.381,03 COP
+PyG Banking = PyG IFRS = +2.176.618,97 COP
+</code></pre>
+<p>Se puede comprobar el PyG antes de fondeo con una segunda identidad que no usa la descomposición:</p>
+<pre><code class="language-text">Saldo_final × TRM_actual − saldo_anterior × TRM_anterior − compras_COP + ventas_COP
+= 115.000 × 4.020 − 100.000 × 4.000 − 100.125.000 + 40.100.000
+= 2.275.000 COP
+</code></pre>
+<p>La fuente es <code>CAJA SWAP</code>: saldo en F; compras/ventas T:W y Y:AB; tasas AL, AM, AP y AQ. El cálculo nativo corrige el paréntesis de fondeo COP de la columna AO: el <code>−1</code> queda dentro del factor diario. La diferencia documentada frente al Excel de referencia es +1 COP por día para el motor corregido; no se añade un ajuste compensatorio.</p>
+<h3 id="65-reproducibilidad-y-límites-del-ejemplo">6.5. Reproducibilidad y límites del ejemplo</h3>
+<p><code>ejemplos_swaps.py</code> reconstruye todos estos valores, compara las fórmulas de Forward y Novados contra la función nativa y verifica Swap y Caja con importes conocidos. Usa únicamente datos sintéticos; no requiere abrir el libro real y no modifica sus insumos. El escenario adicional de crédito Forward y el ejemplo corto de liquidación son cálculos manuales ilustrativos, separados del cuadro principal de escenarios.</p>
+<p>La descripción corresponde al motor actual, no a una certificación de cierre productivo. La conciliación del libro SWAPS real del 08/09/2026 continúa en DIFERENCIA, con diferencias de universo Swap, referencias Forward cacheadas, residual Forward y convención de fondeo ya documentadas en <code>integracion_libro_swaps.md</code>. Persisten dependencias de VP, factores, pagos, crédito y recuponing externos. La reconstrucción histórica parte del maestro mensual disponible al corte, por lo que debe revisarse la integridad de altas, bajas y eventos.</p>
+<h2 id="7-consolidación-de-productos-a-book-y-de-días-a-mtd">7. Consolidación: de productos a book y de días a MTD</h2>
+<h3 id="71-ejemplo-pequeño-de-los-siete-resultados">7.1 Ejemplo pequeño de los siete resultados</h3>
+<p>Este es un ejemplo adicional de consolidación, distinto de las carteras de los capítulos de producto. Corresponde al corte sintético <strong>31/08/2026 → 01/09/2026</strong> usado en el <a href="https://github.com/FabianSierra842/Risko/blob/main/ejemplos/pyg/Dashboards/PyG/2026-09-01/pyg.html">dashboard de ejemplo del repositorio</a>. Aquí las curvas FX son cero y las opciones están vacías a propósito; el ejemplo de opciones vivas del capítulo 5 sí produce todas sus contribuciones.</p>
+<table>
+<thead>
+<tr>
+<th>Book</th>
+<th>Producto</th>
+<th style="text-align: right;">Banking COP</th>
+<th style="text-align: right;">Ajuste COP</th>
+<th style="text-align: right;">IFRS COP</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>OPCIONES</td>
+<td>OPCIONES</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>OPCIONES</td>
+<td>FORWARD</td>
+<td style="text-align: right;">2.000</td>
+<td style="text-align: right;">−2</td>
+<td style="text-align: right;">1.998</td>
+</tr>
+<tr>
+<td>OPCIONES</td>
+<td>CAJA</td>
+<td style="text-align: right;">20.000</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">20.000</td>
+</tr>
+<tr>
+<td><strong>Subtotal OPCIONES</strong></td>
+<td></td>
+<td style="text-align: right;"><strong>22.000</strong></td>
+<td style="text-align: right;"><strong>−2</strong></td>
+<td style="text-align: right;"><strong>21.998</strong></td>
+</tr>
+<tr>
+<td>SWAPS</td>
+<td>FORWARD</td>
+<td style="text-align: right;">2.000</td>
+<td style="text-align: right;">−2</td>
+<td style="text-align: right;">1.998</td>
+</tr>
+<tr>
+<td>SWAPS</td>
+<td>NOVADOS</td>
+<td style="text-align: right;">200</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">200</td>
+</tr>
+<tr>
+<td>SWAPS</td>
+<td>SWAPS</td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">−2</td>
+<td style="text-align: right;">13</td>
+</tr>
+<tr>
+<td>SWAPS</td>
+<td>CAJA</td>
+<td style="text-align: right;">150</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">150</td>
+</tr>
+<tr>
+<td><strong>Subtotal SWAPS</strong></td>
+<td></td>
+<td style="text-align: right;"><strong>2.365</strong></td>
+<td style="text-align: right;"><strong>−4</strong></td>
+<td style="text-align: right;"><strong>2.361</strong></td>
+</tr>
+<tr>
+<td><strong>TOTAL</strong></td>
+<td></td>
+<td style="text-align: right;"><strong>24.365</strong></td>
+<td style="text-align: right;"><strong>−6</strong></td>
+<td style="text-align: right;"><strong>24.359</strong></td>
+</tr>
+</tbody>
+</table>
+<p>Los dos Forward son compras distintas de 100 USD con cambio de spot de 3.100 a 3.120: <code>100 × 20 = 2.000 COP</code> en cada book. El Novado compra 10 USD y aporta <code>10 × 20 = 200</code>. Caja OPCIONES conserva 1.000 USD sin operaciones: <code>1.000 × 20 = 20.000</code>. Caja SWAPS usa el ejemplo corto de compras 50/ventas 80 del capítulo 5 y aporta 150. El Swap tiene VP Banking <code>1.000 → 1.010</code> y pago <code>5</code>, por lo que aporta <code>1.010 − 1.000 + 5 = 15</code>; su ajuste pasa de −100 a −102 y no cambia recuponing.</p>
+<p>El total Banking se obtiene sumando los siete Banking. El ajuste se suma una sola vez: <code>−2−2−2 = −6</code>. IFRS es <code>24.365−6 = 24.359</code>. <strong>No se suman Banking e IFRS entre sí.</strong> Los subtotales y el total de la tabla son presentaciones de las mismas filas, no nuevas contribuciones.</p>
+<p>Al filtrar solo producto FORWARD, el tablero puede sumar los dos books: Banking <code>4.000</code>, ajuste <code>−4</code>, IFRS <code>3.996</code>. Para revisar uno de los motores hay que filtrar también el book. Si se selecciona una sola griega, los KPI representan esa selección; no deben interpretarse como el total sin filtros del producto.</p>
+<h3 id="72-diario-y-mtd">7.2 Diario y MTD</h3>
+<p>Con el calendario vigente, un corte DIARIO 02/09/2026 compara 01/09→02/09. Un MTD 02/09 requiere dos intervalos: 31/08→01/09 y 01/09→02/09. Para MTD 08/09 se necesitan el ancla 31/08 y los ocho cierres de septiembre.</p>
+<p>Ejemplo independiente de dos días:</p>
+<table>
+<thead>
+<tr>
+<th>Día</th>
+<th style="text-align: right;">Banking COP</th>
+<th style="text-align: right;">Ajuste COP</th>
+<th style="text-align: right;">IFRS COP</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td style="text-align: right;">+1.000</td>
+<td style="text-align: right;">−20</td>
+<td style="text-align: right;">+980</td>
+</tr>
+<tr>
+<td>2</td>
+<td style="text-align: right;">−300</td>
+<td style="text-align: right;">+5</td>
+<td style="text-align: right;">−295</td>
+</tr>
+<tr>
+<td><strong>MTD al 2</strong></td>
+<td style="text-align: right;"><strong>+700</strong></td>
+<td style="text-align: right;"><strong>−15</strong></td>
+<td style="text-align: right;"><strong>+685</strong></td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-text">Banking MTD = 1.000 − 300 = 700
+Ajuste MTD = −20 + 5 = −15
+IFRS MTD = 980 − 295 = 685 = 700 − 15
+</code></pre>
+<p>Los diarios se guardan como diarios; no se suman a la vez filas diarias y filas MTD. El acumulado se construye al consultar el alcance. Aunque una identidad de niveles pueda telescopar entre extremos, la atribución por factores requiere la cadena diaria para conservar los cambios de mercado, cartera y eventos de cada intervalo.</p>
+<p><code>CALENDARIO</code> es la configuración activa. El coordinador también conoce <code>HABIL_CO</code>, pero <strong>Swap y Caja SWAPS exigen intervalos de un día calendario</strong>. Cambiar a hábiles no habilita saltar sábados, domingos o festivos en esos motores. Tampoco se rellena automáticamente un día faltante con cero.</p>
+<h3 id="73-controles-de-consistencia-histórica">7.3 Controles de consistencia histórica</h3>
+<p>Antes de consolidar se comprueba:</p>
+<ol>
+<li>Que estén todos los productos habilitados del book y todos los intervalos solicitados.</li>
+<li>Que la fecha anterior de cada resultado sea la esperada.</li>
+<li>Que todos los resultados procedan de la versión de motor configurada.</li>
+<li>Que los productos de un mismo book/fecha usen exactamente el mismo snapshot, verificado con SHA-256.</li>
+<li>Que el snapshot actual de un día coincida con el snapshot anterior del siguiente.</li>
+</ol>
+<p>Por ejemplo, si se corrige el snapshot del 1 de septiembre después de ejecutar Forward pero antes de ejecutar Caja, no basta con que ambos archivos se llamen igual. Los hashes distintos impiden mezclarlos. Hay que recalcular los productos afectados y los intervalos que usan ese snapshot: 31/08→01/09 y 01/09→02/09, si están dentro del alcance.</p>
+<h3 id="74-qué-se-guarda-en-sqlite">7.4 Qué se guarda en SQLite</h3>
+<table>
+<thead>
+<tr>
+<th>Tabla</th>
+<th>Contenido y clave</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tbl_pyg_calculos</code></td>
+<td>Resultado diario completo en JSON; clave fecha/book/producto. Conserva escenarios, componentes, controles, fuentes y versión.</td>
+</tr>
+<tr>
+<td><code>tbl_pyg_diario</code></td>
+<td>Contribuciones monetarias; clave fecha/book/producto/componente/vista.</td>
+</tr>
+<tr>
+<td><code>tbl_pyg_ejecuciones</code></td>
+<td>Evidencia de cada corrida, identificador, fecha de ejecución y contenido.</td>
+</tr>
+</tbody>
+</table>
+<p>La fila de contribución tiene este contrato:</p>
+<pre><code class="language-text">FECHA | FECHA_ANTERIOR | BOOK | PRODUCTO | COMPONENTE | VALOR_COP
+VISTA | TIPO | ESTADO | PERIODO
+</code></pre>
+<p><code>VISTA</code> es <code>Banking</code> o <code>CVA/DVA</code>; <code>PERIODO</code> almacenado es <code>DIARIO</code>. Banking e IFRS se derivan; no se guardan como otras filas de atribución que luego puedan sumarse por accidente. Tampoco se admiten RHO agregado y RHO_COP/RHO_USD simultáneos dentro del resultado de un mismo producto.</p>
+<p>Una corrida completa se calcula y valida antes de persistir; las escrituras de esa corrida comparten una transacción. Un reproceso sustituye solo fecha/book/producto de su alcance, evitando duplicados. La creación del HTML ocurre después del guardado: un fallo al generar el tablero no implica que se haya deshecho una persistencia ya completada.</p>
+<h2 id="8-conciliación-diagnóstico-y-publicación">8. Conciliación, diagnóstico y publicación</h2>
+<h3 id="81-tres-comprobaciones-diferentes">8.1 Tres comprobaciones diferentes</h3>
+<table>
+<thead>
+<tr>
+<th>Comprobación</th>
+<th>Qué demuestra</th>
+<th>Qué no demuestra</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Identidad interna</td>
+<td>Suma de componentes = Banking; Banking + ajuste = IFRS</td>
+<td>Que la cartera o la metodología sean correctas.</td>
+</tr>
+<tr>
+<td>Comparación con controles</td>
+<td>Coincidencia con las referencias suministradas y reconocidas</td>
+<td>Independencia de origen de esas referencias, ni validación de componentes sin referencia.</td>
+</tr>
+<tr>
+<td>Conciliación funcional</td>
+<td>Revisión de fuentes, convenciones, eventos y resultados reales</td>
+<td>No se obtiene automáticamente por pasar las dos anteriores.</td>
+</tr>
+</tbody>
+</table>
+<p>El control total <code>PYG_BANKING</code> debe existir para poder obtener conciliación <code>OK</code>. Además, todos los componentes reconocidos que vengan como control deben estar dentro de la tolerancia absoluta configurada, actualmente <strong>2 COP</strong>. Un control no reconocido por el motor no se convierte automáticamente en una validación adicional. Si solo se entregó el total Banking, un <code>OK</code> no prueba por separado cada griega o el ajuste de crédito.</p>
+<p>En SWAPS, el cálculo del total por operación y la suma de factores se hacen por vías separadas, pero VP, factores y controles pueden depender del mismo libro o sistema fuente. La independencia aritmética no equivale a independencia de origen.</p>
+<h3 id="82-estados">8.2 Estados</h3>
+<table>
+<thead>
+<tr>
+<th>Estado</th>
+<th>Interpretación</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>PRELIMINAR</code></td>
+<td>Etiqueta del resultado de esta versión, incluso si la conciliación es OK.</td>
+</tr>
+<tr>
+<td>Conciliación <code>OK</code></td>
+<td>Controles disponibles reconocidos dentro de tolerancia y controles adicionales del motor satisfechos.</td>
+</tr>
+<tr>
+<td>Conciliación <code>DIFERENCIA</code></td>
+<td>Algún control no coincide, o el residual Swap excede el límite.</td>
+</tr>
+<tr>
+<td>Conciliación <code>SIN_REFERENCIA</code></td>
+<td>Falta el control total Banking; puede existir cálculo válido sin referencia.</td>
+</tr>
+<tr>
+<td>Calidad <code>ADVERTENCIA</code></td>
+<td>Dependencia o convención que requiere revisión; no necesariamente bloquea publicar por sí sola.</td>
+</tr>
+<tr>
+<td>Calidad <code>NO_INCLUIDO</code></td>
+<td>Falta un complemento, por ejemplo fondeo OPCIONES; su ausencia no equivale a un cero validado.</td>
+</tr>
+</tbody>
+</table>
+<p>El residual Swap bloquea <code>OK</code> cuando:</p>
+<pre><code class="language-text">abs(EPSILON) &gt; max(0,07 × abs(PyG Banking Swap), 2 COP)
+</code></pre>
+<p>Con Banking 2.000.000 y residual 100.000, el cociente es 5% y no excede 140.000. Si el residual fuera 200.000, excedería el umbral. Si Banking es cero, el control absoluto sigue funcionando; el cociente no se calcula dividiendo por cero.</p>
+<h3 id="83-cómo-investigar-una-diferencia">8.3 Cómo investigar una diferencia</h3>
+<table>
+<thead>
+<tr>
+<th>Síntoma</th>
+<th>Revisión concreta</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Diferencia muy grande en el primer día del mes</td>
+<td>Ancla, primas/liquidaciones anteriores y mismo inicio de período al valorar ambos extremos.</td>
+</tr>
+<tr>
+<td>PyG inesperado al vencimiento</td>
+<td>Fecha de fixing, modalidad, moneda, persistencia CXC y fecha de cumplimiento.</td>
+</tr>
+<tr>
+<td>Resultado cambia por aproximadamente la TRM</td>
+<td>Posible confusión entre USD y COP o falta de conversión.</td>
+</tr>
+<tr>
+<td>Rho muy diferente de la hoja auxiliar</td>
+<td>Tasas continuas frente a efectivas, bases 365/360, plazo vencimiento/cumplimiento, base y orden de escenarios.</td>
+</tr>
+<tr>
+<td>Nuevos/otros grande</td>
+<td>Altas, bajas, modificaciones, primas y eventos; no asignarlo íntegro a trading sin revisarlos.</td>
+</tr>
+<tr>
+<td>Swap cae en un pago de cupón</td>
+<td>Comprobar que el pago entra con signo correcto y no queda omitido ni duplicado.</td>
+</tr>
+<tr>
+<td>Caja falla en saldo</td>
+<td>Verificar compras/ventas, movimientos de cumplimiento, saldos firmados y eventos de efectivo.</td>
+</tr>
+<tr>
+<td>Total coincide pero residual Swap es grande</td>
+<td>Revisar factores externos; el residual se calcula para visibilizar lo no explicado.</td>
+</tr>
+<tr>
+<td>Faltan productos o hashes no coinciden</td>
+<td>Recalcular el alcance y los intervalos que comparten el snapshot corregido.</td>
+</tr>
+<tr>
+<td>Portada actual, cálculo de hoja antiguo</td>
+<td>Revisar fechas por hoja y valores cacheados; importar no recalcula Excel ni macros.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="84-publicación-en-el-portal">8.4 Publicación en el portal</h3>
+<p>El servicio vuelve a consolidar desde SQLite para la fecha, book y período elegidos. Regenera el HTML de ese resultado y, por defecto, exige conciliación <code>OK</code>. Esta condición no elimina las advertencias ni cambia la etiqueta PRELIMINAR.</p>
+<pre><code class="language-text">Dashboards/
+  PyG/
+    dashboard.json
+    AAAA-MM-DD/
+      pyg.html
+      publicacion.json
+</code></pre>
+<p><code>publicacion.json</code> registra el hash y tamaño del HTML, corte, período, books, fecha inicial, fuentes, versión de motor y estado de conciliación. El portal conserva su contrato existente y presenta el archivo publicado.</p>
+<p>La documentación y el dashboard sintético incluidos en GitHub son material de entrega. <strong>Subirlos a GitHub no equivale a publicar un cierre productivo en la carpeta de red.</strong> El cierre real revisado sigue bloqueado por sus diferencias de conciliación.</p>
+<h2 id="9-estado-real-de-la-implementación-y-trabajo-pendiente">9. Estado real de la implementación y trabajo pendiente</h2>
+<h3 id="91-lo-observado-en-el-libro-swaps-aportado">9.1 Lo observado en el libro SWAPS aportado</h3>
+<p>Estas cifras son evidencia de la revisión del archivo de referencia, <strong>no los datos de los ejemplos de estudio</strong>. Corte de portada: 08/09/2026. El original se conserva y no se ejecutaron sus macros.</p>
+<table>
+<thead>
+<tr>
+<th>Hallazgo documentado</th>
+<th>Consecuencia</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Las hojas Forward y Novados guardan cálculos del 01/09 aunque la portada dice 08/09.</td>
+<td>El mercado fechado y las celdas calculadas deben revisarse por separado.</td>
+</tr>
+<tr>
+<td>El filtro agregado FX_ESTRAT del Swap terminaba en fila 1033, mientras el total llegaba a 1921.</td>
+<td>Una operación fuera del universo queda en el resumen; aplicar el filtro completo explica 22.451.760,10 COP de diferencia del día 8.</td>
+</tr>
+<tr>
+<td>Banking Forward nativo MTD: 1.741.170.600,83 COP; reporte: 1.756.110.106,54 COP.</td>
+<td>La diferencia de 14.939.505,71 COP coincide con el épsilon acumulado del libro; no se incorpora como ajuste para forzar igualdad.</td>
+</tr>
+<tr>
+<td>Paréntesis del fondeo COP en la fórmula AO de Caja.</td>
+<td>La corrección produce +1 COP/día frente al libro: +8 COP en el acumulado revisado.</td>
+</tr>
+<tr>
+<td>Universo SWAPSNOVADO vacío.</td>
+<td>El cero del corte real no valida todavía la metodología con Novados activos.</td>
+</tr>
+</tbody>
+</table>
+<p>El detalle y las fuentes de esos hallazgos están en <a href="https://github.com/FabianSierra842/Risko/blob/main/proyectos/pyg/documentacion/integracion_libro_swaps.md">Integración del libro SWAPS</a>. La conciliación real continúa en <code>DIFERENCIA</code>.</p>
+<h3 id="92-pendientes-por-producto-y-por-flujo">9.2 Pendientes por producto y por flujo</h3>
+<table>
+<thead>
+<tr>
+<th>Alcance</th>
+<th>Falta resolver para completar la validación o independencia del cálculo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Opciones</td>
+<td>Snapshots reales y aceptación de smile, delta de superficie, primas por emisión, descuento a cumplimiento, CXC y liquidación.</td>
+</tr>
+<tr>
+<td>Forward OPCIONES</td>
+<td>Conciliar curvas continuas, fixing <code>tff</code>, modalidad/moneda, eventos y trazabilidad por operación. El contrato actual no exige Trade ID en esta hoja.</td>
+</tr>
+<tr>
+<td>Caja OPCIONES</td>
+<td>Fuente de fondeo/ajustes y puente automático a saldo actual; hoy no verifica ese puente ni integra automáticamente eventos de los otros productos.</td>
+</tr>
+<tr>
+<td>Forward SWAPS</td>
+<td>Resolver residual frente al reporte y eventos históricos; spread histórico propio, pues la importación reutiliza el spread observado del libro.</td>
+</tr>
+<tr>
+<td>Novados SWAPS</td>
+<td>Cartera activa real, precios y variación diaria de cámara, pagos, multiplicadores y contrato de fuente. No inferir liquidación diaria completa a partir de un valor sin descuento.</td>
+</tr>
+<tr>
+<td>Swap</td>
+<td>Fuentes primarias de pagos, VP y recuponing; motor por flujos/curvas; factores nativos y conciliación de universos. Payments vacíos hoy heredan cero con advertencia.</td>
+</tr>
+<tr>
+<td>Caja SWAPS</td>
+<td>Conciliar fuente de movimientos y aceptar la corrección de fondeo y la convención de saldo final.</td>
+</tr>
+<tr>
+<td>FX_ESTRAT</td>
+<td>Mapear sus archivos DORA/Summit y su metodología; habilitar solo después de probar sus productos con datos propios.</td>
+</tr>
+<tr>
+<td>Histórico y eventos</td>
+<td>Confirmar altas, bajas, liquidaciones, primas y conservación de la cadena al cambiar el mes o reprocesar insumos.</td>
+</tr>
+<tr>
+<td>Posición vs PyG</td>
+<td>Existe una ruta de control de posiciones en la configuración, pero el resultado actual devuelve <code>posiciones_control={}</code>. No hay una conciliación automática efectiva con posición en esta versión.</td>
+</tr>
+</tbody>
+</table>
+<p>La correspondencia de los flujos entre derivados y Caja merece revisión conjunta: una liquidación traslada valor a efectivo. El derivado conserva su resultado realizado y Caja incorpora la exposición posterior y sus flujos de negociación adecuados. No se debe reconocer como trading de Caja, por segunda vez, el ingreso ya explicado por el derivado.</p>
+<h2 id="10-mapa-técnico-para-leer-el-proyecto">10. Mapa técnico para leer el proyecto</h2>
+<table>
+<thead>
+<tr>
+<th>Archivo</th>
+<th>Qué estudiar</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://github.com/FabianSierra842/Risko/blob/main/proyectos/pyg/procesos/configuracion.py">configuracion.py</a></td>
+<td><code>configuracion</code>, <code>fecha</code>, <code>intervalos</code>, <code>seleccionar_libros</code>: rutas, fechas y alcance.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/FabianSierra842/Risko/blob/main/proyectos/pyg/procesos/opciones.py">opciones.py</a></td>
+<td><code>_valor_bsm</code>, <code>_volatilidad_cubica</code>, <code>revalorar_cartera</code>, <code>calcular_pyg_opciones</code>: precio, eventos y escenarios.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/FabianSierra842/Risko/blob/main/proyectos/pyg/procesos/forward.py">forward.py</a></td>
+<td><code>fixing_forward</code>, <code>revalorar_forward</code>, <code>calcular_pyg_forward</code>: rama OPCIONES y envío a otros books.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/FabianSierra842/Risko/blob/main/proyectos/pyg/procesos/caja.py">caja.py</a></td>
+<td><code>atribuir_caja</code>, <code>calcular_pyg_spot</code>: identidad de operaciones y complementos OPCIONES.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/FabianSierra842/Risko/blob/main/proyectos/pyg/procesos/fx_snapshot.py">fx_snapshot.py</a></td>
+<td><code>importar_libro_swaps</code>, <code>cargar_par_fx</code>: extracción del libro y contrato JSON.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/FabianSierra842/Risko/blob/main/proyectos/pyg/procesos/fx_motores.py">fx_motores.py</a></td>
+<td><code>valorar_fx</code>, <code>calcular_fx</code>, <code>calcular_swap_fx</code>, <code>costo_fondos</code>, <code>calcular_caja_fx</code>: cuatro productos SWAPS.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/FabianSierra842/Risko/blob/main/proyectos/pyg/procesos/swaps.py">swaps.py</a>, <a href="https://github.com/FabianSierra842/Risko/blob/main/proyectos/pyg/procesos/novados.py">novados.py</a></td>
+<td>Adaptadores de entrada a los motores normalizados.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/FabianSierra842/Risko/blob/main/proyectos/pyg/procesos/atribucion.py">atribucion.py</a></td>
+<td><code>resultado_producto</code>: totales, ajuste y comparación con controles.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/FabianSierra842/Risko/blob/main/proyectos/pyg/procesos/consolidacion.py">consolidacion.py</a></td>
+<td><code>calcular_intervalo</code>, <code>guardar_calculos</code>, <code>consolidar_calculos</code>, <code>sumar</code>: filas, controles y persistencia.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/FabianSierra842/Risko/blob/main/aplicaciones/interfaz_risko/servicios/pyg.py">Servicio PyG</a></td>
+<td><code>ejecutar_todo_pyg</code>, <code>ejecutar_producto_pyg</code>, <code>publicar_tablero</code>: recorrido operativo.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/FabianSierra842/Risko/blob/main/aplicaciones/interfaz_risko/interfaz_pyg.py">Interfaz PyG</a></td>
+<td>Controles de usuario, tareas y actualización de resultados.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/FabianSierra842/Risko/blob/main/proyectos/pyg/tableros/panel_pyg.py">panel_pyg.py</a></td>
+<td>HTML, filtros y totales del tablero.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="101-configuración-que-conviene-conocer">10.1 Configuración que conviene conocer</h3>
+<p>Archivo: <a href="https://github.com/FabianSierra842/Risko/blob/main/proyectos/pyg/configuracion/pyg.json">pyg.json</a>. Las rutas relativas se resuelven desde la raíz Risko; <code>RISKO_PYG_CONFIG</code> permite usar un archivo alternativo.</p>
+<table>
+<thead>
+<tr>
+<th>Clave</th>
+<th>Valor vigente</th>
+<th>Sentido</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>version</code></td>
+<td><code>2</code></td>
+<td>Versión del esquema de configuración.</td>
+</tr>
+<tr>
+<td><code>calculo.version_motor</code></td>
+<td><code>pyg-2.1</code></td>
+<td>Versión exigida para consolidar cálculos.</td>
+</tr>
+<tr>
+<td>Snapshot SWAPS <code>schema_version</code></td>
+<td><code>1</code></td>
+<td>Versión del contrato JSON de insumos; no es la versión del motor.</td>
+</tr>
+<tr>
+<td><code>calculo.calendario</code></td>
+<td><code>CALENDARIO</code></td>
+<td>Intervalos de todos los días.</td>
+</tr>
+<tr>
+<td><code>calculo.tolerancia_conciliacion_cop</code></td>
+<td><code>2.0</code></td>
+<td>Tolerancia absoluta para referencias reconocidas.</td>
+</tr>
+<tr>
+<td><code>calculo.umbral_residual_swap</code></td>
+<td><code>0.07</code></td>
+<td>Fracción relativa máxima del residual, con piso de tolerancia absoluta.</td>
+</tr>
+<tr>
+<td><code>libros</code></td>
+<td>SWAPS y OPCIONES habilitados</td>
+<td>Fuente efectiva del alcance del coordinador.</td>
+</tr>
+<tr>
+<td><code>publicacion.exigir_conciliacion</code></td>
+<td><code>true</code></td>
+<td>Impide publicar cortes con DIFERENCIA o SIN_REFERENCIA.</td>
+</tr>
+<tr>
+<td><code>rutas.base_datos</code></td>
+<td><code>datos/pyg/pyg.db</code></td>
+<td>SQLite del nuevo PyG, separado del flujo de posición.</td>
+</tr>
+</tbody>
+</table>
+<p>El calendario, los criterios de valoración y los controles deben responder a una definición operativa acordada. Cambiar una tolerancia para ocultar una diferencia no resuelve su causa.</p>
+<h3 id="102-reproducir-los-ejemplos">10.2 Reproducir los ejemplos</h3>
+<p>Desde la raíz del proyecto, con las dependencias PyG instaladas:</p>
+<pre><code class="language-powershell">.\.venv\Scripts\python.exe proyectos/pyg/documentacion/ejemplos/ejemplos_opciones.py
+.\.venv\Scripts\python.exe proyectos/pyg/documentacion/ejemplos/ejemplos_swaps.py
+</code></pre>
+<p>Los scripts imprimen JSON con valores sin redondear. No requieren los archivos operativos ni escriben en la base PyG. El ejemplo Swap crea snapshots sintéticos temporales y los elimina al finalizar. Algunas secciones llaman directamente a las funciones de valoración y reconstruyen la secuencia, por lo que no sustituyen un cierre completo a través del servicio ni validan el adaptador de Excel.</p>
+<p>Se adjuntan los <a href="https://github.com/FabianSierra842/Risko/blob/main/proyectos/pyg/documentacion/ejemplos/resultados_opciones.json">resultados OPCIONES</a> y <a href="https://github.com/FabianSierra842/Risko/blob/main/proyectos/pyg/documentacion/ejemplos/resultados_swaps.json">resultados SWAPS</a>, obtenidos al ejecutar los scripts. Los ajustes de crédito elegidos para los ejercicios y el IRS ilustrativo por flujos son datos o cálculos didácticos identificados; no se presentan como estimaciones de un motor crediticio o de un valorador Swap ya implementado.</p>
+<p>La batería de la entrega base obtuvo <strong>36 pruebas PyG aprobadas y 2 omitidas</strong> por falta de datasets externos. Cubrió cálculos monetarios, eventos, signos, consolidación, persistencia, publicación y conservación del XLSM. Las pruebas de posición que dependen de <code>Herramientas/dashy</code> no estaban disponibles con esa herramienta en esta copia; ese resultado no debe confundirse con una validación total del proyecto.</p>
+<h2 id="11-ejercicios-para-comprobar-la-comprensión">11. Ejercicios para comprobar la comprensión</h2>
+<p>Intente resolverlos antes de leer la respuesta.</p>
+<table>
+<thead>
+<tr>
+<th>Ejercicio</th>
+<th>Datos y pregunta</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1. Forward y signo</td>
+<td>Tasas cero. Se venden 1.000 USD a K=4.000. El spot sube de 4.020 a 4.030. Sin eventos: ¿cuál es el PyG?</td>
+</tr>
+<tr>
+<td>2. Prima</td>
+<td>Se compra una opción cuyo valor inicial es 800 COP y se paga una prima de 800 COP ese día. No cambia el mercado. ¿Qué resultado aporta la nueva operación?</td>
+</tr>
+<tr>
+<td>3. CXC USD</td>
+<td>Payoff 20.000 COP, fixing 4.000 y cuenta pendiente USD. El spot pasa de 4.000 a 4.040. ¿Cuántos USD son y cuánto cambia su valor COP?</td>
+</tr>
+<tr>
+<td>4. Swap y pago</td>
+<td>VP pasa de 8.000 a 7.000 COP y se recibe un cupón de 1.000. ¿Hay pérdida?</td>
+</tr>
+<tr>
+<td>5. Crédito</td>
+<td>Banking diario 900 COP; ajuste de nivel IFRS−Banking pasa de −100 a −140. ¿Cuál es IFRS diario?</td>
+</tr>
+<tr>
+<td>6. Caja con neto vendedor</td>
+<td>Compras 50 USD a 3.105, ventas 80 a 3.110, cierre 3.120. Sin inventario anterior ni fondeo: ¿trading, intraday y total?</td>
+</tr>
+<tr>
+<td>7. Residual</td>
+<td>Banking Swap 10.000 COP y factores 9.000. Con límite 7% y tolerancia 2 COP, ¿supera el control?</td>
+</tr>
+<tr>
+<td>8. MTD incompleto</td>
+<td>Se tienen 31/08→01/09 y 02/09→03/09. ¿Se puede publicar MTD al 03/09?</td>
+</tr>
+</tbody>
+</table>
+<h3 id="respuestas-razonadas">Respuestas razonadas</h3>
+<ol>
+<li><code>q=−1</code>: VP anterior <code>−1.000×20 = −20.000</code>; VP actual <code>−1.000×30 = −30.000</code>; <strong>PyG −10.000 COP</strong>. Una venta de USD pierde cuando sube el spot, bajo estas condiciones.</li>
+<li><code>VP + prima firmada = 800 + (−800) = 0</code>. <strong>Resultado inicial cero</strong>. Sumar una prima positiva por error daría 1.600.</li>
+<li><code>20.000/4.000 = 5 USD</code>; valor actual <code>5×4.040 = 20.200</code>. <strong>Variación +200 COP</strong> mientras siga pendiente. Tras liquidar, la conversión del flujo se congela y la exposición posterior corresponde a Caja.</li>
+<li><code>7.000−8.000+1.000 = 0</code>. <strong>No hay pérdida</strong> en ese intervalo: el valor se trasladó a efectivo.</li>
+<li>Ajuste diario <code>−140−(−100)=−40</code>; <strong>IFRS 860 COP</strong>. No se suma el nivel completo −140 al Banking diario.</li>
+<li>Trading <code>50×(3.110−3.105)=250</code>; intraday <code>(50−80)×(3.120−3.110)=−300</code>; <strong>total −50 COP</strong>. Con el saldo anterior de 10 USD del ejemplo previo se añadirían 200 y el total sería 150.</li>
+<li>Residual <code>10.000−9.000=1.000</code>, límite <code>max(700,2)=700</code>. <strong>Sí: DIFERENCIA</strong>, aunque los factores más residual sumen exactamente el total.</li>
+<li><strong>No</strong>. Falta 01/09→02/09; el programa exige intervalos completos y coherencia de snapshots.</li>
+</ol>
+<h2 id="12-fuentes-y-alcance-de-las-referencias">12. Fuentes y alcance de las referencias</h2>
+<p>La descripción de Risko y las cifras de los ejemplos se contrastaron con los archivos de código enlazados y con los scripts adjuntos. Para decisiones de fuente se consultaron <code>Opciones_FF_V3.py</code>, el XLSM SWAPS aportado y su análisis, manteniendo las diferencias de la implementación visibles. Los documentos anteriores del repositorio pueden describir un diseño previo; esta guía identifica específicamente <code>pyg-2.1</code>.</p>
+<p>Como apoyo conceptual, el código oficial de <a href="https://github.com/lballabio/QuantLib/blob/master/ql/processes/blackscholesprocess.cpp">QuantLib para procesos Black-Scholes y Garman-Kohlhagen</a> muestra la formulación de divisas con tasas doméstica y extranjera. Risko usa sus propias funciones; esta referencia no valida su convención de smile o settlement.</p>
+<p>El <a href="https://github.com/lballabio/QuantLib/blob/master/ql/pricingengines/swap/discountingswapengine.cpp">motor de descuento de Swaps de QuantLib</a> ilustra la valoración de patas a partir de flujos y factores de descuento. El ejemplo por flujos de esta guía explica ese principio, mientras que Risko todavía recibe el VP Swap desde la fuente.</p>
+<p>La explicación de <a href="https://www.cmegroup.com/education/courses/introduction-to-futures/mark-to-market">mark-to-market de CME</a> ayuda a distinguir liquidación diaria y variación de valor. Es una referencia conceptual sobre futuros; <strong>no establece la metodología contractual de CRCC ni valida por sí sola el modelo de Novados implementado</strong>.</p>
+<p>Referencias externas consultadas el 10/09/2026. Las convenciones operativas aplicables a cada contrato deben confirmarse en sus fuentes propias y en la conciliación pendiente.</p></main><footer>Edición del 10/09/2026 · Ejemplos sintéticos · Sin dependencias de red para leer la guía</footer></body></html>
