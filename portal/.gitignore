@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+*.log
+PortalRisko/
+build/
+dist/
+*.spec
+.venv/
+configuraciones/*
+!configuraciones/.gitkeep

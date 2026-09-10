@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "publication_scope": {
+    "enabled": true,
+    "exclude_products": [
+      "Cubrebonos",
+      "NDFTES",
+      "PP"
+    ],
+    "allowed_books": [
+      "Fwd Clientes",
+      "Fx Estrat",
+      "Futuros Fx",
+      "Monedas",
+      "Opciones",
+      "Renta_Fija_ME",
+      "Spot_Cliente",
+      "Swaps",
+      "AMCOST_NY",
+      "Colchon",
+      "Cortos",
+      "Deuda_Privada",
+      "Estructural",
+      "FVOCI_PANAMA",
+      "FVOCI_SUPAN",
+      "FV_OCI_MIAMI",
+      "FV_OCI_NY",
+      "Obligatorias",
+      "RF_ME_FV_OCI",
+      "RF_ME_TRADIN",
+      "RF_ML_FV_OCI",
+      "Trade_Corta",
+      "Trading"
+    ]
+  }
+}

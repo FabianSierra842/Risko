@@ -1,0 +1,125 @@
+{
+  "version": 2,
+  "fuentes": {
+    "swaps": {
+      "carpeta_datasets": "datos/pyg/insumos/swaps",
+      "patron": "Dataset SWAPS {fecha:%Y%m%d}.json",
+      "formato": "snapshot_json_v1"
+    },
+    "opciones": {
+      "carpeta_datasets": "datos/pyg/insumos",
+      "carpeta_origen": "\\\\ISILONSMBPROD\\Gerencia_Riesgo_De_Tesoreria\\3 Jefatura de Riesgo de Mercado\\BDB\\OPCIONES\\INFORME_PYTHON",
+      "patron": "Dataset Libro de Opciones {fecha:%Y%m%d}.xlsx",
+      "hojas_requeridas": [
+        "Opciones",
+        "Resumen",
+        "Tasas_USD",
+        "Tasas_COP",
+        "Superficie_Volatilidad",
+        "tfd"
+      ],
+      "hoja_control_opcional": "PYG"
+    },
+    "referencia_mensual": {
+      "archivo": "datos/pyg/insumos/PYG_OPCIONES_MES_REFERENCIA.xlsb",
+      "hoja_resumen": "RESUMEN FINAL",
+      "rango_validacion": "C1:H22",
+      "hoja_griegas_diarias": "GRIEGAS OPC"
+    },
+    "posiciones": {
+      "archivo": "datos/pyg/insumos/risko.db",
+      "uso": "control_read_only"
+    }
+  },
+  "calculo": {
+    "producto_inicial": "OPCIONES",
+    "periodicidad": "MTD",
+    "modo_fecha_anterior": "intervalos_completos",
+    "metodo_publicacion": "revaloracion_secuencial",
+    "tolerancia_conciliacion_cop": 2.0,
+    "tolerancia_posicion_usd": 1.0,
+    "estado": "PRELIMINAR",
+    "calendario": "CALENDARIO",
+    "version_motor": "pyg-2.1",
+    "umbral_residual_swap": 0.07
+  },
+  "modulos": {
+    "book_opciones": {
+      "habilitado": true,
+      "motor": "proyectos.pyg.procesos.consolidacion",
+      "moneda_resultado": "COP",
+      "productos": [
+        "FORWARD",
+        "OPCIONES",
+        "CAJA"
+      ],
+      "productos_futuros": [
+        "NOVADOS"
+      ],
+      "componentes": [
+        "THETA",
+        "DELTA_PYG",
+        "DELTA_INTRADAY",
+        "RHO",
+        "VEGA",
+        "TRADING",
+        "NUEVOS_OTROS",
+        "AJUSTES",
+        "COSTO_FONDOS",
+        "EPSILON"
+      ]
+    }
+  },
+  "dashboard": {
+    "nombre": "PyG",
+    "archivo": "pyg.html",
+    "configuracion_portal": true
+  },
+  "vector": {
+    "configuracion": "proyectos/pyg/configuracion/vector_pyg.json",
+    "flujo_dataset": "01_Dataset_Book_Opciones",
+    "flujo_primarios": "02_Insumos_Primarios_Book_Opciones",
+    "flujo_referencia": "03_Referencia_Resumen_Book_Opciones",
+    "flujo_posiciones": "04_Control_Posiciones_Book_Opciones"
+  },
+  "rutas": {
+    "base_datos": "datos/pyg/pyg.db",
+    "insumos": "datos/pyg/insumos",
+    "procesados": "datos/pyg/procesados",
+    "publicados": "datos/pyg/publicados",
+    "ejecuciones": "ejecuciones/pyg"
+  },
+  "libros": {
+    "SWAPS": {
+      "habilitado": true,
+      "productos": ["FORWARD", "NOVADOS", "SWAPS", "CAJA"],
+      "fuente": "swaps",
+      "estado": "PENDIENTE_CONCILIACION_PRODUCTIVA"
+    },
+    "OPCIONES": {
+      "habilitado": true,
+      "productos": [
+        "FORWARD",
+        "OPCIONES",
+        "CAJA"
+      ],
+      "fuente": "opciones",
+      "estado": "PENDIENTE_CONCILIACION_PRODUCTIVA"
+    },
+    "FX_ESTRAT": {
+      "habilitado": false,
+      "productos": [
+        "CAJA",
+        "FORWARD",
+        "NOVADOS",
+        "SWAPS"
+      ],
+      "estado": "PENDIENTE_MAPEO_INSUMOS_Y_METODOLOGIA"
+    }
+  },
+  "publicacion": {
+    "exigir_conciliacion": true,
+    "carpeta_dashboard": "PyG",
+    "archivo": "pyg.html"
+  }
+}

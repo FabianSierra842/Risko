@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "id": "pyg",
+  "nombre": "PyG",
+  "descripcion": "PyG MTD por book, producto y contribución, validado contra el control oficial.",
+  "cobertura": "Riesgo de Mercado",
+  "audiencia": "Tesorería",
+  "archivo": "pyg.html",
+  "configuracion": {
+    "habilitada": true
+  }
+}

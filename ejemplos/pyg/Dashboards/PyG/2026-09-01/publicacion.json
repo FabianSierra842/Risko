@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "dashboard": "PyG",
+  "archivo": "pyg.html",
+  "fecha_posicion_solicitada": "2026-09-01",
+  "fechas_datos": [
+    "2026-09-01"
+  ],
+  "fecha_publicacion": "2026-09-09",
+  "estado": "EJEMPLO_SINTETICO_NO_PRODUCTIVO",
+  "libros": [
+    "SWAPS",
+    "OPCIONES"
+  ],
+  "periodo": "MTD",
+  "sha256": "80eb43dad8547bdb614356a54e0cfed82dd1f1e7d8fe04ad6acb91c9562e2175",
+  "tamano_bytes": 33950
+}

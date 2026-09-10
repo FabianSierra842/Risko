@@ -1,0 +1,2738 @@
+{
+  "excel_visible": true,
+  "display_alerts": false,
+  "close_excel_when_done": false,
+  "flows": [
+    {
+      "name": "9.1. Facturas diario",
+      "xlsm": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/Informe Facturas USD.xlsm",
+      "sheet": "Parametros",
+      "base": "\\\\\\\\ISILONSMBPROD\\\\Gerencia_Riesgo_De_Tesoreria\\\\3 Jefatura de Riesgo de Mercado\\\\FORWARDS\\\\INFORMES\\\\5.FTP COP Y USD",
+      "steps": [
+        {
+          "macro": "FTP_P",
+          "repeat": 1,
+          "note": "Ejecución FTP diario",
+          "params": {
+            "B1": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/5.FTP COP Y USD/FTP COP.xlsx",
+            "B2": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/5.FTP COP Y USD/FTP USD.xlsx"
+          }
+        }
+      ],
+      "bases": {
+        "main": "\\\\\\\\ISILONSMBPROD\\\\Gerencia_Riesgo_De_Tesoreria\\\\3 Jefatura de Riesgo de Mercado\\\\FORWARDS\\\\INFORMES\\\\5.FTP COP Y USD"
+      },
+      "default_base": "main",
+      "vars": {},
+      "folder": ""
+    },
+    {
+      "name": "9.2 Facturas fds",
+      "xlsm": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/Informe Facturas USD.xlsm",
+      "sheet": "Parametros",
+      "base": "\\\\\\\\ISILONSMBPROD\\\\Gerencia_Riesgo_De_Tesoreria\\\\3 Jefatura de Riesgo de Mercado\\\\FORWARDS\\\\INFORMES\\\\5.FTP COP Y USD",
+      "steps": [
+        {
+          "macro": "FTP_P",
+          "repeat": 3,
+          "note": "Ejecución FTP diario",
+          "params": {
+            "B1": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/5.FTP COP Y USD/FTP COP.xlsx",
+            "B2": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/5.FTP COP Y USD/FTP USD.xlsx"
+          }
+        }
+      ],
+      "bases": {
+        "main": "\\\\\\\\ISILONSMBPROD\\\\Gerencia_Riesgo_De_Tesoreria\\\\3 Jefatura de Riesgo de Mercado\\\\FORWARDS\\\\INFORMES\\\\5.FTP COP Y USD"
+      },
+      "default_base": "main",
+      "vars": {
+        "Fecha": "{date:%Y%m%d}"
+      },
+      "folder": ""
+    },
+    {
+      "name": "2. PYG SWAPS diario",
+      "xlsm": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/SWAP/PYG SWAPS_MES.xlsm",
+      "sheet": "Parametros",
+      "bases": {
+        "main": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/1.FWD CONSOLIDADO/LIVIANOS",
+        "caja": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/2.CAJA",
+        "libro": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/SWAPS/Informes",
+        "titulos": "//SUMMITFS001/apl/Internos/GR/TRADEPL",
+        "swtotal": "//summitfs001/apl/Internos/GR/SWAP_TOTAL",
+        "Curva": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/Datos Mercado",
+        "Mascara": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES"
+      },
+      "default_base": "main",
+      "vars": {},
+      "steps": [
+        {
+          "macro": "carga_fwd_dia_P",
+          "repeat": 1,
+          "note": "Cargando forward consolidado",
+          "params": {
+            "B1": "{base}/INFORME FWD CONSOLIDADO {date:%%d-%m-%y}.xlsb"
+          }
+        },
+        {
+          "macro": "CARGAR_INFO_CAJA_5_P",
+          "repeat": 1,
+          "note": "Cargando caja",
+          "params": {
+            "B2": "{base:caja}/REPORTE CAJA LIVIANO",
+            "A1": "{date:%%d/%m/%Y}"
+          }
+        },
+        {
+          "macro": "CARGA_FT_P",
+          "repeat": 1,
+          "note": "Cargando FTP COP-USD",
+          "params": {
+            "B3": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/5.FTP COP Y USD/FTP COP.xlsx",
+            "B4": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/5.FTP COP Y USD/FTP USD.xlsx"
+          }
+        },
+        {
+          "macro": "GRIEGAS_P",
+          "repeat": 1,
+          "note": "CARGANDO LIBRO SWAPS",
+          "params": {
+            "B5": "{base:libro}/Informe Libro de Swaps {date:%%Y%m%d}.xlsb"
+          }
+        },
+        {
+          "macro": "Carga_Titulos_P",
+          "repeat": 1,
+          "note": "Cargando reporte titulos",
+          "params": {
+            "B6": "{base:titulos}/ReporteTitulos_{date:%%d%m%Y}.csv",
+            "A2": "{date:%%d/%m/%Y}"
+          }
+        },
+        {
+          "macro": "Carga_Sw_Nuevos_P",
+          "repeat": 1,
+          "note": "Carga sw nuevos",
+          "params": {
+            "B7": "{base:swtotal}/Cierre_SwapTotalReport_{date:%%d%m%y}_000.xls"
+          }
+        },
+        {
+          "macro": "CARGAR_VALORACION_SWAP_P",
+          "repeat": 1,
+          "note": "Datos banking e IFRS",
+          "params": {
+            "B8": "{base:swtotal}/Cierre_SwapTotalReport_{date:%%d%m%y}_000.xls",
+            "B9": "{base:swtotal}/Cierre_SwapTotalReport_IFRS_{date:%%d%m%y}_000.xls",
+            "C1": "{date:%%d}",
+            "C2": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/SWAP/EXP.xlsx"
+          }
+        },
+        {
+          "macro": "Carga_Posi_USD_P",
+          "repeat": 1,
+          "note": "posi usd",
+          "params": {
+            "B10": "{base:swtotal}/Cierre_SwapTotalReport_IFRS_Flujos_{date:%%d%m%y}_000.xls",
+            "B16": "{base:swtotal}/Cierre_SwapTotalReport_Flujos_{date:%%d%m%y}_000.xls"
+          }
+        },
+        {
+          "macro": "Carga_Posi_USD_P_Banking",
+          "repeat": 1,
+          "note": "",
+          "params": {}
+        },
+        {
+          "macro": "traecurvas_P",
+          "repeat": 1,
+          "note": "Curva Forward",
+          "params": {
+            "B11": "{base:Curva}/Curva Forward V2.xlsm"
+          }
+        },
+        {
+          "macro": "CARGAR_INFO_FWDS_P",
+          "repeat": 1,
+          "note": "Mascara fx",
+          "params": {
+            "B12": "{base:Mascara}/MASCARA FX TOTAL REPORT (5.5-3-8).xls"
+          }
+        },
+        {
+          "macro": "flitrar_novados",
+          "repeat": 1,
+          "note": "Traer novados",
+          "params": {}
+        },
+        {
+          "macro": "E_Recalculo",
+          "repeat": 1,
+          "note": "Fuente vs instrum",
+          "params": {}
+        },
+        {
+          "macro": "Llamadarectangular_P",
+          "repeat": 1,
+          "note": "AUX",
+          "params": {
+            "B13": "{base:swtotal}/Cierre_SwapTotalReport_{date:%%d%m%y}_000.xls",
+            "B14": "{base:libro}/Informe Libro de Swaps {date:%%Y%m%d}.xlsb",
+            "B15": "{base:swtotal}/Cierre_SwapTotalReport_Flujos_{date:%%d%m%y}_000.xls"
+          }
+        }
+      ],
+      "folder": ""
+    },
+    {
+      "name": "5. PYG Cubrebonos diario",
+      "xlsm": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/P&G CUBRE BONOS.xlsb",
+      "sheet": "Parametros",
+      "bases": {
+        "main": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/1.FWD CONSOLIDADO/LIVIANOS",
+        "caja": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/2.CAJA",
+        "libro": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/SWAPS/Informes",
+        "titulos": "//SUMMITFS001/apl/Internos/GR/TRADEPL",
+        "swtotal": "//summitfs001/apl/Internos/GR/SWAP_TOTAL",
+        "Curva": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/Datos Mercado",
+        "Mascara": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES",
+        "bakcup": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/Backup Riesgos/FORWARD/INFORMES",
+        "backup": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/Backup Riesgos/FORWARD/INFORMES"
+      },
+      "default_base": "main",
+      "vars": {},
+      "steps": [
+        {
+          "macro": "carga_fwd_P",
+          "repeat": 1,
+          "note": "Cargando forward consolidado",
+          "params": {
+            "B1": "{base}/INFORME FWD CONSOLIDADO {date:%%d-%m-%y}.xlsb"
+          }
+        },
+        {
+          "macro": "carga_caja_P",
+          "repeat": 1,
+          "note": "Cargando caja",
+          "params": {
+            "B2": "{base:caja}/REPORTE CAJA LIVIANO",
+            "A1": "{date:%%d/%m/%Y}"
+          }
+        },
+        {
+          "macro": "traecurvas_P",
+          "repeat": 1,
+          "note": "Curva Forward",
+          "params": {
+            "B11": "{base:Curva}/Curva Forward V2.xlsm"
+          }
+        },
+        {
+          "macro": "carga_fwd_total_P",
+          "repeat": 1,
+          "note": "",
+          "params": {
+            "B12": "{base:Mascara}/MASCARA FX TOTAL REPORT (5.5-3-8).xls"
+          }
+        },
+        {
+          "macro": "flitrar_novados",
+          "repeat": 1,
+          "note": "Traer novados",
+          "params": {}
+        },
+        {
+          "macro": "Carga_Financiaciones",
+          "repeat": 1,
+          "note": "",
+          "params": {
+            "A2": "{date:%%Y%m%d}"
+          }
+        },
+        {
+          "macro": "ActualizarVinculo_PorIndice_DesdeParametros",
+          "repeat": 1,
+          "note": "Actualizar vinculos libros",
+          "params": {
+            "C2": "2",
+            "C1": "{base:backup}/{date-1:%%Y}/{date-1:%%m-%B}/{date-1:%%Y%m%d}/P&G CUBRE BONOS.xlsb"
+          }
+        },
+        {
+          "macro": "F_Calcular_Riesgos_BAC",
+          "repeat": 1,
+          "note": "",
+          "params": {}
+        },
+        {
+          "macro": "F_Calcular_Riesgos_FILIALES",
+          "repeat": 1,
+          "note": "",
+          "params": {}
+        },
+        {
+          "macro": "Recalculo",
+          "repeat": 1,
+          "note": "",
+          "params": {}
+        }
+      ],
+      "folder": ""
+    },
+    {
+      "name": "6. PYG SWAPS FVH diario",
+      "xlsm": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/SWAPS FVH/PYG SWAPS_FVH.xlsm",
+      "sheet": "Parametros",
+      "bases": {
+        "main": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/1.FWD CONSOLIDADO/LIVIANOS",
+        "caja": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/2.CAJA",
+        "libro": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/SWAPS FVH/Informes",
+        "titulos": "//SUMMITFS001/apl/Internos/GR/TRADEPL",
+        "swtotal": "//summitfs001/apl/Internos/GR/SWAP_TOTAL",
+        "Curva": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/Datos Mercado",
+        "Mascara": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES"
+      },
+      "default_base": "main",
+      "vars": {},
+      "steps": [
+        {
+          "macro": "carga_fwd_dia_P",
+          "repeat": 1,
+          "note": "Cargando forward consolidado",
+          "params": {
+            "B1": "{base}/INFORME FWD CONSOLIDADO {date:%%d-%m-%y}.xlsb"
+          }
+        },
+        {
+          "macro": "CARGAR_INFO_CAJA_5_P",
+          "repeat": 1,
+          "note": "Cargando caja",
+          "params": {
+            "B2": "{base:caja}/REPORTE CAJA LIVIANO",
+            "A1": "{date:%%d/%m/%Y}"
+          }
+        },
+        {
+          "macro": "GRIEGAS_P",
+          "repeat": 1,
+          "note": "CARGANDO LIBRO SWAPS",
+          "params": {
+            "B5": "{base:libro}/Informe Libro de Swaps FVH {date:%%Y%m%d}.xlsb"
+          }
+        },
+        {
+          "macro": "Carga_Sw_Nuevos_P",
+          "repeat": 1,
+          "note": "Carga sw nuevos",
+          "params": {
+            "B7": "{base:swtotal}/Cierre_SwapTotalReport_{date:%%d%m%y}_000.xls"
+          }
+        },
+        {
+          "macro": "CARGAR_VALORACION_SWAP_P",
+          "repeat": 1,
+          "note": "Datos banking e IFRS",
+          "params": {
+            "B8": "{base:swtotal}/Cierre_SwapTotalReport_{date:%%d%m%y}_000.xls",
+            "B9": "{base:swtotal}/Cierre_SwapTotalReport_IFRS_{date:%%d%m%y}_000.xls",
+            "C1": "{date:%%d}",
+            "C2": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/SWAP/EXP.xlsx"
+          }
+        }
+      ],
+      "folder": ""
+    },
+    {
+      "name": "2.1 PYG SWAPS fds",
+      "xlsm": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/SWAP/PYG SWAPS_MES.xlsm",
+      "sheet": "Parametros",
+      "bases": {
+        "main": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/1.FWD CONSOLIDADO/LIVIANOS",
+        "caja": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/2.CAJA",
+        "libro": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/SWAPS/Informes",
+        "titulos": "//SUMMITFS001/apl/Internos/GR/TRADEPL",
+        "swtotal": "//summitfs001/apl/Internos/GR/SWAP_TOTAL",
+        "Curva": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/Datos Mercado",
+        "Mascara": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES"
+      },
+      "default_base": "main",
+      "vars": {},
+      "steps": [
+        {
+          "macro": "carga_fwd_dia_P",
+          "repeat": 1,
+          "note": "Cargando forward consolidado",
+          "params": {
+            "B1": "{base}/INFORME FWD CONSOLIDADO {date:%%d-%m-%y}.xlsb"
+          }
+        },
+        {
+          "macro": "Carga_Sw_Nuevos_P",
+          "repeat": 1,
+          "note": "Carga sw nuevos",
+          "params": {
+            "B7": "{base:swtotal}/Cierre_SwapTotalReport_{date:%%d%m%y}_000.xls"
+          }
+        },
+        {
+          "macro": "carga_fwd_dia_P",
+          "repeat": 1,
+          "note": "",
+          "params": {
+            "B1": "{base}/INFORME FWD CONSOLIDADO {date+1:%%d-%m-%y}.xlsb"
+          }
+        },
+        {
+          "macro": "carga_fwd_dia_P",
+          "repeat": 1,
+          "note": "",
+          "params": {
+            "B1": "{base}/INFORME FWD CONSOLIDADO {date+2:%%d-%m-%y}.xlsb"
+          }
+        },
+        {
+          "macro": "carga_fwd_dia_P",
+          "repeat": 0,
+          "note": "",
+          "params": {
+            "B1": "{base}/INFORME FWD CONSOLIDADO {date+3:%%d-%m-%y}.xlsb"
+          }
+        },
+        {
+          "macro": "carga_fwd_dia_P",
+          "repeat": 0,
+          "note": "",
+          "params": {
+            "B1": "{base}/INFORME FWD CONSOLIDADO {date+4:%%d-%m-%y}.xlsb"
+          }
+        },
+        {
+          "macro": "CARGAR_INFO_CAJA_5_P",
+          "repeat": 1,
+          "note": "Cargando caja",
+          "params": {
+            "B2": "{base:caja}/REPORTE CAJA LIVIANO",
+            "A1": "{date:%%d/%m/%Y}"
+          }
+        },
+        {
+          "macro": "CARGA_FT_P",
+          "repeat": 1,
+          "note": "Cargando FTP COP-USD",
+          "params": {
+            "B3": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/5.FTP COP Y USD/FTP COP.xlsx",
+            "B4": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/5.FTP COP Y USD/FTP USD.xlsx"
+          }
+        },
+        {
+          "macro": "CARGA_FT_P",
+          "repeat": 1,
+          "note": "Cargando FTP COP-USD",
+          "params": {
+            "B3": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/5.FTP COP Y USD/FTP COP.xlsx",
+            "B4": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/5.FTP COP Y USD/FTP USD.xlsx"
+          }
+        },
+        {
+          "macro": "CARGA_FT_P",
+          "repeat": 1,
+          "note": "Cargando FTP COP-USD",
+          "params": {
+            "B3": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/5.FTP COP Y USD/FTP COP.xlsx",
+            "B4": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/5.FTP COP Y USD/FTP USD.xlsx"
+          }
+        },
+        {
+          "macro": "CARGA_FT_P",
+          "repeat": 0,
+          "note": "",
+          "params": {
+            "B3": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/5.FTP COP Y USD/FTP COP.xlsx",
+            "B4": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/5.FTP COP Y USD/FTP USD.xlsx"
+          }
+        },
+        {
+          "macro": "CARGA_FT_P",
+          "repeat": 0,
+          "note": "",
+          "params": {
+            "B3": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/5.FTP COP Y USD/FTP COP.xlsx",
+            "B4": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/5.FTP COP Y USD/FTP USD.xlsx"
+          }
+        },
+        {
+          "macro": "GRIEGAS_P",
+          "repeat": 1,
+          "note": "CARGANDO LIBRO SWAPS",
+          "params": {
+            "B5": "{base:libro}/Informe Libro de Swaps {date:%%Y%m%d}.xlsb"
+          }
+        },
+        {
+          "macro": "GRIEGAS_P",
+          "repeat": 1,
+          "note": "",
+          "params": {
+            "B5": "{base:libro}/Informe Libro de Swaps {date+1:%%Y%m%d}.xlsb"
+          }
+        },
+        {
+          "macro": "GRIEGAS_P",
+          "repeat": 1,
+          "note": "",
+          "params": {
+            "B5": "{base:libro}/Informe Libro de Swaps {date+2:%%Y%m%d}.xlsb"
+          }
+        },
+        {
+          "macro": "GRIEGAS_P",
+          "repeat": 0,
+          "note": "",
+          "params": {
+            "B5": "{base:libro}/Informe Libro de Swaps {date+3:%%Y%m%d}.xlsb"
+          }
+        },
+        {
+          "macro": "GRIEGAS_P",
+          "repeat": 0,
+          "note": "",
+          "params": {
+            "B5": "{base:libro}/Informe Libro de Swaps {date+4:%%Y%m%d}.xlsb"
+          }
+        },
+        {
+          "macro": "Carga_Titulos_P",
+          "repeat": 1,
+          "note": "Cargando reporte titulos",
+          "params": {
+            "B6": "{base:titulos}/ReporteTitulos_{date:%%d%m%Y}.csv",
+            "A2": "{date:%%d/%m/%Y}"
+          }
+        },
+        {
+          "macro": "Carga_Titulos_P",
+          "repeat": 1,
+          "note": "",
+          "params": {
+            "B6": "{base:titulos}/ReporteTitulos_{date:%%d%m%Y}_1.csv",
+            "A2": "{date+1:%%d/%m/%Y}"
+          }
+        },
+        {
+          "macro": "Carga_Titulos_P",
+          "repeat": 1,
+          "note": "",
+          "params": {
+            "B6": "{base:titulos}/ReporteTitulos_{date:%%d%m%Y}_2.csv",
+            "A2": "{date+2:%%d/%m/%Y}"
+          }
+        },
+        {
+          "macro": "Carga_Titulos_P",
+          "repeat": 0,
+          "note": "",
+          "params": {
+            "B6": "{base:titulos}/ReporteTitulos_{date:%%d%m%Y}_3.csv",
+            "A2": "{date+3:%%d/%m/%Y}"
+          }
+        },
+        {
+          "macro": "Carga_Titulos_P",
+          "repeat": 0,
+          "note": "",
+          "params": {
+            "B6": "{base:titulos}/ReporteTitulos_{date:%%d%m%Y}_4.csv",
+            "A2": "{date+4:%%d/%m/%Y}"
+          }
+        },
+        {
+          "macro": "CARGAR_VALORACION_SWAP_P",
+          "repeat": 1,
+          "note": "Datos banking e IFRS",
+          "params": {
+            "B8": "{base:swtotal}/Cierre_SwapTotalReport_{date:%%d%m%y}_000.xls",
+            "B9": "{base:swtotal}/Cierre_SwapTotalReport_IFRS_{date:%%d%m%y}_000.xls",
+            "C1": "{date:%%d}",
+            "C2": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/SWAP/EXP.xlsx"
+          }
+        },
+        {
+          "macro": "CARGAR_VALORACION_SWAP_P",
+          "repeat": 1,
+          "note": "",
+          "params": {
+            "B8": "{base:swtotal}/Cierre_SwapTotalReport_{date+1:%%d%m%y}_000.xls",
+            "B9": "{base:swtotal}/Cierre_SwapTotalReport_IFRS_{date+1:%%d%m%y}_000.xls",
+            "C1": "{date+1:%%d}"
+          }
+        },
+        {
+          "macro": "CARGAR_VALORACION_SWAP_P",
+          "repeat": 1,
+          "note": "",
+          "params": {
+            "B8": "{base:swtotal}/Cierre_SwapTotalReport_{date+2:%%d%m%y}_000.xls",
+            "B9": "{base:swtotal}/Cierre_SwapTotalReport_IFRS_{date+2:%%d%m%y}_000.xls",
+            "C1": "{date+2:%%d}"
+          }
+        },
+        {
+          "macro": "CARGAR_VALORACION_SWAP_P",
+          "repeat": 0,
+          "note": "",
+          "params": {
+            "B8": "{base:swtotal}/Cierre_SwapTotalReport_{date+3:%%d%m%y}_000.xls",
+            "B9": "{base:swtotal}/Cierre_SwapTotalReport_IFRS_{date+3:%%d%m%y}_000.xls",
+            "C1": "{date+3:%%d}"
+          }
+        },
+        {
+          "macro": "CARGAR_VALORACION_SWAP_P",
+          "repeat": 0,
+          "note": "",
+          "params": {
+            "B8": "{base:swtotal}/Cierre_SwapTotalReport_{date+4:%%d%m%y}_000.xls",
+            "B9": "{base:swtotal}/Cierre_SwapTotalReport_IFRS_{date+4:%%d%m%y}_000.xls",
+            "C1": "{date+4:%%d}"
+          }
+        },
+        {
+          "macro": "Carga_Posi_USD_P",
+          "repeat": 1,
+          "note": "posi usd",
+          "params": {
+            "B10": "{base:swtotal}/Cierre_SwapTotalReport_IFRS_Flujos_{date:%%d%m%y}_000.xls"
+          }
+        },
+        {
+          "macro": "Carga_Posi_USD_P",
+          "repeat": 1,
+          "note": "",
+          "params": {
+            "B10": "{base:swtotal}/Cierre_SwapTotalReport_IFRS_Flujos_{date+1:%%d%m%y}_000.xls"
+          }
+        },
+        {
+          "macro": "Carga_Posi_USD_P",
+          "repeat": 1,
+          "note": "",
+          "params": {
+            "B10": "{base:swtotal}/Cierre_SwapTotalReport_IFRS_Flujos_{date+2:%%d%m%y}_000.xls"
+          }
+        },
+        {
+          "macro": "Carga_Posi_USD_P",
+          "repeat": 0,
+          "note": "",
+          "params": {
+            "B10": "{base:swtotal}/Cierre_SwapTotalReport_IFRS_Flujos_{date+3:%%d%m%y}_000.xls"
+          }
+        },
+        {
+          "macro": "Carga_Posi_USD_P",
+          "repeat": 0,
+          "note": "",
+          "params": {
+            "B10": "{base:swtotal}/Cierre_SwapTotalReport_IFRS_Flujos_{date+4:%%d%m%y}_000.xls"
+          }
+        },
+        {
+          "macro": "Carga_Posi_USD_P_Banking",
+          "repeat": 1,
+          "note": "",
+          "params": {}
+        },
+        {
+          "macro": "Carga_Posi_USD_P_Banking",
+          "repeat": 1,
+          "note": "",
+          "params": {}
+        },
+        {
+          "macro": "Carga_Posi_USD_P_Banking",
+          "repeat": 1,
+          "note": "",
+          "params": {}
+        },
+        {
+          "macro": "Carga_Posi_USD_P_Banking",
+          "repeat": 0,
+          "note": "",
+          "params": {}
+        },
+        {
+          "macro": "Carga_Posi_USD_P_Banking",
+          "repeat": 0,
+          "note": "",
+          "params": {}
+        },
+        {
+          "macro": "traecurvas_P",
+          "repeat": 1,
+          "note": "Curva Forward",
+          "params": {
+            "B11": "{base:Curva}/Curva Forward V2.xlsm"
+          }
+        },
+        {
+          "macro": "traecurvas_P",
+          "repeat": 1,
+          "note": "",
+          "params": {
+            "B11": "{base:Curva}/Curva Forward V2.xlsm"
+          }
+        },
+        {
+          "macro": "traecurvas_P",
+          "repeat": 1,
+          "note": "",
+          "params": {
+            "B11": "{base:Curva}/Curva Forward V2.xlsm"
+          }
+        },
+        {
+          "macro": "traecurvas_P",
+          "repeat": 0,
+          "note": "",
+          "params": {
+            "B11": "{base:Curva}/Curva Forward V2.xlsm"
+          }
+        },
+        {
+          "macro": "traecurvas_P",
+          "repeat": 0,
+          "note": "",
+          "params": {
+            "B11": "{base:Curva}/Curva Forward V2.xlsm"
+          }
+        },
+        {
+          "macro": "CARGAR_INFO_FWDS_P",
+          "repeat": 1,
+          "note": "Mascara fx",
+          "params": {
+            "B12": "{base:Mascara}/MASCARA FX TOTAL REPORT (5.5-3-8).xls"
+          }
+        },
+        {
+          "macro": "flitrar_novados",
+          "repeat": 1,
+          "note": "Traer novados",
+          "params": {}
+        },
+        {
+          "macro": "E_Recalculo",
+          "repeat": 1,
+          "note": "Fuente vs instrum",
+          "params": {}
+        },
+        {
+          "macro": "Llamadarectangular_P",
+          "repeat": 1,
+          "note": "AUX",
+          "params": {
+            "B13": "{base:swtotal}/Cierre_SwapTotalReport_{date+2:%%d%m%y}_000.xls",
+            "B14": "{base:libro}/Informe Libro de Swaps {date+2:%%Y%m%d}.xlsb",
+            "B15": "{base:swtotal}/Cierre_SwapTotalReport_Flujos_{date+2:%%d%m%y}_000.xls"
+          }
+        }
+      ],
+      "folder": ""
+    },
+    {
+      "name": "5.1 PYG Cubrebonos fds",
+      "xlsm": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/P&G CUBRE BONOS.xlsb",
+      "sheet": "Parametros",
+      "bases": {
+        "main": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/1.FWD CONSOLIDADO/LIVIANOS",
+        "caja": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/2.CAJA",
+        "libro": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/SWAPS/Informes",
+        "titulos": "//SUMMITFS001/apl/Internos/GR/TRADEPL",
+        "swtotal": "//summitfs001/apl/Internos/GR/SWAP_TOTAL",
+        "Curva": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/Datos Mercado",
+        "Mascara": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES",
+        "bakcup": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/Backup Riesgos/FORWARD/INFORMES",
+        "backup": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/Backup Riesgos/FORWARD/INFORMES"
+      },
+      "default_base": "main",
+      "vars": {},
+      "steps": [
+        {
+          "macro": "carga_fwd_P",
+          "repeat": 1,
+          "note": "Cargando forward consolidado",
+          "params": {
+            "B1": "{base}/INFORME FWD CONSOLIDADO {date:%%d-%m-%y}.xlsb"
+          }
+        },
+        {
+          "macro": "carga_fwd_P",
+          "repeat": 1,
+          "note": "",
+          "params": {
+            "B1": "{base}/INFORME FWD CONSOLIDADO {date+1:%%d-%m-%y}.xlsb"
+          }
+        },
+        {
+          "macro": "carga_fwd_P",
+          "repeat": 1,
+          "note": "",
+          "params": {
+            "B1": "{base}/INFORME FWD CONSOLIDADO {date+2:%%d-%m-%y}.xlsb"
+          }
+        },
+        {
+          "macro": "carga_fwd_P",
+          "repeat": 0,
+          "note": "",
+          "params": {
+            "B1": "{base}/INFORME FWD CONSOLIDADO {date+3:%%d-%m-%y}.xlsb"
+          }
+        },
+        {
+          "macro": "carga_caja_P",
+          "repeat": 1,
+          "note": "Cargando caja",
+          "params": {
+            "B2": "{base:caja}/REPORTE CAJA LIVIANO",
+            "A1": "{date:%%d/%m/%Y}"
+          }
+        },
+        {
+          "macro": "traecurvas_P",
+          "repeat": 1,
+          "note": "Curva Forward",
+          "params": {
+            "B11": "{base:Curva}/Curva Forward V2.xlsm"
+          }
+        },
+        {
+          "macro": "traecurvas_P",
+          "repeat": 1,
+          "note": "",
+          "params": {
+            "B11": "{base:Curva}/Curva Forward V2.xlsm"
+          }
+        },
+        {
+          "macro": "traecurvas_P",
+          "repeat": 1,
+          "note": "",
+          "params": {
+            "B11": "{base:Curva}/Curva Forward V2.xlsm"
+          }
+        },
+        {
+          "macro": "traecurvas_P",
+          "repeat": 0,
+          "note": "",
+          "params": {
+            "B11": "{base:Curva}/Curva Forward V2.xlsm"
+          }
+        },
+        {
+          "macro": "carga_fwd_total_P",
+          "repeat": 1,
+          "note": "",
+          "params": {
+            "B12": "{base:Mascara}/MASCARA FX TOTAL REPORT (5.5-3-8).xls"
+          }
+        },
+        {
+          "macro": "flitrar_novados",
+          "repeat": 1,
+          "note": "Traer novados",
+          "params": {}
+        },
+        {
+          "macro": "Carga_Financiaciones",
+          "repeat": 1,
+          "note": "",
+          "params": {
+            "A2": "{date:%%Y%m%d}"
+          }
+        },
+        {
+          "macro": "Carga_Financiaciones",
+          "repeat": 1,
+          "note": "",
+          "params": {
+            "A2": "{date+1:%%Y%m%d}"
+          }
+        },
+        {
+          "macro": "Carga_Financiaciones",
+          "repeat": 1,
+          "note": "",
+          "params": {
+            "A2": "{date+2:%%Y%m%d}"
+          }
+        },
+        {
+          "macro": "Carga_Financiaciones",
+          "repeat": 0,
+          "note": "",
+          "params": {
+            "A2": "{date+3:%%Y%m%d}"
+          }
+        },
+        {
+          "macro": "ActualizarVinculo_PorIndice_DesdeParametros",
+          "repeat": 1,
+          "note": "Actualizar vinculos libros",
+          "params": {
+            "C2": "2",
+            "C1": "{base:backup}/{date-1:%%Y}/{date-1:%%m-%B}/{date-1:%%Y%m%d}/P&G CUBRE BONOS.xlsb"
+          }
+        },
+        {
+          "macro": "F_Calcular_Riesgos_BAC",
+          "repeat": 1,
+          "note": "",
+          "params": {}
+        },
+        {
+          "macro": "F_Calcular_Riesgos_FILIALES",
+          "repeat": 1,
+          "note": "",
+          "params": {}
+        },
+        {
+          "macro": "Recalculo",
+          "repeat": 1,
+          "note": "",
+          "params": {}
+        }
+      ],
+      "folder": ""
+    },
+    {
+      "name": "6.1 PYG SWAPS FVH fds",
+      "xlsm": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/SWAPS FVH/PYG SWAPS_FVH.xlsm",
+      "sheet": "Parametros",
+      "bases": {
+        "main": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/1.FWD CONSOLIDADO/LIVIANOS",
+        "caja": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/2.CAJA",
+        "libro": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/SWAPS FVH/Informes",
+        "titulos": "//SUMMITFS001/apl/Internos/GR/TRADEPL",
+        "swtotal": "//summitfs001/apl/Internos/GR/SWAP_TOTAL",
+        "Curva": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/Datos Mercado",
+        "Mascara": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES"
+      },
+      "default_base": "main",
+      "vars": {},
+      "steps": [
+        {
+          "macro": "carga_fwd_dia_P",
+          "repeat": 1,
+          "note": "Cargando forward consolidado",
+          "params": {
+            "B1": "{base}/INFORME FWD CONSOLIDADO {date:%%d-%m-%y}.xlsb"
+          }
+        },
+        {
+          "macro": "Carga_Sw_Nuevos_P",
+          "repeat": 1,
+          "note": "Carga sw nuevos",
+          "params": {
+            "B7": "{base:swtotal}/Cierre_SwapTotalReport_{date:%%d%m%y}_000.xls"
+          }
+        },
+        {
+          "macro": "carga_fwd_dia_P",
+          "repeat": 1,
+          "note": "",
+          "params": {
+            "B1": "{base}/INFORME FWD CONSOLIDADO {date+1:%%d-%m-%y}.xlsb"
+          }
+        },
+        {
+          "macro": "carga_fwd_dia_P",
+          "repeat": 1,
+          "note": "",
+          "params": {
+            "B1": "{base}/INFORME FWD CONSOLIDADO {date+2:%%d-%m-%y}.xlsb"
+          }
+        },
+        {
+          "macro": "carga_fwd_dia_P",
+          "repeat": 0,
+          "note": "",
+          "params": {
+            "B1": "{base}/INFORME FWD CONSOLIDADO {date+3:%%d-%m-%y}.xlsb"
+          }
+        },
+        {
+          "macro": "carga_fwd_dia_P",
+          "repeat": 0,
+          "note": "",
+          "params": {
+            "B1": "{base}/INFORME FWD CONSOLIDADO {date+4:%%d-%m-%y}.xlsb"
+          }
+        },
+        {
+          "macro": "CARGAR_INFO_CAJA_5_P",
+          "repeat": 1,
+          "note": "Cargando caja",
+          "params": {
+            "B2": "{base:caja}/REPORTE CAJA LIVIANO",
+            "A1": "{date:%%d/%m/%Y}"
+          }
+        },
+        {
+          "macro": "GRIEGAS_P",
+          "repeat": 1,
+          "note": "CARGANDO LIBRO SWAPS",
+          "params": {
+            "B5": "{base:libro}/Informe Libro de Swaps FVH {date:%%Y%m%d}.xlsb"
+          }
+        },
+        {
+          "macro": "GRIEGAS_P",
+          "repeat": 1,
+          "note": "",
+          "params": {
+            "B5": "{base:libro}/Informe Libro de Swaps FVH {date+1:%%Y%m%d}.xlsb"
+          }
+        },
+        {
+          "macro": "GRIEGAS_P",
+          "repeat": 1,
+          "note": "",
+          "params": {
+            "B5": "{base:libro}/Informe Libro de Swaps FVH {date+2:%%Y%m%d}.xlsb"
+          }
+        },
+        {
+          "macro": "GRIEGAS_P",
+          "repeat": 0,
+          "note": "",
+          "params": {
+            "B5": "{base:libro}/Informe Libro de Swaps FVH {date+3:%%Y%m%d}.xlsb"
+          }
+        },
+        {
+          "macro": "GRIEGAS_P",
+          "repeat": 0,
+          "note": "",
+          "params": {
+            "B5": "{base:libro}/Informe Libro de Swaps FVH {date+4:%%Y%m%d}.xlsb"
+          }
+        },
+        {
+          "macro": "CARGAR_VALORACION_SWAP_P",
+          "repeat": 1,
+          "note": "Datos banking e IFRS",
+          "params": {
+            "B8": "{base:swtotal}/Cierre_SwapTotalReport_{date:%%d%m%y}_000.xls",
+            "B9": "{base:swtotal}/Cierre_SwapTotalReport_IFRS_{date:%%d%m%y}_000.xls",
+            "C1": "{date:%%d}",
+            "C2": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/SWAP/EXP.xlsx"
+          }
+        },
+        {
+          "macro": "CARGAR_VALORACION_SWAP_P",
+          "repeat": 1,
+          "note": "",
+          "params": {
+            "B8": "{base:swtotal}/Cierre_SwapTotalReport_{date+1:%%d%m%y}_000.xls",
+            "B9": "{base:swtotal}/Cierre_SwapTotalReport_IFRS_{date+1:%%d%m%y}_000.xls",
+            "C1": "{date+1:%%d}"
+          }
+        },
+        {
+          "macro": "CARGAR_VALORACION_SWAP_P",
+          "repeat": 1,
+          "note": "",
+          "params": {
+            "B8": "{base:swtotal}/Cierre_SwapTotalReport_{date+2:%%d%m%y}_000.xls",
+            "B9": "{base:swtotal}/Cierre_SwapTotalReport_IFRS_{date+2:%%d%m%y}_000.xls",
+            "C1": "{date+2:%%d}"
+          }
+        },
+        {
+          "macro": "CARGAR_VALORACION_SWAP_P",
+          "repeat": 0,
+          "note": "",
+          "params": {
+            "B8": "{base:swtotal}/Cierre_SwapTotalReport_{date+2:%%d%m%y}_000.xls",
+            "B9": "{base:swtotal}/Cierre_SwapTotalReport_IFRS_{date+3:%%d%m%y}_000.xls",
+            "C1": "{date+3:%%d}"
+          }
+        },
+        {
+          "macro": "CARGAR_VALORACION_SWAP_P",
+          "repeat": 0,
+          "note": "",
+          "params": {
+            "B8": "{base:swtotal}/Cierre_SwapTotalReport_{date+4:%%d%m%y}_000.xls",
+            "B9": "{base:swtotal}/Cierre_SwapTotalReport_IFRS_{date+4:%%d%m%y}_000.xls",
+            "C1": "{date+4:%%d}"
+          }
+        }
+      ],
+      "folder": ""
+    },
+    {
+      "name": "8. SWAPS CDTS diario",
+      "xlsm": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/SWAPS FVH/Coberturas CDTs/SWAPS CDTS.xlsm",
+      "sheet": "Parametros",
+      "bases": {
+        "main": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/1.FWD CONSOLIDADO/LIVIANOS",
+        "caja": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/2.CAJA",
+        "libro": "\\\\ISILONSMBPROD\\Gerencia_Riesgo_De_Tesoreria\\3 Jefatura de Riesgo de Mercado\\SWAPS\\Herramientas",
+        "titulos": "//SUMMITFS001/apl/Internos/GR/TRADEPL",
+        "swtotal": "//summitfs001/apl/Internos/GR/SWAP_TOTAL",
+        "Curva": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/Datos Mercado",
+        "Mascara": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES"
+      },
+      "default_base": "main",
+      "vars": {},
+      "steps": [
+        {
+          "macro": "Importa_Banking_P",
+          "repeat": 1,
+          "note": "datos banking",
+          "params": {
+            "B1": "{base:swtotal}/Cierre_SwapTotalReport_{date:%%d%m%y}_000.xls"
+          }
+        },
+        {
+          "macro": "Importa_IFRS_P",
+          "repeat": 1,
+          "note": "Datos IFRS",
+          "params": {
+            "B2": "{base:swtotal}/Cierre_SwapTotalReport_IFRS_{date:%%d%m%y}_000.xls"
+          }
+        },
+        {
+          "macro": "Importa_Flows_P",
+          "repeat": 1,
+          "note": "Datos Flujos",
+          "params": {
+            "B3": "{base:swtotal}/Cierre_SwapTotalReport_IFRS_Flujos_{date:%%d%m%y}_000.xls"
+          }
+        },
+        {
+          "macro": "Carga_Curva_P",
+          "repeat": 1,
+          "note": "Curva Forward",
+          "params": {
+            "B4": "{base:Curva}/Curva Forward V2.xlsm"
+          }
+        },
+        {
+          "macro": "Importa_Curvas_OIS_P",
+          "repeat": 1,
+          "note": "CARGANDO LIBRO SWAPS",
+          "params": {
+            "B5": "{base:libro}/RIESGOS SWAPS.xlsb"
+          }
+        },
+        {
+          "macro": "Carga_PyG_Swaps_P",
+          "repeat": 1,
+          "note": "Griegas PyG FVH",
+          "params": {
+            "B6": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/SWAPS FVH/PYG SWAPS_FVH.xlsm"
+          }
+        }
+      ],
+      "folder": ""
+    },
+    {
+      "name": "PYG FORWARDS diario",
+      "xlsm": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/P&G FORWARDS.xlsb",
+      "sheet": "Parametros",
+      "bases": {
+        "main": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/1.FWD CONSOLIDADO/LIVIANOS",
+        "caja": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/2.CAJA",
+        "libro": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/SWAPS/Informes",
+        "titulos": "//SUMMITFS001/apl/Internos/GR/TRADEPL",
+        "swtotal": "//summitfs001/apl/Internos/GR/SWAP_TOTAL",
+        "Curva": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/Datos Mercado",
+        "Mascara": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES"
+      },
+      "default_base": "main",
+      "vars": {},
+      "steps": [
+        {
+          "macro": "pega_tminu1",
+          "repeat": 1,
+          "note": "",
+          "params": {}
+        },
+        {
+          "macro": "carga_fwd_dia_P",
+          "repeat": 1,
+          "note": "Cargando forward consolidado",
+          "params": {
+            "B1": "{base}/INFORME FWD CONSOLIDADO {date:%%d-%m-%y}.xlsb"
+          }
+        },
+        {
+          "macro": "CARGAR_INFO_CAJA_5_P",
+          "repeat": 1,
+          "note": "Cargando caja",
+          "params": {
+            "B2": "{base:caja}/REPORTE CAJA LIVIANO"
+          }
+        },
+        {
+          "macro": "CARGA_FT_P",
+          "repeat": 1,
+          "note": "Cargando FTP COP-USD",
+          "params": {
+            "B3": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/5.FTP COP Y USD/FTP COP.xlsx",
+            "B4": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/5.FTP COP Y USD/FTP USD.xlsx"
+          }
+        },
+        {
+          "macro": "traecurvas_P",
+          "repeat": 1,
+          "note": "Curva Forward",
+          "params": {
+            "B5": "{base:Curva}/Curva Forward V2.xlsm"
+          }
+        },
+        {
+          "macro": "CARGAR_INFO_FWDS_P",
+          "repeat": 1,
+          "note": "Mascara fx",
+          "params": {
+            "B6": "{base:Mascara}/MASCARA FX TOTAL REPORT (5.5-3-8).xls"
+          }
+        },
+        {
+          "macro": "flitrar_novados",
+          "repeat": 1,
+          "note": "Traer novados",
+          "params": {}
+        },
+        {
+          "macro": "ActualizarVinculo_PorIndice_DesdeParametros",
+          "repeat": 1,
+          "note": "",
+          "params": {
+            "C2": "1",
+            "C1": "\\\\ISILONSMBPROD\\Gerencia_Riesgo_De_Tesoreria\\3 Jefatura de Riesgo de Mercado\\FORWARDS\\INFORMES\\INFORME FWD CONSOLIDADO.xls"
+          }
+        },
+        {
+          "macro": "F_Calcular_Riesgos",
+          "repeat": 1,
+          "note": "",
+          "params": {}
+        },
+        {
+          "macro": "F_Calcular_Riesgos_POSICION",
+          "repeat": 1,
+          "note": "",
+          "params": {}
+        },
+        {
+          "macro": "E_Recalculo",
+          "repeat": 1,
+          "note": "Fuente vs instrum",
+          "params": {}
+        }
+      ]
+    },
+    {
+      "name": "PYG FORWARDS fds",
+      "xlsm": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/P&G FORWARDS.xlsb",
+      "sheet": "Parametros",
+      "bases": {
+        "main": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/1.FWD CONSOLIDADO/LIVIANOS",
+        "caja": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/2.CAJA",
+        "libro": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/SWAPS/Informes",
+        "titulos": "//SUMMITFS001/apl/Internos/GR/TRADEPL",
+        "swtotal": "//summitfs001/apl/Internos/GR/SWAP_TOTAL",
+        "Curva": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/Datos Mercado",
+        "Mascara": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES"
+      },
+      "default_base": "main",
+      "vars": {},
+      "steps": [
+        {
+          "macro": "pega_tminu1",
+          "repeat": 1,
+          "note": "",
+          "params": {}
+        },
+        {
+          "macro": "carga_fwd_dia_P",
+          "repeat": 1,
+          "note": "Cargando forward consolidado",
+          "params": {
+            "B1": "{base}/INFORME FWD CONSOLIDADO {date:%%d-%m-%y}.xlsb"
+          }
+        },
+        {
+          "macro": "carga_fwd_dia_P",
+          "repeat": 1,
+          "note": "",
+          "params": {
+            "B1": "{base}/INFORME FWD CONSOLIDADO {date+1:%%d-%m-%y}.xlsb"
+          }
+        },
+        {
+          "macro": "carga_fwd_dia_P",
+          "repeat": 1,
+          "note": "",
+          "params": {
+            "B1": "{base}/INFORME FWD CONSOLIDADO {date+2:%%d-%m-%y}.xlsb"
+          }
+        },
+        {
+          "macro": "CARGAR_INFO_CAJA_5_P",
+          "repeat": 1,
+          "note": "Cargando caja",
+          "params": {
+            "B2": "{base:caja}/REPORTE CAJA LIVIANO"
+          }
+        },
+        {
+          "macro": "CARGA_FT_P",
+          "repeat": 1,
+          "note": "Cargando FTP COP-USD",
+          "params": {
+            "B3": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/5.FTP COP Y USD/FTP COP.xlsx",
+            "B4": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/5.FTP COP Y USD/FTP USD.xlsx"
+          }
+        },
+        {
+          "macro": "CARGA_FT_P",
+          "repeat": 1,
+          "note": "",
+          "params": {
+            "B3": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/5.FTP COP Y USD/FTP COP.xlsx",
+            "B4": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/5.FTP COP Y USD/FTP USD.xlsx"
+          }
+        },
+        {
+          "macro": "CARGA_FT_P",
+          "repeat": 1,
+          "note": "",
+          "params": {
+            "B3": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/5.FTP COP Y USD/FTP COP.xlsx",
+            "B4": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/5.FTP COP Y USD/FTP USD.xlsx"
+          }
+        },
+        {
+          "macro": "traecurvas_P",
+          "repeat": 1,
+          "note": "Curva Forward",
+          "params": {
+            "B5": "{base:Curva}/Curva Forward V2.xlsm"
+          }
+        },
+        {
+          "macro": "traecurvas_P",
+          "repeat": 1,
+          "note": "",
+          "params": {}
+        },
+        {
+          "macro": "traecurvas_P",
+          "repeat": 1,
+          "note": "",
+          "params": {}
+        },
+        {
+          "macro": "CARGAR_INFO_FWDS_P",
+          "repeat": 1,
+          "note": "Mascara fx",
+          "params": {
+            "B6": "{base:Mascara}/MASCARA FX TOTAL REPORT (5.5-3-8).xls"
+          }
+        },
+        {
+          "macro": "flitrar_novados",
+          "repeat": 1,
+          "note": "Traer novados",
+          "params": {}
+        },
+        {
+          "macro": "ActualizarVinculo_PorIndice_DesdeParametros",
+          "repeat": 1,
+          "note": "",
+          "params": {
+            "C2": "1",
+            "C1": "\\\\ISILONSMBPROD\\Gerencia_Riesgo_De_Tesoreria\\3 Jefatura de Riesgo de Mercado\\FORWARDS\\INFORMES\\INFORME FWD CONSOLIDADO.xls"
+          }
+        },
+        {
+          "macro": "F_Calcular_Riesgos",
+          "repeat": 1,
+          "note": "",
+          "params": {}
+        },
+        {
+          "macro": "F_Calcular_Riesgos_POSICION",
+          "repeat": 1,
+          "note": "",
+          "params": {}
+        },
+        {
+          "macro": "E_Recalculo",
+          "repeat": 1,
+          "note": "Fuente vs instrum",
+          "params": {}
+        }
+      ]
+    },
+    {
+      "name": "PYG OPCIONES diario",
+      "xlsm": "//isilonsmbprod/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/BDB/OPCIONES/P&G OPCIONES MES/PYG_OPCIONES_MES.xlsb",
+      "sheet": "Parametros",
+      "bases": {
+        "main": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/1.FWD CONSOLIDADO/LIVIANOS",
+        "caja": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/2.CAJA",
+        "libro": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/SWAPS/Informes",
+        "titulos": "//SUMMITFS001/apl/Internos/GR/TRADEPL",
+        "swtotal": "//summitfs001/apl/Internos/GR/SWAP_TOTAL",
+        "Curva": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/Datos Mercado",
+        "Mascara": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES",
+        "cajaOPT": "\\\\isilonsmbprod\\Gerencia_Riesgo_De_Tesoreria\\3 Jefatura de Riesgo de Mercado\\BDB\\OPCIONES\\P&G OPCIONES MES"
+      },
+      "default_base": "main",
+      "vars": {},
+      "steps": [
+        {
+          "macro": "COPIA_Tminus1_P",
+          "repeat": 1,
+          "note": "copiando t-1",
+          "params": {}
+        },
+        {
+          "macro": "carga_fwd_dia_P",
+          "repeat": 1,
+          "note": "Cargando forward consolidado",
+          "params": {
+            "B1": "{base}/INFORME FWD CONSOLIDADO {date:%%d-%m-%y}.xlsb"
+          }
+        },
+        {
+          "macro": "CARGAR_INFO_CAJA_5_5_P",
+          "repeat": 1,
+          "note": "Cargando caja",
+          "params": {
+            "B2": "{base:cajaOPT}/ReporteCaja.opt.xlsb",
+            "A1": "{date:%%d/%m/%Y}"
+          }
+        },
+        {
+          "macro": "CARGAR_FT_P",
+          "repeat": 1,
+          "note": "Cargando FTP COP-USD",
+          "params": {
+            "B3": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/5.FTP COP Y USD/FTP COP.xlsx",
+            "B4": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/5.FTP COP Y USD/FTP USD.xlsx"
+          }
+        },
+        {
+          "macro": "traecurvas_P",
+          "repeat": 1,
+          "note": "Curva Forward",
+          "params": {
+            "B5": "{base:Curva}/Curva Forward V2.xlsm"
+          }
+        },
+        {
+          "macro": "CARGAR_INFO_FWDS_P",
+          "repeat": 1,
+          "note": "Mascara fx",
+          "params": {
+            "B6": "{base:Mascara}/MASCARA FX TOTAL REPORT (5.5-3-8).xls"
+          }
+        },
+        {
+          "macro": "flitrar_novados",
+          "repeat": 1,
+          "note": "Traer novados",
+          "params": {}
+        },
+        {
+          "macro": "E_Recalculo",
+          "repeat": 1,
+          "note": "Fuente vs instrum",
+          "params": {}
+        },
+        {
+          "macro": "CARGAR_VALORACION_OPT_P",
+          "repeat": 1,
+          "note": "Datos banking e IFRS",
+          "params": {
+            "B8": "{base:swtotal}/Cierre_SwapTotalReport_{date:%%d%m%y}_000.xls",
+            "B9": "{base:swtotal}/Cierre_SwapTotalReport_IFRS_{date:%%d%m%y}_000.xls",
+            "C1": "{date:%%d}",
+            "C2": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/SWAP/EXP.xlsx"
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. NDF TES diario",
+      "xlsm": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/NDF TES/Informe NDF TES.xlsb",
+      "sheet": "Parametros",
+      "bases": {
+        "main": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/1.FWD CONSOLIDADO/LIVIANOS",
+        "caja": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/2.CAJA",
+        "libro": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/SWAPS/Informes",
+        "titulos": "//SUMMITFS001/apl/Internos/GR/TRADEPL",
+        "swtotal": "//summitfs001/apl/Internos/GR/SWAP_TOTAL",
+        "Curva": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/Datos Mercado",
+        "Mascara": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES"
+      },
+      "default_base": "main",
+      "vars": {},
+      "steps": [
+        {
+          "macro": "Carga_NDF_TES_dia_P",
+          "repeat": 1,
+          "note": "Carga portafolio",
+          "params": {
+            "C2": "{base:titulos}/USR_ContadoFwdTradePNL_Report_{date:%%d%m%y}.csv"
+          }
+        },
+        {
+          "macro": "Carga_Titulos_P",
+          "repeat": 1,
+          "note": "Cargando reporte titulos",
+          "params": {
+            "C3": "{base:titulos}/ReporteTitulos_{date:%%d%m%Y}.csv"
+          }
+        },
+        {
+          "macro": "Actualiza_CurvasPrecia_P",
+          "repeat": 1,
+          "note": "Curva Forward",
+          "params": {
+            "C4": "{base:Curva}/Curva Forward V2.xlsm",
+            "C5": "\\\\ISILONSMBPROD\\Gerencia_Riesgo_De_Tesoreria\\3 Jefatura de Riesgo de Mercado\\BDB\\INSUMOS/querySpread.xls",
+            "C6": "\\\\SUMMITFS001\\apl\\Internos/GR/CVAReport/Reporte_CVA_{date+1:%%d%m%Y}_dfortou_000.xls"
+          }
+        },
+        {
+          "macro": "CARGAR_INFO_CAJA_P",
+          "repeat": 1,
+          "note": "Cargando caja",
+          "params": {
+            "C7": "{base:caja}/REPORTE CAJA LIVIANO"
+          }
+        },
+        {
+          "macro": "CARGA_FT_P",
+          "repeat": 1,
+          "note": "Cargando FTP COP-USD",
+          "params": {
+            "C8": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/5.FTP COP Y USD/FTP COP.xlsx",
+            "C9": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/5.FTP COP Y USD/FTP USD.xlsx"
+          }
+        },
+        {
+          "macro": "Sensibilidad_NDFTES_P",
+          "repeat": 1,
+          "note": "Sensibilidades",
+          "params": {}
+        },
+        {
+          "macro": "CalculaPyG_P",
+          "repeat": 1,
+          "note": "PyG",
+          "params": {}
+        }
+      ],
+      "folder": ""
+    },
+    {
+      "name": "1. PYG FUTUROS diario",
+      "xlsm": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/P&G FUTUROS FX.xlsb",
+      "sheet": "Parametros",
+      "bases": {
+        "main": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/1.FWD CONSOLIDADO/LIVIANOS",
+        "caja": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/2.CAJA",
+        "libro": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/SWAPS/Informes",
+        "titulos": "//SUMMITFS001/apl/Internos/GR/TRADEPL",
+        "swtotal": "//summitfs001/apl/Internos/GR/SWAP_TOTAL",
+        "Curva": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/Datos Mercado",
+        "Mascara": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES",
+        "backup": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/Backup Riesgos/FORWARD/INFORMES"
+      },
+      "default_base": "main",
+      "vars": {},
+      "steps": [
+        {
+          "macro": "carga_fwd_dia_P",
+          "repeat": 1,
+          "note": "Cargando forward consolidado",
+          "params": {
+            "B1": "{base}/INFORME FWD CONSOLIDADO {date:%%d-%m-%y}.xlsb"
+          }
+        },
+        {
+          "macro": "CARGAR_INFO_CAJA_5_P",
+          "repeat": 1,
+          "note": "Cargando caja",
+          "params": {
+            "B2": "{base:caja}/REPORTE CAJA LIVIANO"
+          }
+        },
+        {
+          "macro": "CARGA_FT_P",
+          "repeat": 1,
+          "note": "Cargando FTP COP-USD",
+          "params": {
+            "B3": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/5.FTP COP Y USD/FTP COP.xlsx",
+            "B4": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/5.FTP COP Y USD/FTP USD.xlsx"
+          }
+        },
+        {
+          "macro": "traecurvas_P",
+          "repeat": 1,
+          "note": "Curva Forward",
+          "params": {
+            "B5": "{base:Curva}/Curva Forward V2.xlsm"
+          }
+        },
+        {
+          "macro": "CARGAR_INFO_FWDS_P",
+          "repeat": 1,
+          "note": "info forwards MASCARA",
+          "params": {
+            "B6": "{base:Mascara}/MASCARA FX TOTAL REPORT (5.5-3-8).xls"
+          }
+        },
+        {
+          "macro": "flitrar_novados",
+          "repeat": 1,
+          "note": "Traer novados",
+          "params": {}
+        },
+        {
+          "macro": "fullvaluation_novados",
+          "repeat": 1,
+          "note": "novados",
+          "params": {}
+        },
+        {
+          "macro": "F_Calcular_Riesgos",
+          "repeat": 1,
+          "note": "Riesgos",
+          "params": {}
+        },
+        {
+          "macro": "E_Recalculo",
+          "repeat": 1,
+          "note": "Fuente vs instrum",
+          "params": {}
+        },
+        {
+          "macro": "ActualizarVinculo_PorIndice_DesdeParametros",
+          "repeat": 1,
+          "note": "FUTUROS ANTERIOR",
+          "params": {
+            "C2": "2",
+            "C1": "{base:backup}/{date-1:%%Y}/{date-1:%%m-%B}/{date-1:%%Y%m%d}/P&G FUTUROS FX.xlsb"
+          }
+        },
+        {
+          "macro": "ActualizarVinculo_PorIndice_DesdeParametros",
+          "repeat": 1,
+          "note": "FWD CONSOLIDADO",
+          "params": {
+            "C2": "1",
+            "C1": "{base:Mascara}/INFORME FWD CONSOLIDADO.xls"
+          }
+        }
+      ],
+      "folder": ""
+    },
+    {
+      "name": "4.1 NDF TES fds",
+      "xlsm": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/NDF TES/Informe NDF TES.xlsb",
+      "sheet": "Parametros",
+      "bases": {
+        "main": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/1.FWD CONSOLIDADO/LIVIANOS",
+        "caja": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/2.CAJA",
+        "libro": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/SWAPS/Informes",
+        "titulos": "//SUMMITFS001/apl/Internos/GR/TRADEPL",
+        "swtotal": "//summitfs001/apl/Internos/GR/SWAP_TOTAL",
+        "Curva": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/Datos Mercado",
+        "Mascara": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES"
+      },
+      "default_base": "main",
+      "vars": {},
+      "steps": [
+        {
+          "macro": "Carga_NDF_TES_dia_P",
+          "repeat": 1,
+          "note": "Carga portafolio",
+          "params": {
+            "C2": "{base:titulos}/USR_ContadoFwdTradePNL_Report_{date:%%d%m%y}.csv"
+          }
+        },
+        {
+          "macro": "Carga_Titulos_P",
+          "repeat": 1,
+          "note": "Cargando reporte titulos",
+          "params": {
+            "C3": "{base:titulos}/ReporteTitulos_{date:%%d%m%Y}.csv"
+          }
+        },
+        {
+          "macro": "Actualiza_CurvasPrecia_P",
+          "repeat": 1,
+          "note": "Curva Forward",
+          "params": {
+            "C4": "{base:Curva}/Curva Forward V2.xlsm",
+            "C5": "\\\\ISILONSMBPROD\\Gerencia_Riesgo_De_Tesoreria\\3 Jefatura de Riesgo de Mercado\\BDB\\INSUMOS/querySpread.xls",
+            "C6": "\\\\SUMMITFS001\\apl\\Internos/GR/CVAReport/Reporte_CVA_{date+3:%%d%m%Y}_dfortou_000.xls"
+          }
+        },
+        {
+          "macro": "CARGAR_INFO_CAJA_P",
+          "repeat": 1,
+          "note": "Cargando caja",
+          "params": {
+            "C7": "{base:caja}/REPORTE CAJA LIVIANO"
+          }
+        },
+        {
+          "macro": "CARGA_FT_P",
+          "repeat": 1,
+          "note": "Cargando FTP COP-USD",
+          "params": {
+            "C8": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/5.FTP COP Y USD/FTP COP.xlsx",
+            "C9": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/5.FTP COP Y USD/FTP USD.xlsx"
+          }
+        },
+        {
+          "macro": "Sensibilidad_NDFTES_P",
+          "repeat": 1,
+          "note": "Sensibilidades",
+          "params": {}
+        },
+        {
+          "macro": "CalculaPyG_P",
+          "repeat": 1,
+          "note": "PyG",
+          "params": {}
+        },
+        {
+          "macro": "Carga_NDF_TES_dia_P",
+          "repeat": 1,
+          "note": "Carga portafolio",
+          "params": {
+            "C2": "{base:titulos}/USR_ContadoFwdTradePNL_Report_{date:%%d%m%y}_1.csv"
+          }
+        },
+        {
+          "macro": "Carga_Titulos_P",
+          "repeat": 1,
+          "note": "Carga reporte titulos",
+          "params": {
+            "C3": "{base:titulos}/ReporteTitulos_{date:%%d%m%Y}_1.csv"
+          }
+        },
+        {
+          "macro": "Actualiza_CurvasPrecia_P",
+          "repeat": 1,
+          "note": "Curva Fwd y Spreads CVA",
+          "params": {
+            "C4": "{base:Curva}/Curva Forward V2.xlsm",
+            "C5": "\\\\ISILONSMBPROD\\Gerencia_Riesgo_De_Tesoreria\\3 Jefatura de Riesgo de Mercado\\BDB\\INSUMOS/querySpread.xls"
+          }
+        },
+        {
+          "macro": "CARGA_FT_P",
+          "repeat": 1,
+          "note": "Carga FTP COP-USD",
+          "params": {
+            "C8": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/5.FTP COP Y USD/FTP COP.xlsx",
+            "C9": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/5.FTP COP Y USD/FTP USD.xlsx"
+          }
+        },
+        {
+          "macro": "Sensibilidad_NDFTES_P",
+          "repeat": 1,
+          "note": "Sensibilidades",
+          "params": {}
+        },
+        {
+          "macro": "CalculaPyG_P",
+          "repeat": 1,
+          "note": "PyG",
+          "params": {}
+        },
+        {
+          "macro": "Carga_NDF_TES_dia_P",
+          "repeat": 1,
+          "note": "Carga Portafolio",
+          "params": {
+            "C2": "{base:titulos}/USR_ContadoFwdTradePNL_Report_{date:%%d%m%y}_2.csv"
+          }
+        },
+        {
+          "macro": "Carga_Titulos_P",
+          "repeat": 1,
+          "note": "Carga reporte titulos",
+          "params": {
+            "C3": "{base:titulos}/ReporteTitulos_{date:%%d%m%Y}_2.csv"
+          }
+        },
+        {
+          "macro": "Actualiza_CurvasPrecia_P",
+          "repeat": 1,
+          "note": "Curva Fwd y Spreads CVA",
+          "params": {
+            "C4": "{base:Curva}/Curva Forward V2.xlsm"
+          }
+        },
+        {
+          "macro": "CARGA_FT_P",
+          "repeat": 1,
+          "note": "Carga FTP COP-USD",
+          "params": {
+            "C8": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/5.FTP COP Y USD/FTP COP.xlsx",
+            "C9": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/5.FTP COP Y USD/FTP USD.xlsx"
+          }
+        },
+        {
+          "macro": "Sensibilidad_NDFTES_P",
+          "repeat": 1,
+          "note": "Sensibilidades",
+          "params": {}
+        },
+        {
+          "macro": "CalculaPyG_P",
+          "repeat": 1,
+          "note": "PyG",
+          "params": {}
+        },
+        {
+          "macro": "Carga_NDF_TES_dia_P",
+          "repeat": 0,
+          "note": "Carga portafolio",
+          "params": {
+            "C2": "{base:titulos}/USR_ContadoFwdTradePNL_Report_{date:%%d%m%y}_3.csv"
+          }
+        },
+        {
+          "macro": "Carga_Titulos_P",
+          "repeat": 0,
+          "note": "Cargando reporte titulos",
+          "params": {
+            "C3": "{base:titulos}/ReporteTitulos_{date:%%d%m%Y}_3.csv"
+          }
+        },
+        {
+          "macro": "Actualiza_CurvasPrecia_P",
+          "repeat": 0,
+          "note": "Curva Forward",
+          "params": {
+            "C4": "{base:Curva}/Curva Forward V2.xlsm"
+          }
+        },
+        {
+          "macro": "CARGA_FT_P",
+          "repeat": 0,
+          "note": "Cargando FTP COP-USD",
+          "params": {
+            "C8": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/5.FTP COP Y USD/FTP COP.xlsx",
+            "C9": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/5.FTP COP Y USD/FTP USD.xlsx"
+          }
+        },
+        {
+          "macro": "Sensibilidad_NDFTES_P",
+          "repeat": 0,
+          "note": "Sensibilidades",
+          "params": {}
+        },
+        {
+          "macro": "CalculaPyG_P",
+          "repeat": 0,
+          "note": "PyG",
+          "params": {}
+        },
+        {
+          "macro": "Carga_NDF_TES_dia_P",
+          "repeat": 0,
+          "note": "Carga portafolio",
+          "params": {
+            "C2": "{base:titulos}/USR_ContadoFwdTradePNL_Report_{date:%%d%m%y}_4.csv"
+          }
+        },
+        {
+          "macro": "Carga_Titulos_P",
+          "repeat": 0,
+          "note": "Cargando reporte titulos",
+          "params": {
+            "C3": "{base:titulos}/ReporteTitulos_{date:%%d%m%Y}_4.csv"
+          }
+        },
+        {
+          "macro": "Actualiza_CurvasPrecia_P",
+          "repeat": 0,
+          "note": "Curva Forward",
+          "params": {
+            "C4": "{base:Curva}/Curva Forward V2.xlsm"
+          }
+        },
+        {
+          "macro": "CARGA_FT_P",
+          "repeat": 0,
+          "note": "Cargando FTP COP-USD",
+          "params": {
+            "C8": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/5.FTP COP Y USD/FTP COP.xlsx",
+            "C9": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/5.FTP COP Y USD/FTP USD.xlsx"
+          }
+        },
+        {
+          "macro": "Sensibilidad_NDFTES_P",
+          "repeat": 0,
+          "note": "Sensibilidades",
+          "params": {}
+        },
+        {
+          "macro": "CalculaPyG_P",
+          "repeat": 0,
+          "note": "PyG",
+          "params": {}
+        }
+      ],
+      "folder": ""
+    },
+    {
+      "name": "1.1 PYG Futuros fds",
+      "xlsm": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/P&G FUTUROS FX.xlsb",
+      "sheet": "Parametros",
+      "bases": {
+        "main": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/1.FWD CONSOLIDADO/LIVIANOS",
+        "caja": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/2.CAJA",
+        "libro": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/SWAPS/Informes",
+        "titulos": "//SUMMITFS001/apl/Internos/GR/TRADEPL",
+        "swtotal": "//summitfs001/apl/Internos/GR/SWAP_TOTAL",
+        "Curva": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/Datos Mercado",
+        "Mascara": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES",
+        "backup": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/Backup Riesgos/FORWARD/INFORMES"
+      },
+      "default_base": "main",
+      "vars": {},
+      "steps": [
+        {
+          "macro": "carga_fwd_dia_P",
+          "repeat": 1,
+          "note": "Cargando forward consolidado",
+          "params": {
+            "B1": "{base}/INFORME FWD CONSOLIDADO {date:%%d-%m-%y}.xlsb"
+          }
+        },
+        {
+          "macro": "carga_fwd_dia_P",
+          "repeat": 1,
+          "note": "Carga forward consolidado",
+          "params": {
+            "B1": "{base}/INFORME FWD CONSOLIDADO {date+1:%%d-%m-%y}.xlsb"
+          }
+        },
+        {
+          "macro": "carga_fwd_dia_P",
+          "repeat": 1,
+          "note": "Carga forward consolidado",
+          "params": {
+            "B1": "{base}/INFORME FWD CONSOLIDADO {date+2:%%d-%m-%y}.xlsb"
+          }
+        },
+        {
+          "macro": "carga_fwd_dia_P",
+          "repeat": 0,
+          "note": "Carga forward consolidado",
+          "params": {
+            "B1": "{base}/INFORME FWD CONSOLIDADO {date+3:%%d-%m-%y}.xlsb"
+          }
+        },
+        {
+          "macro": "carga_fwd_dia_P",
+          "repeat": 0,
+          "note": "Carga forward consolidado",
+          "params": {
+            "B1": "{base}/INFORME FWD CONSOLIDADO {date+4:%%d-%m-%y}.xlsb"
+          }
+        },
+        {
+          "macro": "CARGAR_INFO_CAJA_5_P",
+          "repeat": 1,
+          "note": "Cargando caja",
+          "params": {
+            "B2": "{base:caja}/REPORTE CAJA LIVIANO"
+          }
+        },
+        {
+          "macro": "CARGA_FT_P",
+          "repeat": 3,
+          "note": "Cargando FTP COP-USD",
+          "params": {
+            "B3": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/5.FTP COP Y USD/FTP COP.xlsx",
+            "B4": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/5.FTP COP Y USD/FTP USD.xlsx"
+          }
+        },
+        {
+          "macro": "traecurvas_P",
+          "repeat": 3,
+          "note": "Curva Forward",
+          "params": {
+            "B5": "{base:Curva}/Curva Forward V2.xlsm"
+          }
+        },
+        {
+          "macro": "CARGAR_INFO_FWDS_P",
+          "repeat": 1,
+          "note": "info forwards MASCARA",
+          "params": {
+            "B6": "{base:Mascara}/MASCARA FX TOTAL REPORT (5.5-3-8).xls"
+          }
+        },
+        {
+          "macro": "flitrar_novados",
+          "repeat": 1,
+          "note": "Traer novados",
+          "params": {}
+        },
+        {
+          "macro": "fullvaluation_novados",
+          "repeat": 1,
+          "note": "novados",
+          "params": {}
+        },
+        {
+          "macro": "F_Calcular_Riesgos",
+          "repeat": 1,
+          "note": "Riesgos",
+          "params": {}
+        },
+        {
+          "macro": "E_Recalculo",
+          "repeat": 1,
+          "note": "Fuente vs instrum",
+          "params": {}
+        },
+        {
+          "macro": "ActualizarVinculo_PorIndice_DesdeParametros",
+          "repeat": 1,
+          "note": "FUTUROS ANTERIOR",
+          "params": {
+            "C2": "2",
+            "C1": "{base:backup}/{date-1:%%Y}/{date-1:%%m-%B}/{date-1:%%Y%m%d}/P&G FUTUROS FX.xlsb"
+          }
+        },
+        {
+          "macro": "ActualizarVinculo_PorIndice_DesdeParametros",
+          "repeat": 1,
+          "note": "FWD CONSOLIDADO",
+          "params": {
+            "C2": "1",
+            "C1": "{base:Mascara}/INFORME FWD CONSOLIDADO.xls"
+          }
+        }
+      ],
+      "folder": ""
+    },
+    {
+      "name": "2.2 PyG Fx Estrat dia",
+      "xlsm": "//isilonsmbprod/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/P&G_FXESTRAT(5.5).xlsb",
+      "sheet": "Parametros",
+      "bases": {
+        "main": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/1.FWD CONSOLIDADO/LIVIANOS",
+        "caja": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/2.CAJA",
+        "libro": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FX_ESTRAT/Informes",
+        "titulos": "//SUMMITFS001/apl/Internos/GR/TRADEPL",
+        "swtotal": "//summitfs001/apl/Internos/GR/SWAP_TOTAL",
+        "Curva": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/Datos Mercado",
+        "Mascara": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES",
+        "backup": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/Backup Riesgos/FORWARD/INFORMES/2026"
+      },
+      "default_base": "main",
+      "vars": {},
+      "steps": [
+        {
+          "macro": "carga_fwd_dia_P",
+          "repeat": 1,
+          "note": "Cargando forward consolidado",
+          "params": {
+            "B1": "{base}/INFORME FWD CONSOLIDADO {date:%%d-%m-%y}.xlsb"
+          }
+        },
+        {
+          "macro": "CARGAR_INFO_CAJA_5_5_P",
+          "repeat": 1,
+          "note": "Cargando caja",
+          "params": {
+            "B2": "{base:caja}/REPORTE CAJA LIVIANO",
+            "A1": "{date:%%d/%m/%Y}"
+          }
+        },
+        {
+          "macro": "CARGA_FT_P",
+          "repeat": 1,
+          "note": "Cargando FTP COP-USD",
+          "params": {
+            "B3": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/5.FTP COP Y USD/FTP COP.xlsx",
+            "B4": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/5.FTP COP Y USD/FTP USD.xlsx"
+          }
+        },
+        {
+          "macro": "GRIEGAS_P",
+          "repeat": 1,
+          "note": "Carga informe Estrat",
+          "params": {
+            "B5": "{base:libro}/Informe Libro FX_ESTRAT {date:%%Y%m%d}.xlsb"
+          }
+        },
+        {
+          "macro": "Carga_Sw_Nuevos_P",
+          "repeat": 0,
+          "note": "Carga sw nuevos",
+          "params": {
+            "B7": "{base:swtotal}/Cierre_SwapTotalReport_{date:%%d%m%y}_000.xls"
+          }
+        },
+        {
+          "macro": "traecurvas_P",
+          "repeat": 1,
+          "note": "Curva Forward",
+          "params": {
+            "B11": "{base:Curva}/Curva Forward V2.xlsm"
+          }
+        },
+        {
+          "macro": "CARGAR_INFO_FWDS_5_5_P",
+          "repeat": 1,
+          "note": "Mascara fx",
+          "params": {
+            "B12": "{base:Mascara}/MASCARA FX TOTAL REPORT (5.5-3-8).xls"
+          }
+        },
+        {
+          "macro": "flitrar_novados_P",
+          "repeat": 1,
+          "note": "Traer novados",
+          "params": {}
+        },
+        {
+          "macro": "F_Calcular_Riesgos",
+          "repeat": 1,
+          "note": "Sensibilidades",
+          "params": {}
+        },
+        {
+          "macro": "E_Recalculo",
+          "repeat": 1,
+          "note": "Fuente vs instrum",
+          "params": {}
+        },
+        {
+          "macro": "CARGAR_VALORACION_SWAP_P",
+          "repeat": 1,
+          "note": "Datos banking e IFRS",
+          "params": {
+            "B8": "{base:swtotal}/Cierre_SwapTotalReport_{date:%%d%m%y}_000.xls",
+            "B9": "{base:swtotal}/Cierre_SwapTotalReport_IFRS_{date:%%d%m%y}_000.xls",
+            "C1": "{date:%%d}",
+            "C2": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/SWAP/EXP.xlsx"
+          }
+        },
+        {
+          "macro": "AUX",
+          "repeat": 1,
+          "note": "AUX",
+          "params": {
+            "B13": "{base:swtotal}/Cierre_SwapTotalReport_{date:%%d%m%y}_000.xls",
+            "B14": "{base:libro}/Informe Libro FX_ESTRAT {date:%%Y%m%d}.xlsb"
+          }
+        },
+        {
+          "macro": "ActualizarVinculo",
+          "repeat": 1,
+          "note": "Backup",
+          "params": {
+            "D2": "2",
+            "D3": "{base:backup}/{date-1:%%Y}/{date-1:%%m-%B}/{date-1:%%Y%m%d}/P&G_FXESTRAT(5.5).xlsb"
+          }
+        }
+      ],
+      "folder": ""
+    },
+    {
+      "name": "2.3 PyG Fx Estrat fds",
+      "xlsm": "//isilonsmbprod/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/P&G_FXESTRAT(5.5).xlsb",
+      "sheet": "Parametros",
+      "bases": {
+        "main": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/1.FWD CONSOLIDADO/LIVIANOS",
+        "caja": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/2.CAJA",
+        "libro": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FX_ESTRAT/Informes",
+        "titulos": "//SUMMITFS001/apl/Internos/GR/TRADEPL",
+        "swtotal": "//summitfs001/apl/Internos/GR/SWAP_TOTAL",
+        "Curva": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/Datos Mercado",
+        "Mascara": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES",
+        "backup": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/Backup Riesgos/FORWARD/INFORMES"
+      },
+      "default_base": "main",
+      "vars": {},
+      "steps": [
+        {
+          "macro": "carga_fwd_dia_P",
+          "repeat": 1,
+          "note": "Cargando forward consolidado",
+          "params": {
+            "B1": "{base}/INFORME FWD CONSOLIDADO {date:%%d-%m-%y}.xlsb"
+          }
+        },
+        {
+          "macro": "carga_fwd_dia_P",
+          "repeat": 1,
+          "note": "Carga forward consolidado",
+          "params": {
+            "B1": "{base}/INFORME FWD CONSOLIDADO {date+1:%%d-%m-%y}.xlsb"
+          }
+        },
+        {
+          "macro": "carga_fwd_dia_P",
+          "repeat": 1,
+          "note": "Cargando forward consolidado",
+          "params": {
+            "B1": "{base}/INFORME FWD CONSOLIDADO {date+2:%%d-%m-%y}.xlsb"
+          }
+        },
+        {
+          "macro": "carga_fwd_dia_P",
+          "repeat": 0,
+          "note": "Cargando forward consolidado",
+          "params": {
+            "B1": "{base}/INFORME FWD CONSOLIDADO {date+3:%%d-%m-%y}.xlsb"
+          }
+        },
+        {
+          "macro": "CARGAR_INFO_CAJA_5_5_P",
+          "repeat": 1,
+          "note": "Cargando caja",
+          "params": {
+            "B2": "{base:caja}/REPORTE CAJA LIVIANO",
+            "A1": "{date:%%d/%m/%Y}"
+          }
+        },
+        {
+          "macro": "CARGA_FT_P",
+          "repeat": 3,
+          "note": "Cargando FTP COP-USD",
+          "params": {
+            "B3": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/5.FTP COP Y USD/FTP COP.xlsx",
+            "B4": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/5.FTP COP Y USD/FTP USD.xlsx"
+          }
+        },
+        {
+          "macro": "GRIEGAS_P",
+          "repeat": 1,
+          "note": "Carga informe Estrat",
+          "params": {
+            "B5": "{base:libro}/Informe Libro FX_ESTRAT {date:%%Y%m%d}.xlsb"
+          }
+        },
+        {
+          "macro": "GRIEGAS_P",
+          "repeat": 1,
+          "note": "Carga informe Estrat",
+          "params": {
+            "B5": "{base:libro}/Informe Libro FX_ESTRAT {date+1:%%Y%m%d}.xlsb"
+          }
+        },
+        {
+          "macro": "GRIEGAS_P",
+          "repeat": 1,
+          "note": "Carga informe Estrat",
+          "params": {
+            "B5": "{base:libro}/Informe Libro FX_ESTRAT {date+2:%%Y%m%d}.xlsb"
+          }
+        },
+        {
+          "macro": "GRIEGAS_P",
+          "repeat": 0,
+          "note": "Carga informe Estrat",
+          "params": {
+            "B5": "{base:libro}/Informe Libro FX_ESTRAT {date+3:%%Y%m%d}.xlsb"
+          }
+        },
+        {
+          "macro": "Carga_Sw_Nuevos_P",
+          "repeat": 0,
+          "note": "Carga sw nuevos",
+          "params": {
+            "B7": "{base:swtotal}/Cierre_SwapTotalReport_{date:%%d%m%y}_000.xls"
+          }
+        },
+        {
+          "macro": "traecurvas_P",
+          "repeat": 3,
+          "note": "Curva Forward",
+          "params": {
+            "B11": "{base:Curva}/Curva Forward V2.xlsm"
+          }
+        },
+        {
+          "macro": "CARGAR_INFO_FWDS_5_5_P",
+          "repeat": 1,
+          "note": "Mascara fx",
+          "params": {
+            "B12": "{base:Mascara}/MASCARA FX TOTAL REPORT (5.5-3-8).xls"
+          }
+        },
+        {
+          "macro": "flitrar_novados_P",
+          "repeat": 1,
+          "note": "Traer novados",
+          "params": {}
+        },
+        {
+          "macro": "F_Calcular_Riesgos",
+          "repeat": 1,
+          "note": "Sensibilidades",
+          "params": {}
+        },
+        {
+          "macro": "E_Recalculo",
+          "repeat": 1,
+          "note": "Fuente vs instrum",
+          "params": {}
+        },
+        {
+          "macro": "CARGAR_VALORACION_SWAP_P",
+          "repeat": 1,
+          "note": "Datos banking e IFRS",
+          "params": {
+            "B8": "{base:swtotal}/Cierre_SwapTotalReport_{date:%%d%m%y}_000.xls",
+            "B9": "{base:swtotal}/Cierre_SwapTotalReport_IFRS_{date:%%d%m%y}_000.xls",
+            "C1": "{date:%%d}",
+            "C2": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/SWAP/EXP.xlsx"
+          }
+        },
+        {
+          "macro": "CARGAR_VALORACION_SWAP_P",
+          "repeat": 1,
+          "note": "",
+          "params": {
+            "B8": "{base:swtotal}/Cierre_SwapTotalReport_{date+1:%%d%m%y}_000.xls",
+            "B9": "{base:swtotal}/Cierre_SwapTotalReport_IFRS_{date+1:%%d%m%y}_000.xls",
+            "C1": "{date+1:%%d}"
+          }
+        },
+        {
+          "macro": "CARGAR_VALORACION_SWAP_P",
+          "repeat": 1,
+          "note": "",
+          "params": {
+            "B8": "{base:swtotal}/Cierre_SwapTotalReport_{date+2:%%d%m%y}_000.xls",
+            "B9": "{base:swtotal}/Cierre_SwapTotalReport_IFRS_{date+2:%%d%m%y}_000.xls",
+            "C1": "{date+2:%%d}"
+          }
+        },
+        {
+          "macro": "CARGAR_VALORACION_SWAP_P",
+          "repeat": 0,
+          "note": "",
+          "params": {
+            "B8": "{base:swtotal}/Cierre_SwapTotalReport_{date+3:%%d%m%y}_000.xls",
+            "B9": "{base:swtotal}/Cierre_SwapTotalReport_IFRS_{date+3:%%d%m%y}_000.xls",
+            "C1": "{date+3:%%d}"
+          }
+        },
+        {
+          "macro": "AUX",
+          "repeat": 1,
+          "note": "AUX",
+          "params": {
+            "B13": "{base:swtotal}/Cierre_SwapTotalReport_{date+2:%%d%m%y}_000.xls",
+            "B14": "{base:libro}/Informe Libro FX_ESTRAT {date+2:%%Y%m%d}.xlsb"
+          }
+        },
+        {
+          "macro": "ActualizarVinculo_PorIndice_DesdeParametros",
+          "repeat": 0,
+          "note": "Backup",
+          "params": {
+            "D2": "2",
+            "D3": "{base:backup}/{date-1:%%Y}/{date-1:%%m-%B}/{date-1:%%Y%m%d}/P&G FX ESTRAT(5.5).xlsb"
+          }
+        }
+      ],
+      "folder": ""
+    },
+    {
+      "name": "7.1 PYG SWAPS CFH fds",
+      "xlsm": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/Coberturas CFH/PYG SWAPS_CFH.xlsm",
+      "sheet": "Parametros",
+      "bases": {
+        "main": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/1.FWD CONSOLIDADO/LIVIANOS",
+        "caja": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/2.CAJA",
+        "libro": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/SWAPS CFH/Informes",
+        "titulos": "//SUMMITFS001/apl/Internos/GR/TRADEPL",
+        "swtotal": "//summitfs001/apl/Internos/GR/SWAP_TOTAL",
+        "Curva": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/Datos Mercado",
+        "Mascara": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES"
+      },
+      "default_base": "main",
+      "vars": {},
+      "steps": [
+        {
+          "macro": "carga_fwd_dia_P",
+          "repeat": 1,
+          "note": "Cargando forward consolidado",
+          "params": {
+            "B1": "{base}/INFORME FWD CONSOLIDADO {date:%%d-%m-%y}.xlsb"
+          }
+        },
+        {
+          "macro": "Carga_Sw_Nuevos_P",
+          "repeat": 0,
+          "note": "Carga sw nuevos",
+          "params": {
+            "B7": "{base:swtotal}/Cierre_SwapTotalReport_{date:%%d%m%y}_000.xls"
+          }
+        },
+        {
+          "macro": "carga_fwd_dia_P",
+          "repeat": 1,
+          "note": "",
+          "params": {
+            "B1": "{base}/INFORME FWD CONSOLIDADO {date+1:%%d-%m-%y}.xlsb"
+          }
+        },
+        {
+          "macro": "carga_fwd_dia_P",
+          "repeat": 1,
+          "note": "",
+          "params": {
+            "B1": "{base}/INFORME FWD CONSOLIDADO {date+2:%%d-%m-%y}.xlsb"
+          }
+        },
+        {
+          "macro": "carga_fwd_dia_P",
+          "repeat": 0,
+          "note": "",
+          "params": {
+            "B1": "{base}/INFORME FWD CONSOLIDADO {date+3:%%d-%m-%y}.xlsb"
+          }
+        },
+        {
+          "macro": "carga_fwd_dia_P",
+          "repeat": 0,
+          "note": "",
+          "params": {
+            "B1": "{base}/INFORME FWD CONSOLIDADO {date+4:%%d-%m-%y}.xlsb"
+          }
+        },
+        {
+          "macro": "CARGAR_INFO_CAJA_5_P",
+          "repeat": 0,
+          "note": "Cargando caja",
+          "params": {
+            "B2": "{base:caja}/REPORTE CAJA LIVIANO",
+            "A1": "{date:%%d/%m/%Y}"
+          }
+        },
+        {
+          "macro": "GRIEGAS_P",
+          "repeat": 1,
+          "note": "CARGANDO LIBRO SWAPS",
+          "params": {
+            "B5": "{base:libro}/Informe Libro de Swaps CFH {date:%%Y%m%d}.xlsb"
+          }
+        },
+        {
+          "macro": "GRIEGAS_P",
+          "repeat": 1,
+          "note": "",
+          "params": {
+            "B5": "{base:libro}/Informe Libro de Swaps CFH {date+1:%%Y%m%d}.xlsb"
+          }
+        },
+        {
+          "macro": "GRIEGAS_P",
+          "repeat": 1,
+          "note": "",
+          "params": {
+            "B5": "{base:libro}/Informe Libro de Swaps CFH {date+2:%%Y%m%d}.xlsb"
+          }
+        },
+        {
+          "macro": "GRIEGAS_P",
+          "repeat": 0,
+          "note": "",
+          "params": {
+            "B5": "{base:libro}/Informe Libro de Swaps CFH {date+3:%%Y%m%d}.xlsb"
+          }
+        },
+        {
+          "macro": "GRIEGAS_P",
+          "repeat": 0,
+          "note": "",
+          "params": {
+            "B5": "{base:libro}/Informe Libro de Swaps FVH {date+4:%%Y%m%d}.xlsb"
+          }
+        },
+        {
+          "macro": "CARGAR_VALORACION_SWAP_P",
+          "repeat": 1,
+          "note": "Datos banking e IFRS",
+          "params": {
+            "B8": "{base:swtotal}/Cierre_SwapTotalReport_{date:%%d%m%y}_000.xls",
+            "B9": "{base:swtotal}/Cierre_SwapTotalReport_IFRS_{date:%%d%m%y}_000.xls",
+            "C1": "{date:%%d}",
+            "C2": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/SWAP/EXP.xlsx"
+          }
+        },
+        {
+          "macro": "CARGAR_VALORACION_SWAP_P",
+          "repeat": 1,
+          "note": "",
+          "params": {
+            "B8": "{base:swtotal}/Cierre_SwapTotalReport_{date+1:%%d%m%y}_000.xls",
+            "B9": "{base:swtotal}/Cierre_SwapTotalReport_IFRS_{date+1:%%d%m%y}_000.xls",
+            "C1": "{date+1:%%d}"
+          }
+        },
+        {
+          "macro": "CARGAR_VALORACION_SWAP_P",
+          "repeat": 1,
+          "note": "",
+          "params": {
+            "B8": "{base:swtotal}/Cierre_SwapTotalReport_{date+2:%%d%m%y}_000.xls",
+            "B9": "{base:swtotal}/Cierre_SwapTotalReport_IFRS_{date+2:%%d%m%y}_000.xls",
+            "C1": "{date+2:%%d}"
+          }
+        },
+        {
+          "macro": "CARGAR_VALORACION_SWAP_P",
+          "repeat": 0,
+          "note": "",
+          "params": {
+            "B8": "{base:swtotal}/Cierre_SwapTotalReport_{date+2:%%d%m%y}_000.xls",
+            "B9": "{base:swtotal}/Cierre_SwapTotalReport_IFRS_{date+3:%%d%m%y}_000.xls",
+            "C1": "{date+3:%%d}"
+          }
+        },
+        {
+          "macro": "CARGAR_VALORACION_SWAP_P",
+          "repeat": 0,
+          "note": "",
+          "params": {
+            "B8": "{base:swtotal}/Cierre_SwapTotalReport_{date+4:%%d%m%y}_000.xls",
+            "B9": "{base:swtotal}/Cierre_SwapTotalReport_IFRS_{date+4:%%d%m%y}_000.xls",
+            "C1": "{date+4:%%d}"
+          }
+        }
+      ],
+      "folder": ""
+    },
+    {
+      "name": "7. PYG SWAPS CFH diario",
+      "xlsm": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/Coberturas CFH/PYG SWAPS_CFH.xlsm",
+      "sheet": "Parametros",
+      "bases": {
+        "main": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/1.FWD CONSOLIDADO/LIVIANOS",
+        "caja": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/2.CAJA",
+        "libro": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/SWAPS CFH/Informes",
+        "titulos": "//SUMMITFS001/apl/Internos/GR/TRADEPL",
+        "swtotal": "//summitfs001/apl/Internos/GR/SWAP_TOTAL",
+        "Curva": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/Datos Mercado",
+        "Mascara": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES"
+      },
+      "default_base": "main",
+      "vars": {},
+      "steps": [
+        {
+          "macro": "carga_fwd_dia_P",
+          "repeat": 1,
+          "note": "Cargando forward consolidado",
+          "params": {
+            "B1": "{base}/INFORME FWD CONSOLIDADO {date:%%d-%m-%y}.xlsb"
+          }
+        },
+        {
+          "macro": "CARGAR_INFO_CAJA_5_P",
+          "repeat": 0,
+          "note": "Cargando caja",
+          "params": {
+            "B2": "{base:caja}/REPORTE CAJA LIVIANO",
+            "A1": "{date:%%d/%m/%Y}"
+          }
+        },
+        {
+          "macro": "GRIEGAS_P",
+          "repeat": 1,
+          "note": "CARGANDO LIBRO SWAPS",
+          "params": {
+            "B5": "{base:libro}/Informe Libro de Swaps CFH {date:%%Y%m%d}.xlsb"
+          }
+        },
+        {
+          "macro": "Carga_Sw_Nuevos_P",
+          "repeat": 1,
+          "note": "Carga sw nuevos",
+          "params": {
+            "B7": "{base:swtotal}/Cierre_SwapTotalReport_{date:%%d%m%y}_000.xls"
+          }
+        },
+        {
+          "macro": "CARGAR_VALORACION_SWAP_P",
+          "repeat": 1,
+          "note": "Datos banking e IFRS",
+          "params": {
+            "B8": "{base:swtotal}/Cierre_SwapTotalReport_{date:%%d%m%y}_000.xls",
+            "B9": "{base:swtotal}/Cierre_SwapTotalReport_IFRS_{date:%%d%m%y}_000.xls",
+            "C1": "{date:%%d}",
+            "C2": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/SWAP/EXP.xlsx"
+          }
+        }
+      ],
+      "folder": ""
+    },
+    {
+      "name": "3. Coberturas CFH RES4",
+      "xlsm": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/Coberturas CFH/Coberturas CFH.xlsm",
+      "sheet": "Parametros",
+      "bases": {
+        "main": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/1.FWD CONSOLIDADO/LIVIANOS",
+        "caja": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/2.CAJA",
+        "libro": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/SWAPS/Informes",
+        "titulos": "//SUMMITFS001/apl/Internos/GR/TRADEPL",
+        "swtotal": "//summitfs001/apl/Internos/GR/SWAP_TOTAL",
+        "Curva": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/Datos Mercado",
+        "Mascara": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES"
+      },
+      "default_base": "main",
+      "vars": {},
+      "steps": [
+        {
+          "macro": "Fwd_Consolidado_P",
+          "repeat": 1,
+          "note": "Cargando forward consolidado",
+          "params": {
+            "B3": "{base}/INFORME FWD CONSOLIDADO {date:%%d-%m-%y}.xlsb"
+          }
+        },
+        {
+          "macro": "Generarreporte_P",
+          "repeat": 1,
+          "note": "Cargar forwards",
+          "params": {
+            "B1": "\\\\SUMMITFS001\\apl\\Internos\\GR\\VALORACION_FWD/Cierre_Valoracion_FxFwd_{date:%%d%m%Y}_000.xls",
+            "B2": "\\\\SUMMITFS001\\apl\\Internos\\GR\\VALORACION_FWD/Cierre_Valoracion_FxFwd_IFRS_{date:%%d%m%Y}_000.xls"
+          }
+        },
+        {
+          "macro": "Importa_Novados_P",
+          "repeat": 1,
+          "note": "novados",
+          "params": {
+            "B4": "\\\\SUMMITFS001\\apl\\Internos\\GR\\FUTURE_TOTAL/Cierre_FutureTotalReport_{date:%%d%m%y}_000.xls"
+          }
+        },
+        {
+          "macro": "Carga_Curva_CCIBR_P",
+          "repeat": 1,
+          "note": "Curva CCIBR",
+          "params": {
+            "B5": "{base:Curva}/Curva Forward V2.xlsm"
+          }
+        },
+        {
+          "macro": "Cambiario_Summit_P",
+          "repeat": 1,
+          "note": "Reporte summit coberturas",
+          "params": {
+            "B6": "\\\\SUMMITFS001\\apl\\Internos\\GR\\Coberturas/ReporteCobertura_CAMBIARIO_FWD_{date:%%d%m%Y}_000.csv.xls"
+          }
+        },
+        {
+          "macro": "Fwd_Summit_P",
+          "repeat": 1,
+          "note": "",
+          "params": {
+            "B7": "\\\\SUMMITFS001\\apl\\Internos\\GR\\Coberturas/ReporteCobertura_FWD_{date:%%d%m%Y}_000.csv.xls"
+          }
+        }
+      ],
+      "folder": ""
+    },
+    {
+      "name": "9. SWAPS CDTS CFH",
+      "xlsm": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/Coberturas CFH/CFHCDT.xlsm",
+      "sheet": "Parametros",
+      "bases": {
+        "main": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/1.FWD CONSOLIDADO/LIVIANOS",
+        "caja": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES/2.CAJA",
+        "libro": "\\\\ISILONSMBPROD\\Gerencia_Riesgo_De_Tesoreria\\3 Jefatura de Riesgo de Mercado\\SWAPS\\Herramientas",
+        "titulos": "//SUMMITFS001/apl/Internos/GR/TRADEPL",
+        "swtotal": "//summitfs001/apl/Internos/GR/SWAP_TOTAL",
+        "Curva": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/Datos Mercado",
+        "Mascara": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/FORWARDS/INFORMES"
+      },
+      "default_base": "main",
+      "vars": {},
+      "steps": [
+        {
+          "macro": "Importa_Banking_P",
+          "repeat": 1,
+          "note": "datos banking",
+          "params": {
+            "B1": "{base:swtotal}/Cierre_SwapTotalReport_{date:%%d%m%y}_000.xls"
+          }
+        },
+        {
+          "macro": "Importa_IFRS_P",
+          "repeat": 1,
+          "note": "Datos IFRS",
+          "params": {
+            "B2": "{base:swtotal}/Cierre_SwapTotalReport_IFRS_{date:%%d%m%y}_000.xls"
+          }
+        },
+        {
+          "macro": "Importa_Flows_P",
+          "repeat": 1,
+          "note": "Datos Flujos",
+          "params": {
+            "B3": "{base:swtotal}/Cierre_SwapTotalReport_IFRS_Flujos_{date:%%d%m%y}_000.xls"
+          }
+        },
+        {
+          "macro": "Carga_Curva_P",
+          "repeat": 1,
+          "note": "Curva Forward",
+          "params": {
+            "B4": "{base:Curva}/Curva Forward V2.xlsm"
+          }
+        },
+        {
+          "macro": "Importa_Curvas_OIS_P",
+          "repeat": 1,
+          "note": "CARGANDO LIBRO SWAPS",
+          "params": {
+            "B5": "{base:libro}/RIESGOS SWAPS.xlsb"
+          }
+        },
+        {
+          "macro": "Carga_PyG_Swaps_P",
+          "repeat": 1,
+          "note": "Griegas PyG FVH",
+          "params": {
+            "B6": "//ISILONSMBPROD/Gerencia_Riesgo_De_Tesoreria/3 Jefatura de Riesgo de Mercado/Coberturas CFH/PYG SWAPS_CFH.xlsm"
+          }
+        }
+      ],
+      "folder": ""
+    }
+  ],
+  "update_links": true
+}

@@ -1,0 +1,6 @@
+pandas
+numpy
+openpyxl
+holidays
+python-dateutil
+customtkinter

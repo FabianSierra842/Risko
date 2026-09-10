@@ -1,0 +1,767 @@
+{
+  "proyecto": "Risko",
+  "creado_en": "2026-09-10T00:03:30.330684-05:00",
+  "archivos": [
+    {
+      "ruta": ".github/agents/codex-bridge.agent.md",
+      "bytes": 2482,
+      "sha256": "408f87b7e6adc4185e1a81107e9fb43abef5e3c2db14a885d59b4e67f460c28e"
+    },
+    {
+      "ruta": ".gitignore",
+      "bytes": 289,
+      "sha256": "af7a3d91b3cb5be0cd2a5eb79d355122f065cd44b934280de3c90555d38f30c3"
+    },
+    {
+      "ruta": "Documentación/ARQUITECTURA_RISKO_PORTAL.md",
+      "bytes": 8144,
+      "sha256": "fa74ca8b2e11b6526f55460fdff887f4a8734a78f886486a344f47cdc50d5916"
+    },
+    {
+      "ruta": "Documentación/analisis_flujo_risko_previo_pyg.md",
+      "bytes": 24812,
+      "sha256": "2176757484e5da05b1ed47fe46ab37bcdcedd5443390fc81f771efc4eafb9662"
+    },
+    {
+      "ruta": "Documentación/estructura_risko.md",
+      "bytes": 7232,
+      "sha256": "3706db01f1e7921a6f4055722897cd625d0aefcab4372708d4209fc4998fe474"
+    },
+    {
+      "ruta": "INICIAR_PYG.bat",
+      "bytes": 243,
+      "sha256": "8fdc8869ba931fa244900aa2b065ebd6adbd980bf7ff7b33f65636dd8f35657b"
+    },
+    {
+      "ruta": "PYG SWAPS_MES.xlsm",
+      "bytes": 12838742,
+      "sha256": "d14a79258769d8394426c93b2611b5b0b87a161ec306c4163b720fd3773c82c0"
+    },
+    {
+      "ruta": "README.md",
+      "bytes": 3760,
+      "sha256": "99a78efcbe97b83720815381551c5f977070f94dec0cd844a9a091ed8c01bd61"
+    },
+    {
+      "ruta": "analisis_pyg_swaps (1).md",
+      "bytes": 68435,
+      "sha256": "8349a233a616d646bb9735b6892a3fec8482e5672df43fc6164850c05941961a"
+    },
+    {
+      "ruta": "aplicaciones/__init__.py",
+      "bytes": 1,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "ruta": "aplicaciones/interfaz_risko/.gitignore",
+      "bytes": 20,
+      "sha256": "63eddd28d1afe2b03909e48eb4624f3767e0c986b61b901c50eeed802ed01ac6"
+    },
+    {
+      "ruta": "aplicaciones/interfaz_risko/MANUAL_OPERACION_POSITION_MONITOR.md",
+      "bytes": 25036,
+      "sha256": "20971ed47cedb5063acc3349b4fc2f8727a7dec407f14bf341ec773cf09187f1"
+    },
+    {
+      "ruta": "aplicaciones/interfaz_risko/__init__.py",
+      "bytes": 1,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "ruta": "aplicaciones/interfaz_risko/assets/README.md",
+      "bytes": 616,
+      "sha256": "818f161e5fb048b15ded150a180ddec6fb156eb3e3c08199ae91cc8b0673a671"
+    },
+    {
+      "ruta": "aplicaciones/interfaz_risko/interfaz_pyg.py",
+      "bytes": 12978,
+      "sha256": "8f5feecade4483de6e6dc5f88bdf9eef9bfebcc26ff362c215c9029883f68e5f"
+    },
+    {
+      "ruta": "aplicaciones/interfaz_risko/interfaz_risko.py",
+      "bytes": 81801,
+      "sha256": "9f1b0e5792225f056e52e9cae66a0dbde4b7f7dccc86c0c57046eae9eb615fe4"
+    },
+    {
+      "ruta": "aplicaciones/interfaz_risko/servicios/__init__.py",
+      "bytes": 1,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "ruta": "aplicaciones/interfaz_risko/servicios/position_monitor.py",
+      "bytes": 29101,
+      "sha256": "db3aa6e3dc4ad7ae62c67d6fd5e127ff71c9ff6eddd03dac6b51323a3d162f07"
+    },
+    {
+      "ruta": "aplicaciones/interfaz_risko/servicios/pyg.py",
+      "bytes": 9557,
+      "sha256": "67b6aff76d9e6de09fef1960ebc58c07a6147a2c9c112a62a7cb97619722e215"
+    },
+    {
+      "ruta": "compartido/__init__.py",
+      "bytes": 1,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "ruta": "compartido/nucleo_risko/__init__.py",
+      "bytes": 282,
+      "sha256": "1b6f0da03493fb22f9e520369c6a8c7f4ce42d94b8823492aae0624b65a4299a"
+    },
+    {
+      "ruta": "compartido/nucleo_risko/archivos.py",
+      "bytes": 5494,
+      "sha256": "dde0884c863c4868ef54e023c06123a72fc05c6d15692929c423af76fdcd2b6d"
+    },
+    {
+      "ruta": "compartido/nucleo_risko/base_datos.py",
+      "bytes": 8213,
+      "sha256": "a6f7822f68baeb5a798d779f7d3439059c56d6fcc15c68021f3a5d6a3eb11186"
+    },
+    {
+      "ruta": "compartido/nucleo_risko/fechas.py",
+      "bytes": 2370,
+      "sha256": "41f98502f8fe450e0a77ad1102ce19977d7f56198fe6c453843f2beecac0d743"
+    },
+    {
+      "ruta": "compartido/nucleo_risko/rutas.py",
+      "bytes": 8321,
+      "sha256": "ffccfd25b25d3aaffeb0ff918b911a653ac9d07bba65468c997b52067fc0ca32"
+    },
+    {
+      "ruta": "compartido/nucleo_risko/tablas_auxiliares.py",
+      "bytes": 11525,
+      "sha256": "1060da5b4898001428d0afb3947f927ae3c73cee1fa578af1b658dce482822f2"
+    },
+    {
+      "ruta": "compartido/nucleo_risko/trm.py",
+      "bytes": 6884,
+      "sha256": "d920adf25f690693784d809dce5a2e2d3afda2ea7de9371b95a85834a0c836bd"
+    },
+    {
+      "ruta": "ejemplos/pyg/Dashboards/PyG/2026-09-01/publicacion.json",
+      "bytes": 432,
+      "sha256": "bee80fc19ac3f60f353909c1551a4c67156f3846f3cb5b4a43672ecbac20b4a6"
+    },
+    {
+      "ruta": "ejemplos/pyg/Dashboards/PyG/2026-09-01/pyg.html",
+      "bytes": 33950,
+      "sha256": "80eb43dad8547bdb614356a54e0cfed82dd1f1e7d8fe04ad6acb91c9562e2175"
+    },
+    {
+      "ruta": "ejemplos/pyg/Dashboards/PyG/dashboard.json",
+      "bytes": 168,
+      "sha256": "ab1a9dfb2835f56267c0cc739f2952c7f103681617975acf0f1c8e08332f46fe"
+    },
+    {
+      "ruta": "ejemplos/pyg/README.md",
+      "bytes": 381,
+      "sha256": "9e07db418ba134224c5d7c39eacef6da5c06809e40f3e325c2ef47c117fe45aa"
+    },
+    {
+      "ruta": "portal/.gitignore",
+      "bytes": 109,
+      "sha256": "0d20134463cbb52ffa8239695a6d84bd12ecfcd03359c5a727bfd692bb858783"
+    },
+    {
+      "ruta": "portal/DOCUMENTACION_PORTAL_LOCAL.md",
+      "bytes": 5468,
+      "sha256": "45946cedd00d02a52c659d938504e8b18e59d0ad4105abc706d1f59bdf860acc"
+    },
+    {
+      "ruta": "portal/OPERACION_PORTAL_RISKO.md",
+      "bytes": 6351,
+      "sha256": "baaba57dc335909b724f96b41319b94efacd37de9326efd9be6e1a1ee9748feb"
+    },
+    {
+      "ruta": "portal/README.md",
+      "bytes": 5981,
+      "sha256": "091d44c3dcb95668e2dd1c86a244a9535d4119d4c5d87bc90243e9dc63a714a2"
+    },
+    {
+      "ruta": "portal/comentarios_diarios/README.md",
+      "bytes": 1592,
+      "sha256": "7fa76d6840dd5247722fc8279e91848f64c5660ed203b80143afc12423836e7a"
+    },
+    {
+      "ruta": "portal/comentarios_diarios/plantilla.md",
+      "bytes": 385,
+      "sha256": "cd6deec6504d039180b14153239f0dcf02de48fb4d46097cbe9f9cb274ef8ab6"
+    },
+    {
+      "ruta": "portal/compilar_onefile.ps1",
+      "bytes": 268,
+      "sha256": "573cf43826260655fd33756b45a27179e43b9dbc7c5a5c577ffaf27ae5c631e4"
+    },
+    {
+      "ruta": "portal/compilar_risko.bat",
+      "bytes": 237,
+      "sha256": "9e29fb105e4fdf8b54527e1aab2bb8c6ee9016df5d4191466eb09738ec3c40be"
+    },
+    {
+      "ruta": "portal/ejemplos/README.md",
+      "bytes": 829,
+      "sha256": "a6d769d4824df29e77089a194a42cd951e059c1f318bcbd3cd4a6c6722264849"
+    },
+    {
+      "ruta": "portal/ejemplos/dashboard.json",
+      "bytes": 315,
+      "sha256": "f81d35f1dc4f91b540bbb33e1748610cdfbd0e2194f10ebf37d95ca0bb05de02"
+    },
+    {
+      "ruta": "portal/generar_iconos.py",
+      "bytes": 2998,
+      "sha256": "5a5bcaefd23e237c00fe6086f28b7a3f56bae73697f67ed8019112df05e894d2"
+    },
+    {
+      "ruta": "portal/iniciar_portal.ps1",
+      "bytes": 288,
+      "sha256": "1e6cd33e96631f2d3cbbe2f7950bc82f54a26988dd11bfaa9f009e4eedb40a96"
+    },
+    {
+      "ruta": "portal/instalador_launcher.py",
+      "bytes": 15274,
+      "sha256": "d0219d390b7ea70f11eace46cc7b450dc0b1a9af4dd5e56858c6597aadb3f06f"
+    },
+    {
+      "ruta": "portal/launcher.py",
+      "bytes": 34131,
+      "sha256": "adf372e541086962fa02be6c6f539ebd982665385d45ef878e3733366a9a0e5b"
+    },
+    {
+      "ruta": "portal/macos/README.md",
+      "bytes": 3601,
+      "sha256": "dc50360d7b5ed88e4c4022f0a76247bdf085e7c8f44fe2ee130ea3fce4b23bdb"
+    },
+    {
+      "ruta": "portal/macos/app_macos.py",
+      "bytes": 1119,
+      "sha256": "926f4f356cc85777c96c4bd8e0db8f33683640c0d05c257d70e11f37c7895277"
+    },
+    {
+      "ruta": "portal/macos/construir_instalador_risko_mac.sh",
+      "bytes": 12148,
+      "sha256": "710f24e2838a2ad0e7e06ae08f7e8ca603b0b62769699c16ed0a4b54cbb5c37b"
+    },
+    {
+      "ruta": "portal/macos/generar_instructivo_word.py",
+      "bytes": 31400,
+      "sha256": "69e90e73bfe1929d9be470b2689e74d19829d6a3e7f31fdf6230ea68eb2182fd"
+    },
+    {
+      "ruta": "portal/macos/launcher_macos.py",
+      "bytes": 28681,
+      "sha256": "954df35a15d6fe7e21daa7e9ecbc07179a941bcb223be3d7c0e6760b36642157"
+    },
+    {
+      "ruta": "portal/macos/requirements-macos.txt",
+      "bytes": 50,
+      "sha256": "1d97b913e462f0dcf35615397912d4ba38a6ad9b589b72c036575a96e7cb76b0"
+    },
+    {
+      "ruta": "portal/publicar_portal.ps1",
+      "bytes": 15869,
+      "sha256": "9f7995c43d0c061d785f599e8700ceb509a1d62164e2839095570608f1a02e75"
+    },
+    {
+      "ruta": "portal/script.py",
+      "bytes": 198091,
+      "sha256": "4526e41f6ec9dba6fd6ab9f7e0bdd714a14ebdf1745688da830f67d3c9d44b48"
+    },
+    {
+      "ruta": "portal/servidor_portal.py",
+      "bytes": 5205,
+      "sha256": "bf7a67275c4a794a7450fdc292d9f96149234a38eb39fedd0ff46fc35ac54080"
+    },
+    {
+      "ruta": "portal/validar_instalador_solo_lectura.ps1",
+      "bytes": 8733,
+      "sha256": "c42672f2f7253cf48ffdc542bde8479e7c7f38bcc450542fca06f108c81e7aac"
+    },
+    {
+      "ruta": "proyectos/__init__.py",
+      "bytes": 1,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "ruta": "proyectos/position_monitor/.gitignore",
+      "bytes": 20,
+      "sha256": "63eddd28d1afe2b03909e48eb4624f3767e0c986b61b901c50eeed802ed01ac6"
+    },
+    {
+      "ruta": "proyectos/position_monitor/__init__.py",
+      "bytes": 1,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "ruta": "proyectos/position_monitor/configuracion/dashboard_publicacion.json",
+      "bytes": 647,
+      "sha256": "31e18e3a2c38d656bb760d9e58043316dffe326fe2ead935773182b568175856"
+    },
+    {
+      "ruta": "proyectos/position_monitor/configuracion/risko.json",
+      "bytes": 10648,
+      "sha256": "ca436ffab6bb7386c0579516eb79550b56091a430f7af702042991a154710034"
+    },
+    {
+      "ruta": "proyectos/position_monitor/documentacion/analisis_inconsistencias_posiciones.md",
+      "bytes": 9551,
+      "sha256": "b4b955806a04d1fbceee1f7a30de5c530f1a855232a3d41e9a232900e730d360"
+    },
+    {
+      "ruta": "proyectos/position_monitor/documentacion/guia_calculo_posiciones.md",
+      "bytes": 9532,
+      "sha256": "98bdf12605cccd91db8de1558e73339378b01e30e637f40008ed6d64987ca1e0"
+    },
+    {
+      "ruta": "proyectos/position_monitor/documentacion/requerimientos/base_datos_auxiliar.md",
+      "bytes": 3535,
+      "sha256": "c2cfbdc63f4aa9274eff76f855bc8856cec325ec178122d8ab693497aa911263"
+    },
+    {
+      "ruta": "proyectos/position_monitor/documentacion/requerimientos/base_datos_risko.md",
+      "bytes": 8799,
+      "sha256": "4994f2ed046a227cb021f687d874ef8ee01a5ce6e49a004a2459dc601fb035fd"
+    },
+    {
+      "ruta": "proyectos/position_monitor/documentacion/requerimientos/calculo_modulo_spot.md",
+      "bytes": 8427,
+      "sha256": "45242338461edd9963d69b3de05c1b1d5302e6163120a40b41b00b2569a07a61"
+    },
+    {
+      "ruta": "proyectos/position_monitor/documentacion/requerimientos/consolidacion_position_monitor.md",
+      "bytes": 7684,
+      "sha256": "25086ace52906549584b8cd568a4545620e6317bc11663f958bb3e2bf7a1ef0d"
+    },
+    {
+      "ruta": "proyectos/position_monitor/documentacion/requerimientos/control_vector_carga_insumos.md",
+      "bytes": 4884,
+      "sha256": "e85a339d6d015cf54e831d79efcb7978de34a0d0eb62e8d49b66ebb94582721f"
+    },
+    {
+      "ruta": "proyectos/position_monitor/documentacion/requerimientos/explicacion.md",
+      "bytes": 22234,
+      "sha256": "1394c10958e1d25d6803bbea5b1ff2a66fd1de1c81ace11f7964cfc08d412a70"
+    },
+    {
+      "ruta": "proyectos/position_monitor/documentacion/requerimientos/guia_flujo_integracion_posiciones.md",
+      "bytes": 9383,
+      "sha256": "8fe496995aaabcba68b0d3a1775953bf8beb99b690956c26a3f0ee017d75832c"
+    },
+    {
+      "ruta": "proyectos/position_monitor/documentacion/requerimientos/indice_modulos_position_monitor.md",
+      "bytes": 3258,
+      "sha256": "bffdf92b35b68dfa8d9430832396ec9d44cac1536f5682c88fcf5ffab60449c5"
+    },
+    {
+      "ruta": "proyectos/position_monitor/documentacion/requerimientos/mapa_lb_lt_parametrico.md",
+      "bytes": 5323,
+      "sha256": "3fa5eabec07422688d81c60b00f48b5db035c71e9bd34a483ecc16c5a2ea31e4"
+    },
+    {
+      "ruta": "proyectos/position_monitor/documentacion/requerimientos/mapa_produccion_y_ejemplos_calculo.md",
+      "bytes": 18873,
+      "sha256": "fcf7a72e6dca76ed73253f3ebba9f4df5b0ea7dea8127b845fa7a514b5a26e35"
+    },
+    {
+      "ruta": "proyectos/position_monitor/documentacion/requerimientos/nota_modulo_posicion_opciones.md",
+      "bytes": 11004,
+      "sha256": "6c331b70cc21f1b79df9958bba0646f430d4d04299c807d781d46bd678fcd78c"
+    },
+    {
+      "ruta": "proyectos/position_monitor/documentacion/requerimientos/posicion_forward.md",
+      "bytes": 8799,
+      "sha256": "c88a3ac089c1ef0656fb3e31ec29da0e342eca2b3284cdd5e0a7d39710b58433"
+    },
+    {
+      "ruta": "proyectos/position_monitor/documentacion/requerimientos/posicion_intradia.md",
+      "bytes": 3651,
+      "sha256": "11719b14d878ef546af8554cd9755f8eee532e4e295e0bc0a32b398cfeceabc7"
+    },
+    {
+      "ruta": "proyectos/position_monitor/documentacion/requerimientos/posicion_novados.md",
+      "bytes": 6477,
+      "sha256": "3125909995fb25ca31dcd8ea0259704c86dd8b395736763026f12b5cd5b78501"
+    },
+    {
+      "ruta": "proyectos/position_monitor/documentacion/requerimientos/posicion_opciones.md",
+      "bytes": 9883,
+      "sha256": "1bd909231eb83d780d52089ce67da7f0b594ae2e408a8fc19ca8eaa236f9c422"
+    },
+    {
+      "ruta": "proyectos/position_monitor/documentacion/requerimientos/posicion_renta_fija.md",
+      "bytes": 10431,
+      "sha256": "2ab0b54fcc27eed4c03c0100a1ee6180a34218a398e7b327a6d710e9a30ac0af"
+    },
+    {
+      "ruta": "proyectos/position_monitor/documentacion/requerimientos/posicion_spot_2_cierre.md",
+      "bytes": 3038,
+      "sha256": "f64ec6325ba007429b951305b12ce972b3d3efcd78f09cbc38ec519163607bda"
+    },
+    {
+      "ruta": "proyectos/position_monitor/documentacion/requerimientos/posicion_spot_acumulada.md",
+      "bytes": 14680,
+      "sha256": "8ee5a8367d11186be61a8ff5c383b55c0eba839ebaf5b683de88c79c8474da92"
+    },
+    {
+      "ruta": "proyectos/position_monitor/documentacion/requerimientos/posicion_swaps.md",
+      "bytes": 9479,
+      "sha256": "b121ca67c4ef1b960d8f87def86a553b58030fcc4f1da7a0259d24b2ec45ed8d"
+    },
+    {
+      "ruta": "proyectos/position_monitor/procesos/Opciones_FF_V3.py",
+      "bytes": 192748,
+      "sha256": "5c579988806d8b0d3b0ad7c2e03b0d7e81f1dcabb74c25d6fbee922cfd6daa3a"
+    },
+    {
+      "ruta": "proyectos/position_monitor/procesos/__init__.py",
+      "bytes": 604,
+      "sha256": "5fe9d9ed6c982e757d7a0662a2b3fa461634ac3c71a917ff98a40990dbf632e4"
+    },
+    {
+      "ruta": "proyectos/position_monitor/procesos/consolidacion.py",
+      "bytes": 32060,
+      "sha256": "34cd7f4ec2a0b0ad93d9759ca763bbbd0df33bba564724efbd133430e420e1a3"
+    },
+    {
+      "ruta": "proyectos/position_monitor/procesos/cubrebonos.py",
+      "bytes": 611,
+      "sha256": "615c1055869442b3bcd8a57676f1b5d12626260d7efe7fa0354ee3e74704dec4"
+    },
+    {
+      "ruta": "proyectos/position_monitor/procesos/forward.py",
+      "bytes": 22278,
+      "sha256": "8eb469e9fde00345cdc28c88e9ba7183ee0ef29e1b6d25dff8fdd232a82186d5"
+    },
+    {
+      "ruta": "proyectos/position_monitor/procesos/intradia.py",
+      "bytes": 17818,
+      "sha256": "cf621335324e9e9478eb9003d97bb27372e033d1f505b1f5096066356015c79d"
+    },
+    {
+      "ruta": "proyectos/position_monitor/procesos/ndftes.py",
+      "bytes": 595,
+      "sha256": "ec6d47bed4e4d5d2055176ae38c69ea0c85048ae7fe3e5f53265f63bae174865"
+    },
+    {
+      "ruta": "proyectos/position_monitor/procesos/novados.py",
+      "bytes": 9284,
+      "sha256": "ec19872aea93b5ba4fad0608fd9f60e3d84faab4d9bb7596124d322a4bbae4ee"
+    },
+    {
+      "ruta": "proyectos/position_monitor/procesos/opciones.py",
+      "bytes": 36207,
+      "sha256": "9419ea3b23e4ee74c14232ed43aa12a131afbeba90ef78622b3a886595e2fd86"
+    },
+    {
+      "ruta": "proyectos/position_monitor/procesos/parametros_libros.py",
+      "bytes": 9060,
+      "sha256": "1138128a3a341f8f7bf9666e9f2c5eeb09716c89795eba0f33fe44a8c0ab2dce"
+    },
+    {
+      "ruta": "proyectos/position_monitor/procesos/posiciones_pendientes.py",
+      "bytes": 1402,
+      "sha256": "d22579b87a15f1a4d6984e4224bd2b762a382e915a31ee31294639e66a1d4394"
+    },
+    {
+      "ruta": "proyectos/position_monitor/procesos/pp.py",
+      "bytes": 579,
+      "sha256": "c0d058c2cfb5011db0c5cc67f619c382ca8481a9cace6e9c26e4f84c621da614"
+    },
+    {
+      "ruta": "proyectos/position_monitor/procesos/renta_fija.py",
+      "bytes": 20248,
+      "sha256": "1538b21e18296552804f7e16c982cf8b0501e745905b66043e0b92c0810c8cc8"
+    },
+    {
+      "ruta": "proyectos/position_monitor/procesos/spot.py",
+      "bytes": 73550,
+      "sha256": "0c12750ab2a28974dbb6a126aa8db641e6aaee4b46f8295cd87a6bceb23fb886"
+    },
+    {
+      "ruta": "proyectos/position_monitor/procesos/spot_2.py",
+      "bytes": 88898,
+      "sha256": "7c1a260088eb0b2df3b4d8593925fe1c616f4069f8b9506827a29c0ebde231ef"
+    },
+    {
+      "ruta": "proyectos/position_monitor/procesos/swaps.py",
+      "bytes": 26720,
+      "sha256": "fafa32bcd7503b9d3d892d886ea6acdfbd748010ef49c6b69bac2ba42adc5b35"
+    },
+    {
+      "ruta": "proyectos/position_monitor/procesos/validar_swaps.py",
+      "bytes": 6617,
+      "sha256": "d417724a29173cc6e7706d3778d687d87955fdb92daf180036554ae1af11df20"
+    },
+    {
+      "ruta": "proyectos/position_monitor/requisitos.txt",
+      "bytes": 61,
+      "sha256": "2fa324f10fe7a5c1512bbe6313ec5d32743d462643fab054a633cd8d44475be8"
+    },
+    {
+      "ruta": "proyectos/position_monitor/tableros/__init__.py",
+      "bytes": 1,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "ruta": "proyectos/position_monitor/tableros/panel_position_monitor.py",
+      "bytes": 37016,
+      "sha256": "bc0692d66c76057951e27e818740cd1025eeaaf2d07456f0a89d2caa67684f47"
+    },
+    {
+      "ruta": "proyectos/pyg/README.md",
+      "bytes": 6874,
+      "sha256": "5c871aa8061c7b15399e3aa13025a91f62647c70e766755815f6c08a66129c5d"
+    },
+    {
+      "ruta": "proyectos/pyg/__init__.py",
+      "bytes": 49,
+      "sha256": "2933a050c05a230e3963876b142ae8b5c578811c017e300c1d68f068c48da05e"
+    },
+    {
+      "ruta": "proyectos/pyg/configuracion/dashboard.example.json",
+      "bytes": 299,
+      "sha256": "bb17f7e4fee43ff6fbf62ae137e3ed34054b55875dde2712480d385537476cc2"
+    },
+    {
+      "ruta": "proyectos/pyg/configuracion/pyg.json",
+      "bytes": 3424,
+      "sha256": "bfbdf0997bdd5c6b3e2fb7f7ef59261cb3ccafc94bcd34595d3c846d543979d0"
+    },
+    {
+      "ruta": "proyectos/pyg/configuracion/vector_pyg.json",
+      "bytes": 7977,
+      "sha256": "97373e32f98252fdd9aaaafd1589511ba53d9f781583a58a77cabded81bb81a0"
+    },
+    {
+      "ruta": "proyectos/pyg/documentacion/DETALLE_OPERATIVO_PYG.md",
+      "bytes": 2389,
+      "sha256": "e3e4c344b19c2a0f05a2c7a9e1280cb62228e7cb67b876ce44a182c698c0abd2"
+    },
+    {
+      "ruta": "proyectos/pyg/documentacion/calculo_pyg_fx_strat.md",
+      "bytes": 10675,
+      "sha256": "5e03e9a1caa2fdeff6480628eb09c579202477059fc2dcb382314676bb9c77b2"
+    },
+    {
+      "ruta": "proyectos/pyg/documentacion/contrato_insumos_pyg.md",
+      "bytes": 5310,
+      "sha256": "e518519752e28f03767f38e7891262b97440e139a9b6da96fb3ae5304330e8c0"
+    },
+    {
+      "ruta": "proyectos/pyg/documentacion/insumos_book_opciones.md",
+      "bytes": 3956,
+      "sha256": "1c9bc004ba91e8f59b2b1ae622b2f99981d8eaa69268aaf4441f6592060e6d65"
+    },
+    {
+      "ruta": "proyectos/pyg/documentacion/integracion_libro_swaps.md",
+      "bytes": 5725,
+      "sha256": "03bd379903fb72f8445f4a5624e8b12f2c052c8a0a8cefd0dd1dfc28f048d367"
+    },
+    {
+      "ruta": "proyectos/pyg/documentacion/integracion_pyg_v2.md",
+      "bytes": 3168,
+      "sha256": "cfa115bbdef565c5a8a51ecc86fbc10fbd401f09f64fb1d4acf3baa8a0989909"
+    },
+    {
+      "ruta": "proyectos/pyg/documentacion/mapa_pyg_opciones.md",
+      "bytes": 3744,
+      "sha256": "a9dcecc3f59a21fb5a4cce048b90e69e4cd0ce67fe5b7280d63e5a72c0813375"
+    },
+    {
+      "ruta": "proyectos/pyg/procesos/Opciones_FF_V3.py",
+      "bytes": 192748,
+      "sha256": "5c579988806d8b0d3b0ad7c2e03b0d7e81f1dcabb74c25d6fbee922cfd6daa3a"
+    },
+    {
+      "ruta": "proyectos/pyg/procesos/__init__.py",
+      "bytes": 44,
+      "sha256": "2787074fe14e9191126cd686d1a8361a9e3348c987f5b7036cffe9b553795943"
+    },
+    {
+      "ruta": "proyectos/pyg/procesos/atribucion.py",
+      "bytes": 1728,
+      "sha256": "652bbd65502502d2005b4f4d380ee13a3e311b6092c21eaba95d4731d6bb6b2e"
+    },
+    {
+      "ruta": "proyectos/pyg/procesos/caja.py",
+      "bytes": 3685,
+      "sha256": "91cc4f91dd56aa0b4239593f58b106b890f15c17027f34a6443008fc2718fecc"
+    },
+    {
+      "ruta": "proyectos/pyg/procesos/configuracion.py",
+      "bytes": 3812,
+      "sha256": "08afbe0662e0bd45d4d9afc491d554be63ec7cc72c4a5e9798ea4ab6c4c6bf20"
+    },
+    {
+      "ruta": "proyectos/pyg/procesos/consolidacion.py",
+      "bytes": 12228,
+      "sha256": "70518e5d8943137ab1e1c77c21769139512c3dbb286317e47b3ba6a1aa81bfe1"
+    },
+    {
+      "ruta": "proyectos/pyg/procesos/flujos_diana.json",
+      "bytes": 97574,
+      "sha256": "7b95835ca457776f05467498909257691537147758438d1c629e11b253fd3263"
+    },
+    {
+      "ruta": "proyectos/pyg/procesos/forward.py",
+      "bytes": 7039,
+      "sha256": "b3faed4db3a4ae3d48623fff74a501ea6d725a76d637be605453927aa08bc4c2"
+    },
+    {
+      "ruta": "proyectos/pyg/procesos/fx_estrat_structure.json",
+      "bytes": 72769,
+      "sha256": "0ba786b38295389fbc376004fc27dd9ce23e559c6573c5bf46a339585591c03f"
+    },
+    {
+      "ruta": "proyectos/pyg/procesos/fx_motores.py",
+      "bytes": 13514,
+      "sha256": "8363c9ab49182d669ddd652aab73351410362350634f7f554630c2ed829626b0"
+    },
+    {
+      "ruta": "proyectos/pyg/procesos/fx_snapshot.py",
+      "bytes": 15589,
+      "sha256": "26bf8fcdda146141ca88f43551a6d63c0c5a06ddb7d7a31b5b20765d42450729"
+    },
+    {
+      "ruta": "proyectos/pyg/procesos/insumos_fx_strat.py",
+      "bytes": 1721,
+      "sha256": "8e75e14d2a505c7df86d0897ce8f2899233ea9ceebb1d040a49419cda6973900"
+    },
+    {
+      "ruta": "proyectos/pyg/procesos/novados.py",
+      "bytes": 334,
+      "sha256": "18c386fd555baaaa27ec8f8eddfa05e278be5a944e8d5a9a9ab0df52bde08fee"
+    },
+    {
+      "ruta": "proyectos/pyg/procesos/opciones.py",
+      "bytes": 26748,
+      "sha256": "af52f595eaaa689df3c787de35a922084d551adf1d65bd2da84cea85b69eb506"
+    },
+    {
+      "ruta": "proyectos/pyg/procesos/referencia_mensual.py",
+      "bytes": 9712,
+      "sha256": "22178632300710a81c624ceabc51aa16fdf66a88f5900ce832ef3cb28941708a"
+    },
+    {
+      "ruta": "proyectos/pyg/procesos/swaps.py",
+      "bytes": 336,
+      "sha256": "083039fc99c7c2e144a7b3eddf84f7de6d2a5ddbf1bc21b815f6f6dbcecc3935"
+    },
+    {
+      "ruta": "proyectos/pyg/requisitos.txt",
+      "bytes": 110,
+      "sha256": "1d9d313ba33e1945d2452f4180b80c9820b8e475338a9d2bed647655a0498432"
+    },
+    {
+      "ruta": "proyectos/pyg/tableros/__init__.py",
+      "bytes": 49,
+      "sha256": "a8eb321be97f18c72ba1523547f0a292989313d49e587b4e8a2b0c687fcdce7b"
+    },
+    {
+      "ruta": "proyectos/pyg/tableros/panel_pyg.py",
+      "bytes": 18040,
+      "sha256": "7174700ace21eaaa55e166fc6ddf5e7714920eae3d3a5607c60d1f0ce2fc8c05"
+    },
+    {
+      "ruta": "proyectos/pyg/tableros/panel_pyg_fx_strat.py",
+      "bytes": 606,
+      "sha256": "c07818ab226d1db44a8eb9582a77262995614a8b8be1cbdd61f73d5d3ccba2ec"
+    },
+    {
+      "ruta": "requirements.txt",
+      "bytes": 77,
+      "sha256": "e77162ed55d8d526150a7d8a4504ec645e977a190290dc87408e867d2071f71c"
+    },
+    {
+      "ruta": "scripts/empaquetar_risko.py",
+      "bytes": 3596,
+      "sha256": "97e008421f01b109e8df648b1c1e3960ffd3bab5b4ea2cf752767c5093fd59d4"
+    },
+    {
+      "ruta": "tests/test_consolidacion_historico.py",
+      "bytes": 3872,
+      "sha256": "f50e4b77e37b0e8ae7e37611a2bd32a085c0ec95f3eae97f2192672b54dd8a28"
+    },
+    {
+      "ruta": "tests/test_dashboard_position_monitor.py",
+      "bytes": 12074,
+      "sha256": "6c634646796a84db88b2b46af857d6f9ee8c99c5e550b47292db1966df825dd0"
+    },
+    {
+      "ruta": "tests/test_dashboard_pyg.py",
+      "bytes": 2082,
+      "sha256": "a2d388d6e2e90bc81187dc9d66af89ffdd333056d64ed0b49a4a4f877244e2a1"
+    },
+    {
+      "ruta": "tests/test_portal_macos.py",
+      "bytes": 6696,
+      "sha256": "38c874f06dd38fad08b087a413ad959a4a8617430c8038e26804158dfa11a8d3"
+    },
+    {
+      "ruta": "tests/test_portal_ui.py",
+      "bytes": 25859,
+      "sha256": "bf2f9014a669206dac80e6e0b912220f6bd98666883b20b3cdde1dd53466b99b"
+    },
+    {
+      "ruta": "tests/test_position_monitor_intradia.py",
+      "bytes": 6068,
+      "sha256": "9c6d9498e71927a4fd5976679e35680cb247eec219151a9df348c0b5cef2d0b0"
+    },
+    {
+      "ruta": "tests/test_position_monitor_service.py",
+      "bytes": 14029,
+      "sha256": "882767d3a6ff04d9dfb5118f61070a43515e3b31d901d4a17f84385c2bb9d3d3"
+    },
+    {
+      "ruta": "tests/test_pyg_flujo.py",
+      "bytes": 18233,
+      "sha256": "99d7bbcfcf81388c33508fca32b08424f83e924b748d8e52e22ae996cd3ab054"
+    },
+    {
+      "ruta": "tests/test_pyg_opciones.py",
+      "bytes": 2081,
+      "sha256": "d168491d7577d1a24a6cdc10afae65c9755111862eaf4d38b29769d15f9b9567"
+    },
+    {
+      "ruta": "tests/test_pyg_swaps_libro.py",
+      "bytes": 8709,
+      "sha256": "fb30ab557ac66b57bdc90ba990576f894dabe090147e313b4ae274f6ded6c82f"
+    },
+    {
+      "ruta": "tests/test_referencia_pyg_mensual.py",
+      "bytes": 1405,
+      "sha256": "9f0fe880dff2cc6983d0e5949a773ee3de0033f73539f2253272d18ecbb0fb36"
+    },
+    {
+      "ruta": "tests/test_renta_fija.py",
+      "bytes": 1930,
+      "sha256": "949bb64aa671f8af9c525c0eb17d243f1c66fbdbe33145a3b4600e68a4f94751"
+    },
+    {
+      "ruta": "tests/test_spot.py",
+      "bytes": 17059,
+      "sha256": "df7d856607c133d5b1873ef6bc9b98077d88f300b0d400e6165218ed428d7215"
+    },
+    {
+      "ruta": "tests/test_spot_2.py",
+      "bytes": 2623,
+      "sha256": "dc95d6ab23b99e57f5886cf9c4b0443a6f7fcf9f722e083437930e3024ee9671"
+    },
+    {
+      "ruta": "tests/test_tablas_auxiliares.py",
+      "bytes": 3172,
+      "sha256": "f50aae4dde278f9afc5e8c0fac81737eb3f8691fe61c653f70b9c96ae29b65a3"
+    },
+    {
+      "ruta": "tests/test_trm.py",
+      "bytes": 1917,
+      "sha256": "c82f2d5454dc1554f24f5eaffbe7bd2eb6efd0bc81332040afcc17a9e9427cd9"
+    }
+  ],
+  "exclusiones": [
+    "Entornos virtuales y cachés",
+    "Datos y ejecuciones generadas",
+    "Preferencias personales y comentarios diarios del portal",
+    "Evidencias históricas de datos operativos"
+  ]
+}

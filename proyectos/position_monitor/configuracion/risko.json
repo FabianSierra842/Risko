@@ -1,0 +1,334 @@
+{
+  "fecha": "23/06/2026",
+  "logs_tpl": "\\\\isilonsmbprod\\Gerencia_Riesgo_De_Tesoreria\\3 Jefatura de Riesgo de Mercado\\VAR\\temp\\Registros\\Risko\\{yyyy}-{mm}-{dd}",
+  "dry_run": false,
+  "spot": {
+    "owner_tables_incluidas": [
+      "CONTADO",
+      "FXFWD",
+      "FXOPT_TR",
+      "FXSPOT",
+      "MM",
+      "NOVADO",
+      "SWAP"
+    ],
+    "archivo_excel_posiciones": "\\\\ISILONSMBPROD\\Gerencia_Riesgo_De_Tesoreria\\3 Jefatura de Riesgo de Mercado\\Proyecto Risko\\proyectos\\position_monitor\\configuracion\\param_posiciones_iniciales_spot.xlsx",
+    "hoja_excel_posiciones": "Posiciones_Iniciales"
+  },
+  "spot_2": {
+    "modo": "PRUEBAS_CIERRE",
+    "incluir_en_cierre": false,
+    "incluir_en_intradia": false,
+    "book_exclusivo": "SPOT_CLIENTE",
+    "requiere_posicion_inicial_validada": true,
+    "posicion_inicial_validada": false
+  },
+  "global_vars": {
+    "gr": "\\\\SUMMITFS001\\apl\\Internos\\GR",
+    "Ruta_Risko": "\\\\ISILONSMBPROD\\Gerencia_Riesgo_De_Tesoreria\\3 Jefatura de Riesgo de Mercado\\Proyecto Risko\\datos\\insumos",
+    "Ruta_Risko_Intradia": "\\\\ISILONSMBPROD\\Gerencia_Riesgo_De_Tesoreria\\3 Jefatura de Riesgo de Mercado\\Proyecto Risko\\datos\\position_monitor\\intradia\\insumos",
+    "Ruta_Risko_Spot_2_Cierre": "\\\\ISILONSMBPROD\\Gerencia_Riesgo_De_Tesoreria\\3 Jefatura de Riesgo de Mercado\\Proyecto Risko\\datos\\position_monitor\\pruebas\\spot_2\\cierre\\insumos",
+    "rep_fwd": "\\\\SUMMITFS001\\apl\\Internos\\GR\\VALORACION_FWD",
+    "rep_novados": "\\\\SUMMITFS001\\apl\\Internos\\GR\\FUTURE_TOTAL",
+    "swap_total": "\\\\SUMMITFS001\\apl\\Internos\\GR\\SWAP_TOTAL",
+    "tradepl": "\\\\SUMMITFS001\\apl\\Internos\\GR\\TRADEPL",
+    "fx_option": "\\\\SUMMITFS001\\apl\\Internos\\GR\\FXOPTION_BASIC",
+    "rep_caja": "\\\\SUMMITFS001\\apl\\Internos\\GR\\REP_CAJA",
+    "bdb": "\\\\ISILONSMBPROD\\Gerencia_Riesgo_De_Tesoreria\\3 Jefatura de Riesgo de Mercado\\BDB",
+    "datos_mercado": "\\\\ISILONSMBPROD\\Gerencia_Riesgo_De_Tesoreria\\3 Jefatura de Riesgo de Mercado\\Datos Mercado",
+    "insumo_tasas": "\\\\ISILONSMBPROD\\Gerencia_Riesgo_De_Tesoreria\\2 Jefatura de Compliance de Tesorería\\Insumos CT\\Tasas"
+  },
+  "flows": [
+    {
+      "name": "00_Limpiar_Insumos",
+      "vars": {},
+      "steps": [
+        {
+          "tipo": "eliminar_archivos",
+          "origen": "{Ruta_Risko}",
+          "destino": "",
+          "patron": "*.xls",
+          "recursivo": false,
+          "permitir_vacio": true,
+          "nombre": "Limpiar XLS"
+        },
+        {
+          "tipo": "eliminar_archivos",
+          "origen": "{Ruta_Risko}",
+          "destino": "",
+          "patron": "*.xlsx",
+          "recursivo": false,
+          "permitir_vacio": true,
+          "nombre": "Limpiar XLSX"
+        },
+        {
+          "tipo": "eliminar_archivos",
+          "origen": "{Ruta_Risko}",
+          "destino": "",
+          "patron": "*.xlsm",
+          "recursivo": false,
+          "permitir_vacio": true,
+          "nombre": "Limpiar XLSM"
+        },
+        {
+          "tipo": "eliminar_archivos",
+          "origen": "{Ruta_Risko}",
+          "destino": "",
+          "patron": "*.xlsb",
+          "recursivo": false,
+          "permitir_vacio": true,
+          "nombre": "Limpiar XLSB"
+        },
+        {
+          "tipo": "eliminar_archivos",
+          "origen": "{Ruta_Risko}",
+          "destino": "",
+          "patron": "*.csv",
+          "recursivo": false,
+          "permitir_vacio": true,
+          "nombre": "Limpiar CSV"
+        },
+        {
+          "tipo": "eliminar_archivos",
+          "origen": "{Ruta_Risko}",
+          "destino": "",
+          "patron": "*.txt",
+          "recursivo": false,
+          "permitir_vacio": true,
+          "nombre": "Limpiar TXT"
+        }
+      ],
+      "expected": []
+    },
+    {
+      "name": "01_Forward",
+      "vars": {},
+      "steps": [
+        {
+          "tipo": "copiar_archivos",
+          "origen": "{rep_fwd}",
+          "destino": "{Ruta_Risko}",
+          "patron": "Cierre_Valoracion_FxFwd_{ddmmyyyy}_000.xls",
+          "recursivo": false,
+          "nombre": "Forward Banking"
+        },
+        {
+          "tipo": "copiar_archivos",
+          "origen": "{rep_fwd}",
+          "destino": "{Ruta_Risko}",
+          "patron": "Cierre_Valoracion_FxFwd_IFRS_{ddmmyyyy}_000.xls",
+          "recursivo": false,
+          "nombre": "Forward IFRS"
+        }
+      ],
+      "expected": []
+    },
+    {
+      "name": "02_Novados",
+      "vars": {},
+      "steps": [
+        {
+          "tipo": "copiar_archivos",
+          "origen": "{rep_novados}",
+          "destino": "{Ruta_Risko}",
+          "patron": "Cierre_FutureTotalReport_{ddmmyy}_000.xls",
+          "recursivo": false,
+          "nombre": "Novados"
+        }
+      ],
+      "expected": []
+    },
+    {
+      "name": "03_Renta_Fija",
+      "vars": {},
+      "steps": [
+        {
+          "tipo": "copiar_archivos",
+          "origen": "{tradepl}",
+          "destino": "{Ruta_Risko}",
+          "patron": "ReporteTitulos_{ddmmyyyy}.csv",
+          "recursivo": false,
+          "nombre": "Renta fija"
+        }
+      ],
+      "expected": []
+    },
+    {
+      "name": "04_Opciones",
+      "vars": {},
+      "steps": [
+        {
+          "tipo": "copiar_archivos",
+          "origen": "{fx_option}",
+          "destino": "{Ruta_Risko}",
+          "patron": "USR_OPT_MANANA_{next_bday_ddmmyy}_000.xls",
+          "recursivo": false,
+          "nombre": "Opciones Summit"
+        },
+        {
+          "tipo": "copiar_archivos",
+          "origen": "{bdb}",
+          "destino": "{Ruta_Risko}",
+          "patron": "ENTRADA2.xlsb",
+          "recursivo": false,
+          "nombre": "Mercado opciones ENTRADA2"
+        },
+        {
+          "tipo": "copiar_archivos",
+          "origen": "{insumo_tasas}",
+          "destino": "{Ruta_Risko}",
+          "patron": "Insumo tasas.xlsx",
+          "recursivo": false,
+          "nombre": "Historico TRM FORMADA"
+        }
+      ],
+      "expected": []
+    },
+    {
+      "name": "05_Swaps",
+      "vars": {},
+      "steps": [
+        {
+          "tipo": "copiar_archivos",
+          "origen": "{swap_total}",
+          "destino": "{Ruta_Risko}",
+          "patron": "Cierre_SwapTotalReport_Flujos_{ddmmyy}_000.xls",
+          "recursivo": false,
+          "nombre": "Swaps Banking"
+        },
+        {
+          "tipo": "copiar_archivos",
+          "origen": "{swap_total}",
+          "destino": "{Ruta_Risko}",
+          "patron": "Cierre_SwapTotalReport_IFRS_Flujos_{ddmmyy}_000.xls",
+          "recursivo": false,
+          "nombre": "Swaps IFRS"
+        }
+      ],
+      "expected": []
+    },
+    {
+      "name": "06_Spot",
+      "vars": {},
+      "steps": [
+        {
+          "tipo": "copiar_archivos",
+          "origen": "{rep_caja}",
+          "destino": "{Ruta_Risko}",
+          "patron": "Cierre_ReporteCaja_{ddmmyy}_000.xls",
+          "recursivo": false,
+          "nombre": "Spot"
+        },
+        {
+          "tipo": "copiar_archivos",
+          "origen": "{insumo_tasas}",
+          "destino": "{Ruta_Risko}",
+          "patron": "Insumo tasas.xlsx",
+          "recursivo": false,
+          "nombre": "Historico TRM FORMADA"
+        }
+      ],
+      "expected": []
+    },
+    {
+      "name": "10_Position_Monitor_Intradia",
+      "vars": {},
+      "steps": [
+        {
+          "tipo": "copiar_archivo_reciente",
+          "origen": "{rep_fwd}",
+          "destino": "{Ruta_Risko_Intradia}",
+          "patron": "USR_Posicion_Fwd_Intradia_{ddmmyyyy}_*.xls",
+          "criterio_reciente": "sufijo_numerico",
+          "tamano_minimo_bytes": 1024,
+          "recursivo": false,
+          "nombre": "Forward intradia Banking"
+        },
+        {
+          "tipo": "copiar_archivo_reciente",
+          "origen": "{rep_novados}",
+          "destino": "{Ruta_Risko_Intradia}",
+          "patron": "USR_Posicion_Novado_Intradia_{ddmmyy}_*.xls",
+          "criterio_reciente": "sufijo_numerico",
+          "tamano_minimo_bytes": 1024,
+          "recursivo": false,
+          "nombre": "Novados intradia"
+        },
+        {
+          "tipo": "copiar_archivo_reciente",
+          "origen": "{swap_total}",
+          "destino": "{Ruta_Risko_Intradia}",
+          "patron": "USR_Posicion_Swaps_Intraday_{ddmmyy}_*.xls",
+          "criterio_reciente": "sufijo_numerico",
+          "tamano_minimo_bytes": 1024,
+          "recursivo": false,
+          "nombre": "Swaps intradia operaciones"
+        },
+        {
+          "tipo": "copiar_archivo_reciente",
+          "origen": "{swap_total}",
+          "destino": "{Ruta_Risko_Intradia}",
+          "patron": "USR_Posicion_Swaps_Intraday_Flujos_{ddmmyy}_*.xls",
+          "criterio_reciente": "sufijo_numerico",
+          "tamano_minimo_bytes": 1024,
+          "recursivo": false,
+          "nombre": "Swaps intradia flujos Banking"
+        },
+        {
+          "tipo": "copiar_archivo_reciente",
+          "origen": "{rep_caja}",
+          "destino": "{Ruta_Risko_Intradia}",
+          "patron": "USR_Caja_Intradia_{ddmmyy}_*.xls",
+          "criterio_reciente": "sufijo_numerico",
+          "tamano_minimo_bytes": 1024,
+          "recursivo": false,
+          "nombre": "Caja intradia"
+        },
+        {
+          "tipo": "copiar_archivo_reciente",
+          "origen": "{fx_option}",
+          "destino": "{Ruta_Risko_Intradia}",
+          "patron": "USR_OPT_INTRADIA_{ddmmyy}_*.xls",
+          "criterio_reciente": "sufijo_numerico",
+          "tamano_minimo_bytes": 1024,
+          "recursivo": false,
+          "nombre": "Opciones intradia Banking"
+        },
+        {
+          "tipo": "copiar_archivos",
+          "origen": "{bdb}",
+          "destino": "{Ruta_Risko_Intradia}",
+          "patron": "ENTRADA2.xlsb",
+          "recursivo": false,
+          "nombre": "Mercado opciones ENTRADA2 intradia"
+        },
+        {
+          "tipo": "copiar_archivos",
+          "origen": "{insumo_tasas}",
+          "destino": "{Ruta_Risko_Intradia}",
+          "patron": "Insumo tasas.xlsx",
+          "recursivo": false,
+          "nombre": "Spot SETFX para reproceso intradia"
+        }
+      ],
+      "expected": []
+    },
+    {
+      "name": "11_Spot_2_Cierre_Pruebas",
+      "vars": {},
+      "steps": [
+        {
+          "tipo": "copiar_archivo_reciente",
+          "origen": "{rep_caja}",
+          "destino": "{Ruta_Risko_Spot_2_Cierre}",
+          "patron": "Cierre_ReporteCaja_{ddmmyy}_*.xls",
+          "criterio_reciente": "sufijo_numerico",
+          "tamano_minimo_bytes": 1024,
+          "recursivo": false,
+          "nombre": "Caja de cierre para Spot 2 aislado"
+        }
+      ],
+      "expected": []
+    }
+  ]
+}

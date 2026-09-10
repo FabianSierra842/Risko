@@ -1,0 +1,2 @@
+-r proyectos/position_monitor/requisitos.txt
+-r proyectos/pyg/requisitos.txt

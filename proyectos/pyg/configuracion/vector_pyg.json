@@ -1,0 +1,206 @@
+{
+  "fecha": "13/08/2026",
+  "logs_tpl": "\\\\ISILONSMBPROD\\Gerencia_Riesgo_De_Tesoreria\\3 Jefatura de Riesgo de Mercado\\Proyecto Risko\\ejecuciones\\pyg\\vector\\{yyyy}-{mm}-{dd}",
+  "dry_run": false,
+  "global_vars": {
+    "insumos_pyg": "\\\\ISILONSMBPROD\\Gerencia_Riesgo_De_Tesoreria\\3 Jefatura de Riesgo de Mercado\\Proyecto Risko\\datos\\pyg\\insumos",
+    "insumos_fx_strat": "\\\\ISILONSMBPROD\\Gerencia_Riesgo_De_Tesoreria\\3 Jefatura de Riesgo de Mercado\\Proyecto Risko\\datos\\pyg\\insumos\\fx_estrat",
+    "datasets_opciones": "\\\\ISILONSMBPROD\\Gerencia_Riesgo_De_Tesoreria\\3 Jefatura de Riesgo de Mercado\\BDB\\OPCIONES\\INFORME_PYTHON",
+    "resumen_book_opciones": "\\\\ISILONSMBPROD\\Gerencia_Riesgo_De_Tesoreria\\3 Jefatura de Riesgo de Mercado\\BDB\\OPCIONES\\P&G OPCIONES MES",
+    "fx_option": "\\\\SUMMITFS001\\apl\\Internos\\GR\\FXOPTION_BASIC",
+    "fwd_option": "\\\\SUMMITFS001\\apl\\Internos\\GR\\VALORACION_FWD",
+    "caja_option": "\\\\SUMMITFS001\\apl\\Internos\\GR\\REP_CAJA",
+    "bdb": "\\\\ISILONSMBPROD\\Gerencia_Riesgo_De_Tesoreria\\3 Jefatura de Riesgo de Mercado\\BDB",
+    "datos_mercado": "\\\\ISILONSMBPROD\\Gerencia_Riesgo_De_Tesoreria\\3 Jefatura de Riesgo de Mercado\\Datos Mercado",
+    "insumo_tasas": "\\\\ISILONSMBPROD\\Gerencia_Riesgo_De_Tesoreria\\2 Jefatura de Compliance de Tesorería\\Insumos CT\\Tasas",
+    "base_posiciones": "\\\\ISILONSMBPROD\\Gerencia_Riesgo_De_Tesoreria\\3 Jefatura de Riesgo de Mercado\\Proyecto Risko\\datos\\base de datos"
+  },
+  "flows": [
+    {
+      "name": "01_Dataset_Book_Opciones",
+      "vars": {},
+      "steps": [
+        {
+          "tipo": "copiar_archivos",
+          "origen": "{datasets_opciones}",
+          "destino": "{insumos_pyg}",
+          "patron": "Dataset Libro de Opciones {yyyymmdd}.xlsx",
+          "recursivo": false,
+          "nombre": "Dataset diario del book Opciones"
+        }
+      ],
+      "expected": []
+    },
+    {
+      "name": "02_Insumos_Primarios_Book_Opciones",
+      "vars": {},
+      "steps": [
+        {
+          "tipo": "copiar_archivos",
+          "origen": "{fx_option}",
+          "destino": "{insumos_pyg}",
+          "patron": "USR_OPT_MANANA_{next_bday_ddmmyy}_000.xls",
+          "recursivo": false,
+          "nombre": "Opciones Summit"
+        },
+        {
+          "tipo": "copiar_archivos",
+          "origen": "{fwd_option}",
+          "destino": "{insumos_pyg}",
+          "patron": "USR_OPT_FWD_{ddmmyyyy}_000.xls",
+          "recursivo": false,
+          "nombre": "Forwards del Book Opciones"
+        },
+        {
+          "tipo": "copiar_archivos",
+          "origen": "{caja_option}",
+          "destino": "{insumos_pyg}",
+          "patron": "USR_CAJA_OPT_FUT_{ddmmyy}_000.xls",
+          "recursivo": false,
+          "nombre": "Caja y operaciones del Book Opciones"
+        },
+        {
+          "tipo": "copiar_archivos",
+          "origen": "{bdb}",
+          "destino": "{insumos_pyg}",
+          "patron": "ENTRADA2.xlsb",
+          "recursivo": false,
+          "nombre": "Mercado Opciones"
+        },
+        {
+          "tipo": "copiar_archivos",
+          "origen": "{insumo_tasas}",
+          "destino": "{insumos_pyg}",
+          "patron": "Insumo tasas.xlsx",
+          "recursivo": false,
+          "nombre": "Histórico TRM formada"
+        },
+        {
+          "tipo": "copiar_archivos",
+          "origen": "{datos_mercado}",
+          "destino": "{insumos_pyg}",
+          "patron": "Curva Forward V2.xlsm",
+          "recursivo": false,
+          "nombre": "Control TRM del código base"
+        }
+      ],
+      "expected": []
+    },
+    {
+      "name": "03_Referencia_Resumen_Book_Opciones",
+      "vars": {},
+      "steps": [
+        {
+          "tipo": "copiar_archivo_reciente",
+          "origen": "{resumen_book_opciones}",
+          "destino": "{insumos_pyg}",
+          "patron": "PYG_OPCIONES_MES*.xlsb",
+          "nombre_destino": "PYG_OPCIONES_MES_REFERENCIA.xlsb",
+          "recursivo": false,
+          "nombre": "Referencia C1-H22 del book Opciones"
+        }
+      ],
+      "expected": []
+    },
+    {
+      "name": "04_Control_Posiciones_Book_Opciones",
+      "vars": {},
+      "steps": [
+        {
+          "tipo": "copiar_archivos",
+          "origen": "{base_posiciones}",
+          "destino": "{insumos_pyg}",
+          "patron": "risko.db",
+          "recursivo": false,
+          "nombre": "Snapshot read-only de posiciones publicadas"
+        }
+      ],
+      "expected": []
+    },
+    {
+      "name": "05_Insumos_PyG_FX_ESTRAT",
+      "vars": {},
+      "steps": [
+        {
+          "tipo": "crear_carpeta",
+          "destino": "{insumos_fx_strat}",
+          "nombre": "Carpeta local de insumos FX_ESTRAT"
+        },
+        {
+          "tipo": "copiar_archivos",
+          "origen": "\\\\ISILONSMBPROD\\Gerencia_Riesgo_De_Tesoreria\\3 Jefatura de Riesgo de Mercado\\FORWARDS\\INFORMES\\1.FWD CONSOLIDADO\\LIVIANOS",
+          "destino": "{insumos_fx_strat}",
+          "patron": "INFORME FWD CONSOLIDADO {dd}-{mm}-{yy}.xlsb",
+          "recursivo": false,
+          "nombre": "Forward consolidado FX_ESTRAT"
+        },
+        {
+          "tipo": "copiar_archivo_reciente",
+          "origen": "\\\\ISILONSMBPROD\\Gerencia_Riesgo_De_Tesoreria\\3 Jefatura de Riesgo de Mercado\\FORWARDS\\INFORMES\\2.CAJA",
+          "destino": "{insumos_fx_strat}",
+          "patron": "REPORTE CAJA LIVIANO*",
+          "nombre_destino": "REPORTE_CAJA_LIVIANO_{yyyymmdd}.xls",
+          "recursivo": false,
+          "nombre": "Reporte Caja Liviano"
+        },
+        {
+          "tipo": "copiar_archivos",
+          "origen": "\\\\ISILONSMBPROD\\Gerencia_Riesgo_De_Tesoreria\\3 Jefatura de Riesgo de Mercado\\FORWARDS\\INFORMES\\5.FTP COP Y USD",
+          "destino": "{insumos_fx_strat}",
+          "patron": "FTP COP.xlsx",
+          "recursivo": false,
+          "nombre": "Curva FTP COP"
+        },
+        {
+          "tipo": "copiar_archivos",
+          "origen": "\\\\ISILONSMBPROD\\Gerencia_Riesgo_De_Tesoreria\\3 Jefatura de Riesgo de Mercado\\FORWARDS\\INFORMES\\5.FTP COP Y USD",
+          "destino": "{insumos_fx_strat}",
+          "patron": "FTP USD.xlsx",
+          "recursivo": false,
+          "nombre": "Curva FTP USD"
+        },
+        {
+          "tipo": "copiar_archivos",
+          "origen": "\\\\ISILONSMBPROD\\Gerencia_Riesgo_De_Tesoreria\\3 Jefatura de Riesgo de Mercado\\FX_ESTRAT\\Informes",
+          "destino": "{insumos_fx_strat}",
+          "patron": "Informe Libro FX_ESTRAT {yyyymmdd}.xlsb",
+          "recursivo": false,
+          "nombre": "Libro operativo FX_ESTRAT"
+        },
+        {
+          "tipo": "copiar_archivos",
+          "origen": "\\\\ISILONSMBPROD\\Gerencia_Riesgo_De_Tesoreria\\3 Jefatura de Riesgo de Mercado\\Datos Mercado",
+          "destino": "{insumos_fx_strat}",
+          "patron": "Curva Forward V2.xlsm",
+          "recursivo": false,
+          "nombre": "Curva Forward"
+        },
+        {
+          "tipo": "copiar_archivos",
+          "origen": "\\\\ISILONSMBPROD\\Gerencia_Riesgo_De_Tesoreria\\3 Jefatura de Riesgo de Mercado\\FORWARDS\\INFORMES",
+          "destino": "{insumos_fx_strat}",
+          "patron": "MASCARA FX TOTAL REPORT (5.5-3-8).xls",
+          "recursivo": false,
+          "nombre": "Mascara de clasificación FX"
+        },
+        {
+          "tipo": "copiar_archivos",
+          "origen": "\\\\SUMMITFS001\\apl\\Internos\\GR\\SWAP_TOTAL",
+          "destino": "{insumos_fx_strat}",
+          "patron": "Cierre_SwapTotalReport_{ddmmyy}_000.xls",
+          "recursivo": false,
+          "nombre": "Valoración Swaps Banking"
+        },
+        {
+          "tipo": "copiar_archivos",
+          "origen": "\\\\SUMMITFS001\\apl\\Internos\\GR\\SWAP_TOTAL",
+          "destino": "{insumos_fx_strat}",
+          "patron": "Cierre_SwapTotalReport_IFRS_{ddmmyy}_000.xls",
+          "recursivo": false,
+          "nombre": "Valoración Swaps IFRS"
+        }
+      ],
+      "expected": []
+    }
+  ]
+}

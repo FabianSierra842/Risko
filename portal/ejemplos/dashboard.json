@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "id": "dashboard-ejemplo",
+  "nombre": "Dashboard de ejemplo",
+  "descripcion": "Ejemplo de dashboard HTML con configuraciones por usuario.",
+  "cobertura": "Riesgo de Mercado",
+  "audiencia": "Tesorería",
+  "archivo": "dashboard.html",
+  "configuracion": {
+    "habilitada": true
+  }
+}
