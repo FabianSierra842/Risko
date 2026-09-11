@@ -23,6 +23,7 @@ La documentación se entrega como archivo independiente del ZIP anterior. No cam
 - [10. Mapa técnico para leer el proyecto](#10-mapa-técnico-para-leer-el-proyecto)
 - [11. Ejercicios para comprobar la comprensión](#11-ejercicios-para-comprobar-la-comprensión)
 - [12. Fuentes y alcance de las referencias](#12-fuentes-y-alcance-de-las-referencias)
+- [13. Inventario exacto de insumos y paquete que se debe entregar](#13-inventario-exacto-de-insumos-y-paquete-que-se-debe-entregar)
 
 ## 1. Cómo estudiar esta guía
 
@@ -295,6 +296,8 @@ En la representación mensual `W`, antes del pago hay CXC 10.064,52 y flujo cero
 Si el cobro fue en USD, los USD pasan al inventario de Caja. Para atribuir un movimiento posterior de TRM se utiliza ese inventario y su momento de entrada; no se reabre el flujo ya liquidado del derivado a la TRM nueva. El modelo de integración de movimientos debe garantizar esta separación.
 
 ## 4. Insumos y convenciones que hay que comprobar
+
+El [anexo 13](#13-inventario-exacto-de-insumos-y-paquete-que-se-debe-entregar) amplía este resumen con archivos, columnas obligatorias, nodos de curva, formatos, fechas y fuentes primarias por producto.
 
 ### 4.1 Book OPCIONES
 
@@ -1119,3 +1122,582 @@ El [motor de descuento de Swaps de QuantLib](https://github.com/lballabio/QuantL
 La explicación de [mark-to-market de CME](https://www.cmegroup.com/education/courses/introduction-to-futures/mark-to-market) ayuda a distinguir liquidación diaria y variación de valor. Es una referencia conceptual sobre futuros; **no establece la metodología contractual de CRCC ni valida por sí sola el modelo de Novados implementado**.
 
 Referencias externas consultadas el 10/09/2026. Las convenciones operativas aplicables a cada contrato deben confirmarse en sus fuentes propias y en la conciliación pendiente.
+
+## 13. Inventario exacto de insumos y paquete que se debe entregar
+
+Este anexo responde qué archivos y datos hacen falta para calcular PyG. Se basa en los **campos que realmente lee `pyg-2.1`**, no solo en los nombres de archivos del proceso anterior. Distingue tres etapas que requieren entregas diferentes:
+
+| Etapa | Qué se debe entregar | Qué puede hacer la versión actual |
+| --- | --- | --- |
+| Calcular con el formato ya integrado | Snapshots OPCIONES XLSX y snapshots SWAPS JSON, o el XLSM SWAPS compatible para importarlos | Ejecutar los motores y generar el cierre local. |
+| Conciliar y publicar un corte | Además, controles diarios reconocidos y revisión de las dependencias y diferencias | Comparar resultados; la publicación normal exige conciliación OK. |
+| Construir el PyG desde fuentes primarias, sin depender del libro mensual | Reportes de contratos, curvas, mercado, eventos, pagos, saldos, fondeo y valoraciones descritos en este anexo | Requiere completar adaptadores y, para Swap, el valorador por flujos y su atribución nativa. Entregar los archivos no activa funciones todavía inexistentes. |
+
+**No es necesario entregar por duplicado todos los archivos primarios para ejecutar si ya se dispone de snapshots completos y correctos.** Sí son necesarios para trazar y conciliar los datos o para construir esos snapshots de manera independiente.
+
+### 13.1 Paquete mínimo operativo: fechas, nombres y carpetas
+
+Para un corte **DIARIO del 08/09/2026**, con el calendario vigente, se requieren los estados del **07/09 y 08/09**. Para **MTD al 08/09**, se requieren **nueve snapshots por book**: 31/08 y cada fecha del 01/09 al 08/09, incluidos sábado y domingo. No basta el archivo del día 8 y una copia cualquiera del mes anterior.
+
+| Book y forma de entrega | Nombre exacto o patrón esperado | Ubicación local configurada | Contenido |
+| --- | --- | --- | --- |
+| OPCIONES, anterior | `Dataset Libro de Opciones 20260907.xlsx` | `datos/pyg/insumos/` | Cartera, mercado, saldos y niveles al 07/09. |
+| OPCIONES, actual | `Dataset Libro de Opciones 20260908.xlsx` | `datos/pyg/insumos/` | Estado al 08/09, movimientos del día y controles. |
+| SWAPS, anterior | `Dataset SWAPS 20260907.json` | `datos/pyg/insumos/swaps/` | Estado normalizado al 07/09. |
+| SWAPS, actual | `Dataset SWAPS 20260908.json` | `datos/pyg/insumos/swaps/` | Estado normalizado al 08/09 y sus pagos/factores/movimientos. |
+| SWAPS, alternativa de carga | `PYG SWAPS_MES.xlsm`, seleccionado desde la interfaz | La ruta donde se entregue; el importador escribe los JSON en la carpeta anterior | Debe conservar el layout esperado, el ancla y todos los días; no ejecuta macros ni actualiza cálculos guardados. |
+
+Los patrones se configuran en `fuentes.opciones.patron` y `fuentes.swaps.patron`. Las fechas de los datos tienen que coincidir con las solicitadas. El productor debe incluir fecha de corte y origen verificables: un nombre actualizado no convierte una valoración antigua en valoración del día.
+
+El servicio Vector actual ejecuta solamente el flujo `01_Dataset_Book_Opciones`. No ejecuta automáticamente el flujo de reportes primarios ni convierte `ENTRADA2.xlsb` o los archivos Summit a un snapshot nuevo. Para SWAPS, la operación vigente es importar el libro o suministrar directamente el JSON normalizado.
+
+Si los archivos fuente se sobreescriben diariamente, hay que conservar una copia por fecha. Como organización de entrega de fuentes, se puede usar `fuentes_originales/2026-09-08/` y colocar allí cada original. Esa carpeta es una propuesta de archivo histórico; **no reemplaza las rutas y nombres de entrada del motor**.
+
+### 13.2 Matriz de mercado y riesgo: qué necesita cada producto
+
+En esta tabla, «sí» significa insumo económico consumido por el producto. «Común» indica que el cargador lo exige por compartir el snapshot, aunque ese producto no lo utilice en su fórmula. «Externo» significa resultado recibido, no cálculo nativo.
+
+| Insumo | Opciones / OPCIONES | Forward / OPCIONES | Caja / OPCIONES | Forward / SWAPS | Novados / SWAPS | Swap / SWAPS | Caja / SWAPS |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| TRM de ambos cortes | Sí | Sí | Sí | Sí | Sí | Común para metadatos | Sí |
+| Spot compra y venta | No separado | No separado | Tasas negociadas propias | Sí | Bloque FX común; precio usa TRM | No | Tasas derivadas de movimientos |
+| Curva COP | Continua | Continua | Común | Efectiva | Efectiva | VP/factores externos hoy | No para valorar caja |
+| Curva USD | Continua | Continua | Común | Efectiva | Efectiva | VP/factores externos hoy | No para valorar caja |
+| Curva implícita forward | No directa | No directa | No | Sí | No en su fórmula | No directa hoy | No |
+| Spread forward por fecha | No | No | No | Sí | Campo de escenario; sin efecto en la fórmula | No | No |
+| Superficie de volatilidad | Sí | Común | Común | No | No | No genérica: depende de contratos futuros | No |
+| Fixings históricos | `tfd`, según eventos | `tff`, según eventos; `tfd` común | `tfd` común | Según vencimientos/pagos | Según vencimientos/pagos | Incluidos en VP externos hoy | TRM y movimientos |
+| FTP COP/USD | No | No | Costo en COP recibido | No | No | No genérico en el motor actual | Sí, tasas y ajustes diarios |
+| Nivel IFRS o ajuste recibido | `Opccva` | `Forcva`; `Opccva` común | `Opccva` común; crédito Caja cero | Ajuste acumulado | Ajuste acumulado, cero en importador actual | VP IFRS + recuponing | Crédito Caja cero |
+
+En OPCIONES, el archivo debe contener las seis hojas comunes incluso al ejecutar solo Caja o Forward: `Opciones`, `Resumen`, `Tasas_USD`, `Tasas_COP`, `Superficie_Volatilidad` y `tfd`. Forward añade `Forwards` y `tff`; Caja añade `Caja`. Una cartera de opciones vacía se representa mediante una hoja sin operaciones **pero con sus encabezados obligatorios**. Las curvas y la superficie comunes no pueden estar vacías.
+
+### 13.3 Curvas: nombres, unidades, nodos y transformación
+
+#### 13.3.1 Lo que se debe pedir de cada curva
+
+Para cada fecha y cada curva se necesita: nombre económico de la curva, moneda, fecha de valoración, nodos de plazo en días, valor de cada nodo, tipo de cotización, base de días, forma de capitalización y fuente. Para reconstruir una curva desde instrumentos también se necesitan las cotizaciones y convenciones de esos instrumentos; **el motor actual recibe curvas ya construidas y no hace un bootstrap desde depósitos, swaps o futuros**.
+
+La moneda y capitalización del contrato normalizado no se deducen del formato visual de Excel. Una celda que muestra `12%` debe tener valor numérico `0.12`, no `12`. Los campos de texto `%`, separadores de miles o fechas dentro de una columna de tasa deben normalizarse antes de entregar los datos.
+
+| Curva concreta | Entrada actual | Unidad y convención | Se necesita para |
+| --- | --- | --- | --- |
+| Cero COP del book OPCIONES | Hoja `Tasas_COP`, columna `Tasas COP` | Tasa continua anual en decimal; tiempo días/365 | Descuento COP de Opciones/Forward y escenario Rho. |
+| Cero USD del book OPCIONES | Hoja `Tasas_USD`, columna `Tasas USD` | Tasa continua anual en decimal; tiempo días/365 | Descuento USD y ajuste a cumplimiento de Opciones; Forward. |
+| Implícita o devaluación SWAPS | `mercado.implicita`; desde `Tasas!J:X` | Tasa efectiva anual en decimal; tiempo días/365 | Valoración Forward y mantenimiento de su base respecto de COP/USD. No son puntos forward. |
+| USD SWAPS | `mercado.usd`; desde `Tasas!Z:AN` | Tasa efectiva anual en decimal | Forward y Novados. |
+| COP SWAPS | `mercado.cop`; desde `Tasas!AP:BD` | Tasa efectiva anual en decimal | Forward y Novados. |
+| FTP COP | `caja.ftp_cop`, `caja.ajuste_cop` | Tasas efectivas anuales en decimal; cálculo diario /365 | Fondeo de Caja SWAPS sobre saldo final. No reemplaza curva de descuento de derivados. |
+| FTP USD | `caja.ftp_usd`, `caja.ajuste_usd` | Tasas anuales prorrateadas /360, en decimal | Fondeo de Caja SWAPS. No es la curva USD de valoración. |
+
+**Todos los nodos de una curva deben corresponder a la misma fecha de corte.** Para Rho se necesitan las curvas de ambos extremos del intervalo; para MTD, las de cada snapshot diario. No se debe usar la curva actual para reconstruir todos los días anteriores.
+
+#### 13.3.2 Layout de curvas OPCIONES
+
+Las dos hojas requieren exactamente estos nombres de columnas:
+
+```text
+Tasas_COP: Plazo Inferior | Plazo Superior | Tasas COP
+Tasas_USD: Plazo Inferior | Plazo Superior | Tasas USD
+```
+
+Ejemplo sintético de bandas de una curva COP continua:
+
+| Plazo Inferior | Plazo Superior | Tasas COP |
+| ---: | ---: | ---: |
+| 0 | 30 | 0.0800 |
+| 30 | 90 | 0.0810 |
+| 90 | 365 | 0.0830 |
+| 365 | 365 | 0.0850 |
+
+La tasa de cada fila pertenece al **nodo inferior**. Para interpolar dentro de una banda se busca el valor del nodo superior en la fila que tenga ese `Plazo Inferior`. Por ello se debe entregar una banda completa por tramo y una fila de cierre para el último nodo; no basta una tabla con los extremos pero sin la tasa de cada nodo.
+
+Ejemplo a 60 días: se usa la banda 30→90, con tasas 0,081 y 0,083:
+
+```text
+r(60) = 0,081 + (0,083−0,081) × (60−30)/(90−30) = 0,082
+```
+
+El cargador ordena por `Plazo Inferior`, rechaza inferiores duplicados y superiores menores que inferiores. No certifica la calidad económica de la curva ni exige un conjunto único de tenores para todos los archivos. Se deben suministrar nodos suficientes para el vencimiento máximo y, en Opciones, también para el cumplimiento máximo. El caso de plazo cero se trata en las funciones de valoración; no se debe inferir de él que falta una curva positiva en plazo.
+
+#### 13.3.3 Layout y quince nodos de SWAPS
+
+El JSON usa pares `[plazo_en_dias, tasa_decimal]`. Ejemplo de formato, **curva sintética abreviada y no los valores reales**:
+
+```json
+{
+  "cop": [[1, 0.10], [30, 0.102], [90, 0.104], [365, 0.108]],
+  "usd": [[1, 0.04], [30, 0.041], [90, 0.042], [365, 0.045]],
+  "implicita": [[1, 0.0576923077], [30, 0.0585975024],
+                [90, 0.0595009597], [365, 0.0602870813]]
+}
+```
+
+El contrato JSON permite una cantidad variable de nodos. Deben llegar ordenados, con plazo no negativo, sin duplicados y con tasas mayores que −1. La función interpola linealmente en tasa y mantiene el nodo extremo fuera de la cobertura. Que el código pueda extrapolar manteniendo un extremo no demuestra que sea adecuado para una operación muy larga: se debe revisar la cobertura del mercado.
+
+El importador XLSM, en cambio, lee **quince nodos por curva** desde las posiciones del layout. En el libro de referencia se verificaron estos plazos, iguales para las tres curvas:
+
+| Plazo, días | Implícita | USD | COP |
+| ---: | --- | --- | --- |
+| 1 | J | Z | AP |
+| 7 | K | AA | AQ |
+| 14 | L | AB | AR |
+| 30 | M | AC | AS |
+| 60 | N | AD | AT |
+| 90 | O | AE | AU |
+| 180 | P | AF | AV |
+| 270 | Q | AG | AW |
+| 360 | R | AH | AX |
+| 720 | S | AI | AY |
+| 1080 | T | AJ | AZ |
+| 1800 | U | AK | BA |
+| 2520 | V | AL | BB |
+| 3600 | W | AM | BC |
+| 5400 | X | AN | BD |
+
+Los plazos están en la **fila 3 de `Tasas`**; las tasas se leen en la fila cuya fecha de columna B coincida con el snapshot, buscada entre las primeras 36 filas. Los encabezados del libro identifican J como `DEVALUACION SUMMIT`, Z como `CURVA USD EFECTIVA` y AP como `TASA COP EFECTIVA`. **El nodo 360 representa 360 días; el motor sigue usando 365 como denominador anual.**
+
+#### 13.3.4 Qué se necesita exactamente de `Curva Forward V2.xlsm`
+
+El archivo se identifica como fuente de mercado en la configuración y en los antecedentes. Su función cambia según el flujo:
+
+| Flujo | Lectura comprobada o documentada | Uso real en esta versión |
+| --- | --- | --- |
+| Referencia `Opciones_FF_V3.py` | Hoja `Matriz TC`, `iloc[0,2]` con la lectura estándar de pandas: celda C2 bajo ese layout | Obtiene el spot de referencia. No significa que el motor OPCIONES nuevo lea una curva forward de ese archivo. |
+| Libro SWAPS, macro histórica `traecurvas_P` | El análisis del libro identifica `CURVAS!A30:AU30` como bloque copiado a `Tasas` | El importador Python lee las tres curvas ya almacenadas en `Tasas`; no abre directamente ese archivo externo ni ejecuta la macro. |
+| Motor nuevo OPCIONES | Lee únicamente curvas y TRM del dataset diario | Si se entregan snapshots completos, no necesita abrir `Curva Forward V2.xlsm` para ese cálculo. |
+| Adaptador futuro de fuentes SWAPS | Se necesitan copias históricas del archivo y su layout por fecha | Debe confirmar columnas, separadores, unidades y transformación exacta del bloque externo hacia las tres curvas. No se ha implementado ese adaptador. |
+
+Para trabajar desde fuentes primarias, necesito **la versión de `Curva Forward V2.xlsm` de cada fecha**, con `CURVAS` y `Matriz TC`, sus fechas efectivas y valores guardados, además de una descripción de qué significa cada columna. Una copia actual sin historia no basta para reconstruir Rho MTD. La correspondencia completa de `A30:AU30` se debe comprobar contra el archivo fuente; no basta renombrar todo el bloque como «curva forward».
+
+Si el proveedor entrega **outrights** o **puntos forward**, necesito además su escala, spot de referencia, convención bid/ask, fecha valor y fecha final de cada nodo. El motor no acepta indistintamente esos datos como si fueran tasas efectivas:
+
+```text
+Si puntos está en COP/USD sin otra escala:
+F(d) = S + puntos(d)
+
+Para convertir un outright a la tasa implícita del modelo simple:
+r_implícita(d) = [F(d)/S]^(365/d) − 1
+
+Para convertir una tasa efectiva a continua equivalente:
+r_continua = ln(1 + r_efectiva)
+```
+
+Ejemplo de la transformación, sin spread y con escala explícita: spot `4.000`, puntos `+20 COP/USD` a `30 días`; outright `4.020`. La tasa implícita es `(4.020/4.000)^(365/30)−1`, aproximadamente **0,06256071 = 6,256071% EA**. **No se debe ingresar `20` ni `4.020` en `mercado.implicita`**. Si «20 puntos» representa otra escala o otro tipo de spot, la conversión cambia. La transformación debe validarse en el adaptador de origen, no improvisarse al cargar el JSON.
+
+Tampoco se reemplaza una curva implícita de mercado por `COP−USD` sin más. Esa resta es una aproximación con determinadas convenciones; el motor SWAPS conserva la base de la curva observada respecto a ambas curvas.
+
+#### 13.3.5 Superficie de volatilidad para Opciones
+
+La hoja `Superficie_Volatilidad` necesita estas siete columnas:
+
+```text
+Plazo Inferior | Plazo Superior | 10 D PUT | 25 D PUT
+ATM | 25 D CALL | 10 D CALL
+```
+
+Cada fila corresponde a un nodo de plazo y aporta cinco **volatilidades outright**, positivas y en decimal. Ejemplo de una fila: `30 | 90 | 0.15 | 0.14 | 0.13 | 0.135 | 0.145`. Debe existir también la fila de 90 días para aportar las volatilidades del extremo superior; se sigue la misma convención de bandas de las curvas.
+
+Para usar una superficie primaria necesito identificar fecha, par USD/COP, definición de ATM, definición de delta, tratamiento de prima, day count y unidades. El código itera sobre deltas absolutas `[0.10, 0.25, 0.50, 0.75, 0.90]`, invierte el orden para CALL y usa su ajuste a cumplimiento. Una superficie en **ATM/Risk Reversal/Butterfly** requiere convertir cotizaciones a las cinco volatilidades esperadas con la convención del proveedor; ese convertidor no está implementado. No se deben colocar RR o BF directamente en columnas de volatilidad outright.
+
+#### 13.3.6 TRM, spots y fixings: tres insumos distintos
+
+| Insumo | Dato que necesito | Uso |
+| --- | --- | --- |
+| TRM de corte | Fecha económica y COP/USD positivo de cada snapshot | Caja, Novados, metadatos y escenarios según producto. |
+| Spot de valoración | Valor por lado de compra/venta cuando la fuente SWAPS los diferencia | Forward vivo; no debe confundirse con la tasa pactada de la operación. |
+| Tasa pactada o strike | COP/USD contractual por operación | Es parte de la negociación y permanece fija salvo una modificación documentada. |
+| Fixing histórico | Fecha exacta a la que corresponde la tasa, valor y convención de etiqueta | Payoff al vencimiento y conversiones posteriores. |
+| Tasa de prima | Tasa aplicada al pago/cobro de la prima USD, o fixing de emisión bajo la convención actual | Evita convertir primas viejas con la TRM nueva. |
+
+`tfd` y `tff` tienen columnas `FECHA`, `TRM1`: las fechas deben ser únicas y cada TRM debe ser un número finito y positivo. En `tfd`, después del vencimiento se busca la fecha económica exacta. En `tff`, después de esa fecha se busca la fila del **día calendario siguiente**, conforme a la convención heredada. Por ejemplo, fixing económico del 31/08 se entrega con etiqueta 31/08 en `tfd`, pero 01/09 en `tff`. En el día del vencimiento los motores usan el spot del escenario. El JSON SWAPS etiqueta `mercado.fixings` con la fecha económica exacta, sin el desplazamiento de `tff`.
+
+El histórico tiene que cubrir todos los vencimientos/cumplimientos reconocidos y las emisiones con primas USD sin tasa explícita. `tfd`/`tff` pueden estar vacíos con encabezados cuando no hay ningún evento que los requiera; un fixing necesario ausente no se completa con la tasa más cercana. Debe revisarse también el puente del cambio de mes, no solo los contratos todavía vivos.
+
+### 13.4 Diccionario del snapshot OPCIONES por hoja y producto
+
+Los nombres siguientes son los del lector actual. Cada campo numérico debe ser finito y corresponder a la fecha del snapshot. Las columnas pueden incluir información adicional, pero no sustituir los encabezados obligatorios.
+
+#### 13.4.1. Diccionario de `Resumen`
+
+Los encabezados siguientes son sensibles a su escritura. La hoja debe contener exactamente una fila de datos.
+
+| Campo exacto | Tipo y unidad | Obligatoriedad | Uso concreto |
+| --- | --- | --- | --- |
+| `TRM` | Número positivo, COP por USD; ejemplo `4000.00`. | En ambos snapshots, siempre. | Spot de valoración y traducción de moneda. Construye el escenario Delta y el PyG del saldo de Caja. No debe confundirse con el strike contractual ni con una tasa de interés. |
+| `Opccva` | Importe firmado en COP. | En ambos snapshots, siempre por el cargador común. | Nivel de valor de mercado IFRS de Opciones. El motor calcula el PyG de crédito como la variación de `(nivel IFRS − valor de mercado Banking recalculado)`. No ingresar aquí el PyG diario, ni solamente el ajuste CVA, ni la suma de cartera más primas y liquidaciones. |
+| `Forcva` | Importe firmado en COP. | En ambos snapshots al calcular Forward. | Nivel de valor de mercado IFRS de Forward. Se compara con el MTM Banking recalculado para obtener la variación de CVA/DVA. |
+| `Cajausd` | Saldo neto firmado en USD. | En el snapshot anterior de cada intervalo que calcule Caja. | Inventario inicial del día. Un saldo `−500000` es una posición corta de USD, no un error. En una cadena diaria se necesita el saldo en cada corte porque será inicial del siguiente. |
+| `FECHA` o `Fecha` o `FECHA_CORTE` o `Fecha_Corte` | Fecha. Se recomienda `2026-09-08`. | Opcional en el lector; recomendable para trazabilidad. | Si alguno está presente debe coincidir con la fecha solicitada para el archivo. Si hay varios, todos los presentes se validan. |
+| `ValoropcPYG` | Importe histórico de referencia, COP. | Opcional. | Su presencia se registra en un control de calidad; no se usa para calcular el PyG nuevo. |
+
+El motor no reconstruye `Cajausd` del book OPCIONES leyendo todos los pagos de derivados. Lo recibe ya consolidado en `Resumen`. Por eso, además del número, conviene pedir el soporte del saldo: saldo del cierre anterior, compras, ventas, primas, liquidaciones y demás abonos/cargos USD que lo expliquen. Esa conciliación de saldos es un control operativo adicional; no debe presentarse como una comprobación automática ya implementada para este book.
+
+
+#### 13.4.2. Cartera de Opciones: hoja `Opciones`
+
+Cada fila representa una operación. El formato soportado es una opción FX vanilla europea `CALL` o `PUT`, con nominal USD y strike COP/USD. Un campo adicional de tipo de estructura no convierte al motor en un valorador de barreras, asiáticas, americanas u otras opciones exóticas.
+
+| Campo exacto | Tipo/unidad y ejemplo | Regla | Para qué se necesita |
+| --- | --- | --- | --- |
+| `Trade Id` | Texto; `OPT-000123`. | Obligatorio, no vacío y único dentro del snapshot. | Identifica la operación para trazabilidad y detalle. Conservar el mismo identificador entre días. |
+| `Posición en la opción` | `BUY` o `SELL`. | Obligatorio. | `BUY` multiplica el valor de la opción por `+1`; `SELL`, por `−1`. No reemplaza el signo explícito de la prima. |
+| `Tipo de opción` | `CALL` o `PUT`. | Obligatorio. | Define el derecho económico y el payoff. |
+| `Fecha de Emisión` | Fecha; `2026-09-08`. | Obligatoria; no puede estar después del corte ni del vencimiento. | Determina si la operación puede estar en la cartera del corte y si su prima pertenece al período. |
+| `Fecha de Vencimiento` | Fecha; `2026-12-08`. | Obligatoria. | Determina el plazo de valoración, el vencimiento y la fecha de fixing del payoff. |
+| `Fecha de Cumplimiento` | Fecha; `2026-12-10`. | Obligatoria; igual o posterior al vencimiento. | Determina cuánto tiempo queda una cuenta por cumplir y cuándo se convierte en flujo liquidado. En operaciones vivas también afecta el ajuste de descuento entre vencimiento y cumplimiento. |
+| `Nominal` | Número no negativo, USD; `1000000`. | Obligatorio. | Escala la valoración y el payoff. No ingresar un nominal COP ni repetir el signo de compra/venta. |
+| `Precio de Ejercicio` | Número positivo, COP/USD; `4000`. | Obligatorio. | Strike contractual. Es fijo para una operación existente salvo un evento contractual soportado. |
+| `Modalidad Cumplimiento` | `DELIVERY` o `NON DELIVERY`. | Obligatoria. | Distingue entrega física del intercambio de un diferencial; afecta las cuentas por cumplir y el flujo. |
+| `Moneda cumplimiento` | `COP` o `USD`. | Obligatoria. | Indica la moneda del diferencial/liquidación. Una cuenta en USD sigue variando con el spot antes de pagarse. |
+| `Valor Total Prima` | Importe firmado en su moneda; compra pagada `−20000`, venta cobrada `+20000`. | Obligatorio; cero si corresponde y está sustentado. | Flujo de prima del período. El código suma este importe con su signo: no transforma automáticamente una prima positiva en negativa por ser `BUY`. |
+| `Moneda Prima` | `COP` o `USD`. | Condicional: se recomienda entregarla siempre que exista prima. | Evita asumir que la moneda de prima coincide con la moneda de cumplimiento. Se aceptan también `Moneda de la  Prima` —dos espacios entre «la» y «Prima»— y `Moneda de la Prima`. |
+| `Tasa Prima` | Número positivo, COP/USD; `3980`. | Obligatoria si la prima USD no nula del período no tiene fixing de emisión en `tfd`. | Convierte la prima USD a COP a una tasa histórica explícita. Si está disponible, tiene prioridad sobre la búsqueda por fecha. |
+
+Si no se entrega una columna de moneda de prima, el lector conserva la convención heredada de usar `Moneda cumplimiento`. Se recomienda no depender de esa inferencia. Si la columna sí existe pero su valor está vacío, ese vacío no debe considerarse una moneda válida.
+
+El reconocimiento de prima vigente usa `Fecha de Emisión`; no consume una columna separada de fecha efectiva de pago de prima. Por tanto, una prima diferida, parcial o renegociada necesita una definición/mapeo adicional antes de afirmar que queda correctamente modelada. Tampoco se consume un libro separado de eventos de cancelación de Opciones: hay que conservar las operaciones y fechas necesarias para explicar primas y liquidaciones del mes. La desaparición de una operación entre snapshots puede terminar en `NUEVOS_OTROS`; ese residuo por sí solo no identifica el motivo.
+
+
+#### 13.4.3. Forward del book OPCIONES: hoja `Forwards`
+
+No confundir este producto con el Forward del book SWAPS: el formato y las convenciones de tasas difieren. Para OPCIONES se necesitan las ocho columnas siguientes en ambos snapshots, además del mercado común, `Resumen.Forcva` y `tff`.
+
+| Campo exacto | Tipo/unidad | Regla y función |
+| --- | --- | --- |
+| `Emisión` | Fecha. | Obligatoria; no posterior al vencimiento ni al corte. Permite detectar operaciones nuevas. |
+| `Vencimiento` | Fecha. | Obligatoria. Fecha que determina plazo y fixing del diferencial. |
+| `Cumplimiento` | Fecha. | Obligatoria; no anterior al vencimiento. Determina permanencia de CXC y liquidación. |
+| `Operación` | `COMPRA` o `VENTA`. | Obligatoria. Compra USD tiene signo `+1`; venta, `−1`. |
+| `Nominal` | USD no negativos; `1000000`. | Obligatorio. Monto contractual. |
+| `T.Forward` | COP/USD positivo; `4050`. | Obligatorio. Tasa forward **pactada en la operación**, no cotización nueva del mercado ni puntos forward. |
+| `Modalidad` | `DF` o `NDF`. | Obligatoria. Entrega física o liquidación de diferencias. |
+| `Moneda_Cumplimiento` | `COP` o `USD`. | Obligatoria. Moneda de la cuenta/liquidación. |
+
+Se recomienda conservar identificador de operación, contraparte y book en el archivo para auditoría, pero el lector vigente de esta hoja no exige ni concilia un identificador único: su detalle se identifica por índice de fila. Esa diferencia respecto a `Opciones.Trade Id` debe conocerse al revisar altas, bajas y posibles duplicados. Que el archivo sea legible no prueba la integridad de su inventario.
+
+Para un forward vivo, el núcleo calcula `signo × nominal × [spot × exp(−rUSD × plazo/365) − strike × exp(−rCOP × plazo/365)]`. Por eso los inputs económicos son spot, dos curvas, strike, nominal, lado y plazo. Las fechas de cumplimiento, modalidad, moneda y fijaciones son adicionales para cubrir todo el ciclo de vida después del vencimiento. No se usa una curva de puntos forward independiente en este motor OPCIONES.
+
+
+#### 13.4.4. Caja del book OPCIONES: hoja `Caja`
+
+El motor toma `Cajausd` y `TRM` del snapshot anterior, `TRM` del actual, y exactamente una fila de `Caja` con la fecha actual. Aunque no haya operaciones se debe entregar esa fila con montos cero; una hoja vacía no representa automáticamente un día sin movimientos.
+
+| Campo exacto | Unidad | Obligación y función |
+| --- | --- | --- |
+| `Fecha` | Fecha del corte. | Obligatoria. Debe existir exactamente una fila seleccionable para esa fecha. |
+| `Compras_Monto_USD` | USD no negativos. | Obligatorio. Total de USD comprados del día bajo el filtro del book. |
+| `Compras_Tasa` | COP/USD. | Encabezado obligatorio; valor positivo si hubo compras. Tasa promedio ponderada por nominal USD, no media simple de las tasas de los trades. |
+| `Ventas_Monto_USD` | USD no negativos. | Obligatorio. Total de USD vendidos del día. |
+| `Ventas_Tasa` | COP/USD. | Encabezado obligatorio; valor positivo si hubo ventas. Tasa promedio ponderada por nominal USD. |
+| `Costo_Fondos_COP` | COP firmado. | Opcional en el lector, pero necesario para incluir fondeo de este book. Se suma como componente `COSTO_FONDOS`. No es una tasa. |
+| `Ajustes_PyG_COP` | COP firmado. | Opcional en el lector, necesario cuando existan ajustes que deban incluirse. Se suma como componente `AJUSTES`. Debe tener soporte externo. |
+
+Si falta fondeo o ajuste, se informa `NO_INCLUIDO`. No se deduce una tasa FTP del archivo de Opciones ni se reconstruye el fondeo desde `PYG.CostoFondos`. Entregar un cero explícito y justificado es distinto de omitir la fuente.
+
+Ejemplo de agregación de compras: `100000 USD a 4000` y `300000 USD a 4020` generan compras totales de `400000 USD`, contravalor `1.606.000.000 COP` y tasa ponderada `4015 COP/USD`. Ingresar la media simple `4010` introduciría `2.000.000 COP` de error en ese contravalor. Se deben conservar los trades primarios que explican el total, la fecha de operación, la moneda, el book y las exclusiones.
+
+Para el PyG, el saldo previo explica `DELTA_INTERDAY = saldoUSD × (spot actual − spot anterior)`. Los flujos del día generan `TRADING = min(compras, ventas) × (tasa venta − tasa compra)` y el remanente `DELTA_INTRADAY = (compras − ventas) × (spot actual − tasa del lado neto)`. Saldos y movimientos son datos distintos: no se debe usar el saldo final como saldo inicial.
+
+
+#### 13.4.5. Controles de comparación que se deben pedir
+
+La hoja `PYG` tiene una columna `Nombres` y una segunda columna numérica. El motor lee esa segunda columna por posición; no selecciona automáticamente «la columna del último día» de una tabla mensual. El snapshot debe llevar ahí el control diario de su corte, en COP y con el signo correcto. Un control MTD no sirve como control de un intervalo diario.
+
+| Producto | Total Banking necesario para poder declarar `OK` | Desglose adicional que se compara si existe |
+| --- | --- | --- |
+| Opciones | `PYG_Opc` | `Theta_Opc`, `Delta_Opc`, `Rho_Opc`, `Vega_Opc`, `Nuevos_Opc`. |
+| Forward | `PYG_Forward` | `Theta_Forward`, `Delta_Forward`, `Rho_Forward`, `Nuevos_Forward`. |
+| Caja | `Caja_Dia` | `Delta_Caja`, comparado contra `DELTA_INTERDAY`. |
+
+Estos controles nunca son insumos para generar la cifra calculada. También conviene solicitar soporte IFRS y ajuste CVA/DVA por fecha/producto, porque un total Banking conciliado no verifica independientemente la separación de crédito. El mensual `PYG_OPCIONES_MES*.xlsb`, hoja `RESUMEN FINAL` rango `C1:H22`, y `GRIEGAS OPC` sirven como referencias operativas adicionales; el motor nuevo no depende de copiar sus resultados para valorar.
+
+
+#### 13.4.6. Qué fuentes primarias explican estos snapshots
+
+El archivo `Opciones_FF_V3.py` conserva la referencia histórica de construcción del book. Se estudia como código; no se importa ni se ejecuta automáticamente desde la interfaz PyG. Los archivos siguientes permiten reconstruir/conciliar el origen de los datos, pero tenerlos en `datos/pyg/insumos` **no construye por sí solo** el snapshot normalizado.
+
+| Archivo primario/referencia | Ubicación configurada o leída | Qué aporta y qué hace hoy la integración |
+| --- | --- | --- |
+| `USR_OPT_MANANA_{next_bday_ddmmyy}_000.xls` | Vector: `SUMMITFS001/apl/Internos/GR/FXOPTION_BASIC`; FF_V3 lee la copia en `BDB/INSUMOS`. | Reporte de operaciones de Opciones. Vector configura el sufijo con día hábil siguiente; FF_V3 histórico solicita día/mes/año manualmente. Hay que comprobar la fecha económica del contenido, no sólo el nombre. |
+| `USR_OPT_FWD_{ddmmyyyy}_000.xls` | Vector: `SUMMITFS001/apl/Internos/GR/VALORACION_FWD`; FF_V3 lee `BDB/INSUMOS`. | Operaciones, condiciones y valoración externa de Forward del book Opciones. |
+| `USR_CAJA_OPT_FUT_{ddmmyy}_000.xls` | Vector: `SUMMITFS001/apl/Internos/GR/REP_CAJA`; FF_V3 lee `BDB/INSUMOS`. | Trades y movimientos que se agregan a compras/ventas y tasas de Caja. |
+| `ENTRADA2.xlsb`, hoja `INFOVALMER` | `BDB/ENTRADA2.xlsb`. | FF_V3 lee USD en `A:C`, COP en `E:G`, y superficie en `I:N`, con `skiprows=2`. Lee 18 filas USD/smile y 13 COP; después normaliza nodos. Esas cifras son parámetros del importador histórico, no límites económicos recomendados para un futuro importador. |
+| `ENTRADA2.xlsb`, hoja `BASE` | Misma ubicación. | FF_V3 lee fechas en `A` y TRM en `E`, con `skiprows=1`, `nrows=43`; construye `tfd` y `tff` con sus desplazamientos históricos. El nuevo motor recibe las tablas ya construidas y exige fechas exactas. |
+| `Curva Forward V2.xlsm`, hoja `Matriz TC` | `Datos Mercado/Curva Forward V2.xlsm`. | FF_V3 toma el spot de `iloc[0,2]` después de `read_excel` con encabezado estándar; corresponde a `C2` en esa lectura. Para este book no lee aquí una curva completa de puntos forward. El motor nuevo recibe ese spot en `Resumen.TRM`. |
+| `Insumo tasas.xlsx` | Vector: `2 Jefatura de Compliance de Tesorería/Insumos CT/Tasas`. | Está registrado como «Histórico TRM formada» en el flujo de primarios. No aparece como una lectura directa de los tres motores nuevos ni del FF_V3 revisado. No asumir un mapeo de hojas/columnas que el código no define. |
+| `PYG_OPCIONES_MES*.xlsb` | `BDB/OPCIONES/P&G OPCIONES MES`. | Referencia mensual; el flujo configurado la renombra `PYG_OPCIONES_MES_REFERENCIA.xlsb`. No sustituye un snapshot diario. |
+| `risko.db` | Base de posiciones publicada; copia prevista en `datos/pyg/insumos`. | Copia prevista para control de posición; hoy no se ejecuta conciliación automática con esa base. No contiene por sí sola las curvas y eventos necesarios para atribuir PyG. |
+
+Los tres reportes Summit históricos terminan en `.xls`, pero FF_V3 los abre como texto (`read_csv`, tabulador, `latin-1`) y después separa campos con `;`. La extensión no prueba que sean Excel binario. Un futuro importador directo debe respetar el formato real, los encabezados y el corte; no se resuelve únicamente cambiando la extensión.
+
+En Caja, FF_V3 filtra `TRADE DATE` por corte, `DmOwnerTable` por `FXSPOT`/`FXOPT_TR`, `Book` por `OPCIONES_FX` y `SettleCcy` por `USD`; diferencia `CCY COMPRA` y `CCY VENTA` y aplica una lista concreta de contrapartes/libros en `NOMBRE DE CLIENTE`. Lee `MONTO VENDIDO` y `MONTO COMPRADO` para formar los contravalores y promedios ponderados. Esos filtros forman parte del alcance económico del book y deben conciliarse al implementar un cargador primario.
+
+El FF_V3 también conserva código de `USR_OPT_NOV_...` y `ENTRADA2.xlsb/NOVADOS`, pero su salida de griegas Novados no constituye un motor completo del nuevo book OPCIONES. No deben confundirse esos archivos de referencia con los Novados habilitados actualmente en el book SWAPS.
+
+**Lo que hace Vector desde la interfaz hoy:** `ejecutar_vector_pyg` invoca exclusivamente `01_Dataset_Book_Opciones` para copiar los snapshots de las fechas requeridas. `vector_pyg.json` también contiene flujos de primarios, referencia mensual y posiciones, pero esa función no los ejecuta. Por tanto, el requerimiento operativo inmediato es disponer de los datasets diarios ya construidos; para eliminar esa dependencia se necesita implementar, verificar y conciliar el mapeo desde cada fuente primaria.
+
+### 13.5 Diccionario SWAPS: JSON, columnas del XLSM y fuentes primarias
+
+Esta sección distingue dos niveles. **Implementado** significa que el código actual lee y utiliza ese dato. **Antecedente del libro** identifica una fuente descrita en el análisis del XLSM; no significa que Python ya abra directamente ese archivo. Esta separación importa: hoy el cálculo SWAPS lee snapshots JSON; el importador permite generarlos desde `PYG SWAPS_MES.xlsm`. Aún se debe sustituir esa extracción por conectores a los insumos primarios y conciliar sus cifras.
+
+#### 13.5.1. Qué entregar para ejecutar hoy
+
+Se necesita un `PYG SWAPS_MES.xlsm` actualizado, guardado después de recalcular Excel, con fecha de corte en `Parametros!A1`, cierre del mes anterior en `PORTAFOLIO!A4` y estados diarios de todas las fechas calendario hasta el corte. El importador usa valores guardados (`data_only=True`), no ejecuta macros ni recalcula Excel. Una celda con fórmula sin resultado guardado no constituye un dato válido. Un archivo cuya portada está actualizada puede conservar cálculos o insumos antiguos en otras hojas: hay que contrastar sus fechas.
+
+El importador crea `datos/pyg/insumos/swaps/Dataset SWAPS AAAAMMDD.json`. Para calcular el 8 de septiembre se requiere, como mínimo, el estado del 7 y del 8; para un MTD al 8 de septiembre se requieren el cierre del 31 de agosto y los estados del 1, 2, 3, 4, 5, 6, 7 y 8 de septiembre. Cada día necesita sus movimientos propios. Los fines de semana no se eliminan: los factores Swap y el fondeo de Caja actualmente se procesan en intervalos calendario de un día.
+
+Un snapshot tiene estos bloques:
+
+| Ruta JSON | Contenido y exigencia |
+|---|---|
+| `schema_version` | Entero `1`. Obligatorio. |
+| `book` | Texto exacto `SWAPS`. Obligatorio. |
+| `fecha` | Fecha del estado, formato `AAAA-MM-DD`; debe coincidir con el corte solicitado. |
+| `mercado` | TRM, cotizaciones spot, curvas, spread y fixings. Obligatorio para Forward/Novados; la TRM también se valida al abrir cualquier snapshot. |
+| `operaciones.FORWARD` | Lista completa de contratos elegibles del estado. Una lista vacía expresa cero contratos; no reemplazar contratos desconocidos por una lista vacía. |
+| `operaciones.NOVADOS` | Lista de contratos novados a cámara, con el mismo contrato de campos FX. |
+| `credito_acumulado_cop.FORWARD` y `.NOVADOS` | Nivel acumulado del ajuste IFRS menos Banking por producto. El motor usa la diferencia entre estados. |
+| `swaps` | Lista de valoraciones Banking/IFRS y pagos por Trade ID. |
+| `factores_swap` | Nueve contribuciones monetarias diarias, en COP. |
+| `recuponing_nivel_cop` | Nivel del ajuste de valor por recuponing, en COP. Se utiliza su variación entre estados. |
+| `caja` | Saldos, movimientos del día y tasas de fondeo. |
+| `controles` | Totales de referencia por producto, separados de los componentes calculados. Sin un control Banking disponible no se obtiene una conciliación OK. |
+| `calidad` y `origen` | Advertencias, archivo original, SHA-256 y fecha del libro. Aportan trazabilidad; no son factores de PyG. |
+
+Todos los valores financieros deben ser números finitos, sin `NaN`, infinito, textos como `N/A` ni errores de Excel. El JSON no lleva separadores de miles: `1000000`, `0.12`, `3950.25`. Todos los importes finales y factores PyG se expresan en COP. Una tasa decimal `0.12` representa 12%; `12` representaría 1.200% y produciría una valoración económicamente incorrecta aunque fuera un número.
+
+#### 13.5.2. Mercado que comparten Forward y Novados
+
+Los dos estados deben conservar los datos de mercado observados en cada fecha. No sirve sobrescribir la curva anterior con la curva de hoy: se perdería la separación entre Theta, Delta y Rho.
+
+| Campo | Unidad, ejemplo y uso | Lectura implementada en XLSM |
+|---|---|---|
+| `mercado.trm` | COP por USD; ejemplo `4000.00`. Conversión, fijaciones del corte y precio de cámara de Novados. Debe ser positiva. | `PORTAFOLIO!B`, fila `4 + días desde cierre del mes anterior`. |
+| `mercado.spot_compra` | COP por USD. Cotización utilizada para una operación `COMPRA` en el Forward bilateral. | `Tasas!D`, fila cuya fecha de columna B coincide con el estado. |
+| `mercado.spot_venta` | COP por USD. Cotización utilizada para una operación `VENTA`. | `Tasas!C`, en esa misma fila fechada. |
+| `mercado.implicita` | Lista de pares (15 en la extracción XLSM) `[plazo_días, tasa_efectiva_anual_decimal]`. Es una curva de tasas implícitas, no una lista de precios forward ni puntos forward. | Plazos `Tasas!J3:X3`; tasas de `J:X` en la fila del estado. |
+| `mercado.usd` | Lista de pares (15 en la extracción XLSM) de plazo en días y tasa USD efectiva anual decimal. | Plazos `Tasas!Z3:AN3`; tasas de `Z:AN` en la fila del estado. |
+| `mercado.cop` | Lista de pares (15 en la extracción XLSM) de plazo en días y tasa COP efectiva anual decimal. | Plazos `Tasas!AP3:BD3`; tasas de `AP:BD` en la fila del estado. |
+| `mercado.spread` | Diferencia de tasa anual en decimal aplicada con signo y dividida por dos a la tasa implícita bilateral. Ejemplo: `0.002` = 20 puntos básicos anuales; el semispread es 10 pb. No son 20 COP de puntos forward. | `Forwards!W3`. El importador propaga el valor disponible a todos los estados extraídos; no reconstruye un histórico de spread que el libro no conserva. |
+| `mercado.fixings` | Diccionario de fecha exacta a COP/USD: `{"2026-09-07":4000.00}`. Requerido cuando vence o se paga un contrato. | Pares fecha/TRM de `Tasas!B:C`, desde fila 70 hasta 359; se conservan los de fecha igual o anterior al corte y se agrega la TRM del propio corte. |
+
+La fila diaria de `Tasas` se localiza por fecha dentro de las primeras 36 filas, no por el número de fila de `PORTAFOLIO`. En el libro observado la fila de una misma fecha puede ser diferente entre esas hojas.
+
+La interpolación de tasas es lineal entre los plazos en días; fuera del primer o último plazo se mantiene la tasa extrema. Los nodos deben estar estrictamente ordenados, sin duplicados, con plazo no negativo y tasa mayor que -100%. El tiempo de valoración es días calendario hasta cumplimiento dividido por 365.
+
+**Novados:** el valor de cámara implementado utiliza TRM y curvas COP/USD, con precio forward sin descuento del valor del contrato. No utiliza la curva implícita ni el spread para generar ese precio. Sin embargo, hoy comparte el envoltorio de datos del Forward: el flujo de cálculo accede a cotizaciones spot, spread y fixings. Conviene entregar el bloque `mercado` completo incluso cuando solo se ejecuta Novados; no inventar una sensibilidad a la curva implícita cuando el método de cámara no la utiliza.
+
+**Fuente primaria pendiente de conexión directa:** el análisis del libro identifica `Curva Forward V2.xlsm`, hoja `CURVAS`, rango `A30:AU30`, cargado a través de `Parametros!B11`. Python todavía lee las curvas ya distribuidas en `Tasas`. El mapeo exacto de las 47 celdas del origen hacia los tres bloques de 15 nodos debe confirmarse en el archivo primario antes de construir un conector. Si el proveedor entrega outrights o puntos forward, se deben convertir a la convención de tasa implícita requerida, con spot, plazos y capitalización identificados; no se pueden pegar como si fueran tasas.
+
+#### 13.5.3. Forward bilateral del book SWAPS: contratos y eventos
+
+El universo se extrae de `Forwards!A:N`, desde fila 7 hasta la última fila que tiene Trade ID en A. La columna M clasifica: `SWAPS` va a `FORWARD`; `SWAPSNOVADO` va a `NOVADOS`. Se aceptan exclusivamente operaciones cuyo par en E sea `USDCOP`. Los Trade ID no pueden duplicarse, incluso entre las dos clasificaciones durante la importación.
+
+| Campo JSON | Campo del XLSM | Requisito y ejemplo |
+|---|---|---|
+| `trade_id` | A | Identificador estable y único. Ejemplo `FWD-001`. Mantenerlo entre fechas; no regenerarlo cada día. |
+| `tipo` | B | Texto `COMPRA` o `VENTA`; desde la perspectiva del banco. Compra USD lleva signo positivo y venta USD negativo. |
+| `emision` | C | Fecha contractual de operación, `AAAA-MM-DD`. No posterior a vencimiento. El importador solo incluye contratos emitidos al corte. |
+| `vencimiento` | D | Fecha en que se fija el resultado. Es distinta de cumplimiento cuando hay plazo de liquidación. |
+| Par verificado durante la importación | E | Debe ser `USDCOP`; no se guarda un segundo par FX en el contrato normalizado actual. |
+| `nominal` | F | Magnitud en USD, no negativa. Ejemplo `1000000`. La dirección no se codifica como nominal negativo. |
+| `strike` | G | Forward contractual en COP/USD, positivo. Ejemplo `4050.00`. |
+| `modalidad` | H | `SIN ENTREGA`, `NDF` o `NON DELIVERY`; o `CON ENTREGA`, `DF` o `DELIVERY`. Determina tratamiento del resultado y la cuenta por cobrar. |
+| `spot_contrato` | J | Spot contractual COP/USD. El importador exige que sea numérico y lo conserva; el motor de valoración actual no lo usa como factor separado ni lo exige en un JSON construido directamente. |
+| `cumplimiento` | K | Fecha de pago o liquidación, igual o posterior a vencimiento. |
+| `clasificacion` | M | `SWAPS` o `SWAPSNOVADO`; dirige el producto al importar el XLSM. Se conserva como metadata; no es obligatoria en un JSON construido directamente, donde la lista `FORWARD` o `NOVADOS` ya identifica el producto. |
+| `moneda` | N | Moneda de cumplimiento `COP` o `USD`. La columna E identifica el par; la N identifica la moneda del pago. No son intercambiables. |
+
+Cliente I y portafolio L forman parte del extracto original, pero no se utilizan como campos de valoración en el JSON actual. Para una futura ingesta primaria conviene conservarlos como trazabilidad, además del book, sistema origen y estado operativo del contrato.
+
+Se requiere el maestro del estado anterior y del actual, incluyendo contratos que vencieron o se liquidaron durante el período. La cartera no debe contener solo contratos vivos de hoy: al eliminar un contrato sin conservar su vencimiento/pago se puede perder el PyG realizado. El importador filtra por emisión y mantiene registros del maestro mensual; ese maestro retrospectivo requiere revisar altas, bajas, anulaciones y modificaciones históricas contra snapshots diarios originales.
+
+Los fixings son **condicionados por eventos**. Antes del vencimiento, el contrato necesita spot y curvas. Desde el vencimiento, requiere la TRM exacta de la fecha de vencimiento. Para NDF pagadero en USD o una operación con entrega que llega a cumplimiento, también se necesita el fixing de cumplimiento para expresar el flujo realizado en COP. Un fixing del día vecino no sustituye al contractual. No se usa la curva forward de hoy para inventar un fixing pasado.
+
+Ejemplo del dato requerido: contrato NDF compra USD 1.000.000, strike 4.050 COP/USD, vence el 7 y paga USD el 9. El 8 se requiere fixing del 7 y TRM del 8 para la cuenta por cobrar en USD; al calcular el día 9 se necesita también la TRM de pago del 9. En estados posteriores se conserva la conversión del flujo a la tasa del 9, para no atribuir otra vez al derivado el movimiento cambiario posterior de la Caja.
+
+**Crédito:** `credito_acumulado_cop.FORWARD` es un nivel acumulado del ajuste externo IFRS menos Banking. El motor calcula `nivel_actual - nivel_anterior`. En la extracción mensual empieza en cero en el ancla y acumula la diferencia diaria de los controles reportados. No debe recibirse un PyG IFRS completo en ese campo: provocaría contabilizar otra vez el componente de mercado.
+
+**Referencia de origen:** `MASCARA FX TOTAL REPORT (5.5-3-8).xls`, hoja `Mapeo Deriva. ESTRAT`, columnas `C:P`, filtro del VBA `Field 12 = "SWAPS"`, carga el maestro `Forwards!A:N`. Esta trazabilidad procede del análisis de macros; el conector directo al archivo de máscara aún no está implementado.
+
+#### 13.5.4. Novados: insumos adicionales y límites de la equivalencia
+
+Se entrega el mismo contrato anterior, separado en `operaciones.NOVADOS`, con clasificación `SWAPSNOVADO`. Deben existir las curvas COP/USD y TRM de cada fecha, estado contractual, vencimiento, cumplimiento y fixings de los eventos. Una lista vacía solo corresponde si no hay contratos novados; en el libro real analizado el universo era vacío y por eso el resultado fue cero.
+
+El método de cámara actual no ingiere un archivo de márgenes diarios, garantías o efectivo de cámara. Tampoco introduce descuento bilateral en el valor de Novados. Si el procedimiento definitivo exige conciliar liquidación diaria de diferencias, se deben entregar los reportes de liquidación de cámara por contrato y fecha, con la metodología de matching correspondiente; su conector no existe todavía. Se debe evitar sumar esos flujos sobre el valor actual sin acordar el tratamiento, para no duplicar resultado.
+
+`credito_acumulado_cop.NOVADOS` existe en ambos estados y se fija en cero en la importación del libro, reproduciendo la convención observada de IFRS igual a Banking. Cero es la convención de esa fuente, no una afirmación universal de que cualquier producto novado siempre tenga ajuste crediticio nulo.
+
+El control externo diario se obtiene de `PORTAFOLIO!R`, fila del día, y se guarda como `controles.NOVADOS.PYG_BANKING`.
+
+#### 13.5.5. Swaps IRS/CCS: valoraciones, pagos y factores externos
+
+El motor actual **no vuelve a valorar cada pata de un IRS o CCS a partir de contratos y curvas**. Calcula el PyG por Trade ID, por separado de los factores con la variación del VP Banking/IFRS que entrega la fuente, más sus pagos. Después atribuye ese total usando factores monetarios externos del Informe Libro de Swaps. Para correr este método hay que entregar ambos grupos de información.
+
+| Campo JSON por registro de `swaps` | Unidad y regla |
+|---|---|
+| `trade_id` | Identificador único y estable que enlaza maestro, valoración Banking, valoración IFRS y pagos. |
+| `banking` | VP neto Banking del contrato al cierre, en COP y con signo económico. Un activo positivo y un pasivo negativo no deben convertirse ambos a valores absolutos. Requerido en ambos estados. |
+| `ifrs` | VP neto IFRS del mismo contrato y fecha, en COP, bajo la misma orientación de signo y perímetro. Requerido en ambos estados. |
+| `pago_cop` | Flujo neto **del día** por Trade ID, en COP. Positivo cuando lo recibe el banco; negativo cuando lo paga. Campo obligatorio para el estado actual del intervalo diario; un día sin pago debe tener cero confirmado. |
+| `pago_acumulado_cop` | Alternativa admitida por el motor para obtener el pago del intervalo por diferencia de acumulados, si está presente consistentemente en los estados. El importador XLSM actual no lo genera. No elimina el requisito de intervalos diarios para los factores Swap. |
+
+Un registro nuevo se compara con VP anterior cero. Si un Trade ID existente desaparece, el motor falla: se necesita un cierre explícito, con VP actual cero cuando corresponda y el pago de liquidación. La desaparición silenciosa no demuestra que no haya PyG.
+
+El maestro proviene de `SWAP!A:G`, desde fila 9: A Trade ID, B cliente, C book, D CCS/IRS, E Trade Date, F End Date y G Customer Group. La extracción actual utiliza A/C/E/F para identificar, filtrar y fechar; excluye `ARBITR_DER`, `FX_ESTRAT` y `FVH` en columna C y omite operaciones todavía no emitidas. La clasificación debe conciliarse con el dato primario: el análisis del VBA también identifica una exclusión FVH en un campo del reporte fuente, y no debe suponerse que todos los sistemas usan esa etiqueta en la misma columna.
+
+La extracción recorre la última fila real con ID, sin limitar el maestro a 1.033 ni a 5.000 filas. El VP del cierre del mes anterior está en H/I. Para el día calendario `d`, el índice de columna Banking es `10 + (d - 1) × 6`, IFRS es la siguiente y Payments la siguiente. El día 1 usa J/K/L; el día 2 P/Q/R; el día 8 AZ/BA/BB. La fecha del bloque se valida en fila 1, columna Banking + 3. No se toman como PyG calculado las columnas cacheadas de resultado: se vuelve a calcular la diferencia de VP y los pagos por contrato.
+
+Cuando ambas valoraciones están vacías y la fecha final del contrato ya pasó, el importador las convierte a cero. Si se trata de un contrato vigente, una valoración vacía es un error. Una celda Payments vacía se convierte a cero siguiendo el comportamiento del Excel, pero deja advertencia: **esto permite estudiar la extracción; no confirma que se haya recibido y conciliado el reporte de pagos**.
+
+Para producir pagos fiables se requiere un reporte con, como mínimo, Trade ID, identificador del evento o flujo, fecha valor, estado de pago, moneda original, importe original con signo, tasa de conversión a COP y monto COP. Cuando una operación tiene varios pagos el día, se deben agrupar sin duplicar eventos. Estas son las especificaciones del insumo pendiente; el JSON actual recibe su neto `pago_cop`. La fuente física exacta de `Payments Report` todavía no está trazada, y los reportes de flujos utilizados para posición no demuestran por sí solos que contengan los pagos realizados necesarios.
+
+##### Los nueve factores obligatorios de Swap
+
+`factores_swap` debe tener exactamente estas claves. Los importes son **contribuciones PyG diarias en COP**, no sensibilidades ni posición en divisa. Por ejemplo, `RHO_COP = 2500000` significa 2,5 millones COP de PyG atribuido al movimiento de tasas COP; no significa un DV01 de 2,5 millones que deba volver a multiplicarse por puntos básicos.
+
+| Campo JSON | Fuente implementada: `GRIEGAS SWAP`, fila `día + 2` |
+|---|---|
+| `THETA` | L: paso del tiempo. |
+| `DELTA_PYG` | M: efecto FX USD. |
+| `DELTA_OTRAS` | N: otras divisas, según la agrupación del informe. |
+| `RHO_USD` | O: tasas USD. |
+| `RHO_COP` | P: tasas COP. |
+| `RHO_DTF` | Q: factor DTF. |
+| `RHO_IPC` | R: factor IPC. |
+| `RHO_OTRAS` | S: otras curvas/tasas. |
+| `TRADING` | T: negociación/actividad atribuida por el informe. |
+
+La fecha de `GRIEGAS SWAP!A` en esa fila debe coincidir con el día. El estado del cierre previo puede llevar factores vacíos porque se utilizan los factores del día actual. Se calcula `EPSILON = PyG Banking por VP y pagos - suma de los nueve factores`; ese residual no debe recibirse como una griega adicional ni rellenarse para forzar una conciliación.
+
+La fuente antecedente es `Informe Libro de Swaps AAAAMMDD.xlsb`, hoja `Historico Griegas PyG`, cuya macro copia el bloque del mes a `GRIEGAS SWAP`. Las hojas `MERCADO-BALANCE` y `RIESGOS LIBRO` contienen riesgos/posiciones útiles para control; no sustituyen el histórico de contribuciones monetarias.
+
+##### Recuponing y ajuste de crédito
+
+`recuponing_nivel_cop` representa el ajuste de valor `Fair Value con ajuste - Fair Value`, en COP; el motor agrega su **variación** al ajuste IFRS del intervalo. La extracción usa `PYG Recuponing!C - B`, fila `día + 2`. No se debe entregar en este campo el ajuste PyG diario, porque al restarlo otra vez se transformaría en una segunda diferencia.
+
+La extracción del libro fija el nivel del ancla mensual en cero. Esto exige confirmar que sea la base correcta del ajuste que llega al mes: si existe un nivel previo distinto de cero, se necesita el estado real de cierre anterior en el snapshot normalizado para medir correctamente el primer día. No basta con que haya una cifra de ajuste al corte actual.
+
+El cálculo completo del ajuste todavía depende de una fuente externa. El análisis describe `Ajuste recuponing` con contratos, tasas/índices, VP de patas, rating, curva CVA, próxima fecha de recouponing y ajuste de flujos, pero no identifica una carga primaria diaria completa. Los reportes Banking/IFRS de flujos alimentan posiciones USD; presentan diferencias entre versiones manual y parametrizada del VBA. Antes de automatizarlos se deben definir la regla vigente, la fuente de valores ajustados y el nivel anterior.
+
+#### 13.5.6. Caja del book SWAPS: saldos, movimientos y fondeo
+
+La Caja no necesita una curva forward para su PyG mercado. Necesita saldos USD, compras y ventas efectivas del día, sus contravalores COP, TRM anterior/actual y tasas de fondeo. Curvas y tasas de FTP tienen funciones distintas: el FTP no reemplaza la curva COP/USD de valoración del Forward.
+
+| Campo de `caja` | Unidad y exigencia | Fuente implementada en `CAJA SWAP`, fila del día |
+|---|---|---|
+| `saldo_usd` | USD con signo; saldo de cierre. Se exige tanto el anterior como el actual. | F. |
+| `trm` | COP/USD, positiva; cierre del estado. Debe ser coherente con la TRM común. | Se toma de `PORTAFOLIO!B`, no del valor cacheado de una tasa promedio de Caja. |
+| `compras_usd` | USD comprados durante ese día, magnitud no negativa. Cero explícito si no hubo compras. | T + Y. |
+| `compras_cop` | COP efectivamente pagados por esas compras, magnitud positiva si hay compras. | U + Z. |
+| `ventas_usd` | USD vendidos durante el día, magnitud no negativa. | V + AA. |
+| `ventas_cop` | COP recibidos por esas ventas. | W + AB. |
+| `ftp_cop` | Tasa anual efectiva decimal COP. Ejemplo `0.12`. | AL. |
+| `ajuste_cop` | Ajuste de tasa anual efectiva decimal. Ejemplo `0.005`. | AM. |
+| `ftp_usd` | Tasa nominal anual USD, base 360, decimal. Ejemplo `0.0365`. | AP. |
+| `ajuste_usd` | Ajuste de tasa USD decimal, sumado a FTP USD. | AQ. |
+
+Los movimientos y las cuatro tasas de fondeo se requieren en el estado actual de cada intervalo; el ancla solo requiere saldo y TRM. El saldo debe cumplir `saldo_actual = saldo_anterior + compras_usd - ventas_usd` con tolerancia de 0,01 USD. No se acepta contravalor COP cuando el monto USD correspondiente es cero. Las tasas promedio se derivan como contravalor COP / monto USD, evitando promediar tasas sin ponderación.
+
+Los bloques T:W y Y:AB se suman. Si se generan snapshots desde fuentes primarias, hay que identificar el origen del segundo bloque y comprobar que no replique movimientos ya incluidos en el primero. Un pago de derivado en USD que entra a la Caja debe reflejarse en el inventario y movimientos de Caja de forma coherente con el cierre del derivado; esta reconciliación no se garantiza copiando saldos aislados.
+
+El motor utiliza el **saldo final** y la TRM del día para fondeo. Combina las tasas COP como `(1 + ftp_cop) × (1 + ajuste_cop) - 1`; no como una suma simple. La tasa USD sí es `ftp_usd + ajuste_usd`. Esta convención se verificó en `CAJA SWAP!AN` y `AR`. El costo COP diario aplica capitalización efectiva con base 365; el componente USD usa base 360. Si no se desea un ajuste, se debe entregar cero expresamente.
+
+La fuente antecedente de movimientos es `REPORTE CAJA LIVIANO`, hoja `TABLA ORGANIZADA!AP4:AS34`, copiada a `CAJA SWAP!T5:W35`. El antecedente de FTP COP es `FTP COP.xlsx`, hoja `Curva COP`, celdas D12/L12/E12, y el de FTP USD `FTP USD.xlsx`, hoja `Curva USD`, D11/E11. El código actual **no abre estos FTP directamente**: consume AL/AM/AP/AQ ya distribuidos en el libro. Por ello, la correspondencia exacta de las celdas fuente a cada tasa/ajuste debe confirmarse al conectar esos archivos, usando las etiquetas y las fórmulas actuales, sin inferirla solo del nombre de una celda.
+
+#### 13.5.7. Referencias para poder cerrar la conciliación
+
+No basta con insumos que permitan obtener un número. Para poder declarar que ese número coincide con la fuente de control se requieren referencias independientes del mismo producto, book, fecha, moneda y perímetro. Se almacenan en `controles.PRODUCTO` y no deben reutilizarse como aporte económico de mercado.
+
+| Control JSON | Extracción actual |
+|---|---|
+| `controles.FORWARD.PYG_BANKING` | Suma H+I+J+K de `PORTAFOLIO`, fila diaria Banking. |
+| Crédito Forward externo | Misma suma H+I+J+K en bloque IFRS menos Banking; bloque IFRS se busca por fecha entre filas 41 y 75. Se acumula para poblar `credito_acumulado_cop.FORWARD`. |
+| `controles.NOVADOS.PYG_BANKING` | `PORTAFOLIO!R`, fila diaria. |
+| `controles.SWAPS.PYG_BANKING` | `PORTAFOLIO!E`, fila diaria Banking. |
+| `controles.SWAPS.PYG_IFRS` | `PORTAFOLIO!E`, fila coincidente del bloque IFRS. |
+| `controles.CAJA.PYG_BANKING` | `PORTAFOLIO!T` más `CAJA SWAP!AJ`, fila diaria. Incluye el fondeo reportado. |
+
+La fuente antecedente Forward es `INFORME FWD CONSOLIDADO DD-MM-AA.xlsb`. Su hoja `Macro!C3/C6/C7` contiene fecha/TRM/EUR; `INFORME BOOKS!AK4/AK42` son VP de mercado/internos y `AL4/AL42` PyG de mercado/internos del book SWAPS. `INFORME IFRS` contiene el equivalente IFRS. `BOOKS CONTADO` y `BOOKS NOVADO` contienen las referencias de contado y cámara. La extracción actual lee el destino `PORTAFOLIO`; para un conector directo hay que verificar las celdas específicas vigentes de todas esas hojas.
+
+Los reportes `Cierre_SwapTotalReport_DDMMAA_000.xls` Banking y `Cierre_SwapTotalReport_IFRS_DDMMAA_000.xls` son el antecedente de los VP Swap; el análisis ubica B = Trade ID y BD = `VP_NET_COP`. Son reportes que las macros abren como texto delimitado por punto y coma pese a su extensión `.xls`: no se debe asumir formato Excel binario por el sufijo. Hay que preservar fecha de reporte y clave de operación para cruzarlos con el maestro.
+
+### 13.6 Fuentes adicionales para una valoración Swap propia por flujos
+
+Las tablas anteriores permiten operar el método actual basado en VP y factores externos. Para reemplazarlos por valoración propia, los siguientes datos son requisitos de diseño. Los nombres en esta tabla son **campos propuestos para acordar con el productor**, no columnas que el motor ya esté leyendo.
+
+| Grupo | Información concreta que hay que entregar |
+| --- | --- |
+| Identificación | `trade_id`, sistema de origen, book, desk, contraparte, estado, versión de operación y tipo de contrato: IRS, CCS, basis u otra estructura definida. |
+| Condiciones por pata | `leg_id`, moneda, dirección pagar/recibir, nominal, fechas de inicio/fin, fijo/flotante, índice, tenor del índice, tasa fija, spread contractual y multiplicador cuando aplique. |
+| Cronograma | Fecha inicial/final de cada período de devengo, fecha de fixing, fecha de pago, frecuencia, regla de generación, períodos irregulares y amortización del nominal. |
+| Convenciones de tasa | Day count por pata, capitalización simple/compuesta, forma de acumular el índice, calendario, ajuste de día hábil, desfase de fixing/pago y reglas de observación si corresponden. No deducirlas únicamente de la moneda. |
+| Flujos futuros | Identificador de flujo, trade/pata, tipo de flujo —cupón, principal, amortización, ajuste—, fecha valor, moneda, importe conocido o componentes para proyectarlo y signo. |
+| Fixings | Índice, fecha de observación efectiva, valor, unidad y fuente. Un cupón ya fijado no se vuelve a proyectar con la curva nueva. |
+| Curvas de proyección | Identificador real de cada curva, moneda/índice asociado, fecha, nodos y representación —tasas cero, factores de descuento o forwards— con su capitalización. Debe existir una asignación explícita de curva a pata/índice. |
+| Curvas de descuento | Identificador, moneda, fecha, nodos y factores/tasas; regla contractual o de colateral que decide cuál curva descuenta cada flujo. No asumir que es siempre la misma curva de proyección. |
+| Divisas y basis | Tipos de cambio por par y fecha, convención directa/inversa, curva de basis cuando se use y tratamiento de intercambios de principal para CCS. |
+| Pagos realizados | Trade ID, identificador de flujo/evento, fecha valor y fecha de registro, estado confirmado/anulado, moneda, importe firmado, tasa histórica de conversión y monto COP. |
+| Cambios de contrato | Altas, cancelaciones, terminaciones anticipadas, recouponing, modificaciones de nominal/strike/tasa y su fecha efectiva. Se requiere enlazar la versión anterior con la nueva. |
+| Ajustes IFRS | Para mantener el método actual: niveles IFRS comparables y recuponing por fecha. Solo si se decide construir además un motor crediticio: metodología y datos de crédito, recuperación, netting, colateral y exposición necesarios para ese alcance adicional. |
+
+No puedo identificar una curva interna específica de DTF, IPC, IBR, SOFR u otro índice únicamente viendo el nombre de una griega en el resumen. Para cada índice que exista en los contratos necesito el archivo real, la definición de sus nodos y las reglas que ya utiliza el valorador de origen. Una categoría `RHO_IPC` en COP no contiene una curva de inflación ni su historia de índices.
+
+De manera semejante, el reporte de posición de flujos no equivale automáticamente a un reporte de pagos realizados. Necesito distinguir el monto pendiente, el monto efectivamente pagado, los reversos y las fechas: usar todo el cronograma como Payments reconocería cobros o pagos antes de que ocurran.
+
+### 13.7 Qué controles deben acompañar los insumos
+
+Para cada fecha y combinación book/producto, el paquete de conciliación debe identificar:
+
+| Dato de control | Contenido requerido |
+| --- | --- |
+| Alcance | Fecha económica, hora/estado de cierre, book, producto, moneda, universo y exclusiones. |
+| Cartera | Cantidad de operaciones, nominales y lista de Trade ID; identificar altas/bajas/cambios cuando sea posible. Forward OPCIONES todavía no obliga un ID, pero se necesita del origen para una revisión por operación. |
+| Valoración | VP Banking e IFRS comparables de ambos extremos, aclarando si incluyen CXC o solo mercado vivo. Para `Opccva`/`Forcva` se necesita mercado vivo conforme al contrato del motor. |
+| Eventos | Primas, pagos, vencimientos, liquidaciones y ajustes del intervalo, con signo y soporte. |
+| Resultado | Banking diario, ajuste de crédito, IFRS diario y griegas diarias disponibles; separar MTD de DIARIO. |
+| Caja | Saldo anterior, movimientos y saldo final en USD; importes COP, fondeo y ajustes con su soporte. |
+| Trazabilidad | Nombre y versión del archivo fuente, fecha efectiva y responsables funcionales de explicar una diferencia. Los hashes se registran al preservar snapshots. |
+
+El resultado que se quiere comparar **no debe introducirse como un ajuste arbitrario del motor para lograr coincidencia**. Por ejemplo, un residual Forward del reporte no reemplaza un evento faltante, y una prima cobrada no se convierte en un segundo TRADING si ya está en el resultado de la operación nueva.
+
+La hoja de control del XLSM y las comparaciones diarias son útiles, pero sus resultados pueden proceder del mismo sistema que los VP. Al solicitar un control independiente conviene identificar quién lo produce y a partir de qué datos; el código no puede demostrar esa independencia leyendo únicamente una cifra.
+
+### 13.8 Solicitud concreta de archivos para la siguiente revisión
+
+Este es el paquete que necesito, organizado por propósito. Se debe entregar para ambos cortes de una prueba diaria o para toda la cadena de un MTD.
+
+| Prioridad | Entrega | Detalle mínimo |
+| --- | --- | --- |
+| 1. Ejecutar OPCIONES | `Dataset Libro de Opciones AAAAMMDD.xlsx` | Todas las hojas y columnas del apartado 13.4; cartera, curvas/smile, fixings, niveles IFRS, Caja y controles por fecha. |
+| 1. Ejecutar SWAPS | `PYG SWAPS_MES.xlsm` compatible y completo, o los JSON `Dataset SWAPS AAAAMMDD.json` | Layout del apartado 13.5, ancla, VP Banking/IFRS, pagos, factores, mercado y Caja. |
+| 2. Revisar mercado de origen | `Curva Forward V2.xlsm`, `ENTRADA2.xlsb` e histórico de TRM de cada fecha | `CURVAS`, `Matriz TC`, `INFOVALMER`, `BASE`; fecha y convención de cada dato. `Insumo tasas.xlsx` requiere confirmar su layout primario. |
+| 2. Revisar carteras OPCIONES | `USR_OPT_MANANA_…`, `USR_OPT_FWD_…`, `USR_CAJA_OPT_FUT_…` | Reportes íntegros con fecha económica identificada y formato real de texto/Excel. |
+| 2. Revisar carteras/resultados FX SWAPS | `MASCARA FX TOTAL REPORT (5.5-3-8).xls`, `INFORME FWD CONSOLIDADO DD-MM-AA.xlsb` | Maestro y clasificación, referencias Banking/IFRS, contado y novados del universo SWAPS. |
+| 2. Revisar Swap | `Cierre_SwapTotalReport_DDMMAA_000.xls`, `Cierre_SwapTotalReport_IFRS_DDMMAA_000.xls` e `Informe Libro de Swaps AAAAMMDD.xlsb` | VP por Trade ID y contribuciones diarias del mismo corte; no solo posición o DV01. |
+| 2. Completar pagos y recuponing | **Fuente de Payments Report por confirmar** y soporte del ajuste de recuponing | Pagos realizados y reversos por Trade ID/fecha; nivel de recuponing anterior y actual, no solo cambio diario. |
+| 2. Revisar Caja y fondeo | `REPORTE CAJA LIVIANO`, `FTP COP.xlsx`, `FTP USD.xlsx` y origen del bloque adicional de Caja | Movimientos sin duplicados, saldo previo/final y tasas/ajustes con fecha. Para Caja OPCIONES: costo y ajustes firmados en COP. |
+| 2. Revisar Novados activos | Maestro activo y reporte de cámara correspondiente | Precio de referencia, contrato, nominal/multiplicador, moneda, liquidaciones diarias y reglas de registro. El nombre exacto de ese reporte se debe confirmar con el área fuente. |
+| 3. Sustituir VP/factores Swap externos | Contratos, cronogramas, curvas por índice/moneda, fixings y eventos del apartado 13.6 | Se necesita implementar el adaptador y el valorador; no es una carga ya disponible en la interfaz. |
+
+Para los nombres con fechas, el formato importa. En las fuentes configuradas de OPCIONES se distingue `USR_OPT_FWD_{ddmmyyyy}_000.xls` de `USR_CAJA_OPT_FUT_{ddmmyy}_000.xls`; `USR_OPT_MANANA_{next_bday_ddmmyy}_000.xls` se identifica por el siguiente hábil, por lo que hay que comprobar qué cierre representa su contenido. En SWAPS, `Informe Libro de Swaps` usa `AAAAMMDD`, y los reportes `Cierre_SwapTotalReport` de referencia usan `DDMMAA`.
+
+Los datos para FX_ESTRAT son otro paquete: no se obtienen cambiando la etiqueta de SWAPS. Harían falta sus propios contratos, mercado, Caja, pagos, FTP, valoraciones y reglas de clasificación. Los flujos de copia que aparecen en la configuración son antecedentes; no constituyen un motor FX_ESTRAT habilitado. `ReporteTitulos_*.csv` queda fuera de los productos actuales, y `EXP.xlsx` no tiene uso confirmado en estos motores.
+
+### 13.9 Ejemplos de errores de entrega que impiden una atribución correcta
+
+| Entrega incorrecta | Entrega que se necesita |
+| --- | --- |
+| Solo `Curva Forward V2.xlsm` de hoy | Mercado histórico de cada snapshot; curvas COP/USD y, donde aplica, implícita, superficie, spot y fixings. |
+| Curva de puntos `20`, tratada como tasa | Identificar escala y convertir con spot/plazo a la tasa requerida; guardar la convención de origen. |
+| Tasa EA en la columna continua de OPCIONES | Convertir a tasa continua equivalente o usar una fuente ya normalizada correctamente. |
+| Solo nominal y vencimiento del contrato | Incluir dirección, strike, emisión, cumplimiento, modalidad y moneda; Opciones añade CALL/PUT y prima. |
+| VP o delta de posición en lugar de PyG por griega Swap | Contribución **diaria en COP** para cada una de las nueve claves. |
+| Payments en blanco porque no se tiene el archivo | Reporte de pagos confirmado; cero solo si se verificó que no hubo pago. El cero heredado del importador queda advertido. |
+| `Opccva = CVA del día` | Nivel IFRS de mercado vivo en COP del corte. |
+| `recuponing_nivel_cop = cambio del día` | Nivel de ajuste anterior y actual; el motor calcula su diferencia. |
+| Caja con la media simple de tasas de operaciones | Contravalores COP y montos USD para obtener promedios ponderados. |
+| Fórmulas Excel sin valores guardados | Archivo correctamente calculado por su productor y guardado, con fecha verificada. Python no refresca vínculos ni ejecuta sus macros. |
+
+**La entrega inmediata más útil es un par de snapshots completos de OPCIONES y un corte SWAPS con pagos y controles soportados.** Para probar todo el ciclo, el par debe incluir al menos una operación nueva, una prima USD, un vencimiento con cumplimiento posterior y una liquidación. Para validar MTD se necesita además el ancla y todos los días intermedios. Los nombres de fuentes no identificadas, en especial Payments y liquidación de cámara, permanecen explícitamente pendientes; no se ha supuesto un archivo inexistente.

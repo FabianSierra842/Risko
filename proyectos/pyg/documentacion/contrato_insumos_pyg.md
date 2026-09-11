@@ -1,5 +1,7 @@
 # Insumos para conciliar el nuevo PyG
 
+El [anexo 13 de la guía técnica](GUIA_TECNICA_Y_EJEMPLOS_PYG.md#13-inventario-exacto-de-insumos-y-paquete-que-se-debe-entregar), incluido también en el [PDF](GUIA_TECNICA_Y_EJEMPLOS_PYG.pdf), amplía este contrato con diccionarios completos por hoja/producto, campos JSON, trazabilidad al XLSM, nodos de curvas y solicitud concreta de fuentes primarias.
+
 El motor del book **OPCIONES** lee el
 snapshot diario `Dataset Libro de Opciones AAAAMMDD.xlsx`. No usa los resultados
 de la hoja `PYG` ni el Excel mensual para generar sus cifras.

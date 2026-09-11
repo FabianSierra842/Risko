@@ -63,6 +63,7 @@ sin ella. Los archivos operativos de red se configuran en cada entorno.
 ## Documentación
 
 - [Guía técnica y ejemplos numéricos de PyG](proyectos/pyg/documentacion/GUIA_TECNICA_Y_EJEMPLOS_PYG.md): fórmulas, escenarios por producto, consolidación, controles y ejercicios resueltos.
+- [Inventario exacto de insumos por producto](proyectos/pyg/documentacion/GUIA_TECNICA_Y_EJEMPLOS_PYG.md#13-inventario-exacto-de-insumos-y-paquete-que-se-debe-entregar): archivos, hojas, columnas, curvas, nodos, fechas, fixings, pagos y fuentes pendientes; incluido en el PDF.
 - [Descargar guía en PDF](proyectos/pyg/documentacion/GUIA_TECNICA_Y_EJEMPLOS_PYG.pdf) · [HTML para lectura local](proyectos/pyg/documentacion/GUIA_TECNICA_Y_EJEMPLOS_PYG.html) · [Scripts y resultados de los ejemplos](proyectos/pyg/documentacion/ejemplos/).
 - [Operación PyG](proyectos/pyg/README.md).
 - [Integración y diferencias del libro SWAPS](proyectos/pyg/documentacion/integracion_libro_swaps.md).
